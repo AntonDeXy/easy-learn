@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import Header from './Components/Header'
+import { MainSt } from './Components/Styled'
+import Footer from './Components/Footer'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import Lists from './Components/Lists'
+import Words from './Components/Words'
+import Modal from './Components/Modal'
 
-function App() {
+const App = () => {
+  const [modal, setModal] = useState({isActive: false})
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <div className="App">
+        <Header />
+        <Modal />
+        <MainSt>
+          <Switch>
+            <Route exact path='/'>
+              <Words />
+              {/* <Lists /> */}
+            </Route>
+          </Switch>
+        </MainSt>
+        <Footer />
+      </div>
+    </Router>
+  )
 }
 
 export default App;
