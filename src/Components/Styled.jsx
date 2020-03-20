@@ -36,14 +36,19 @@ export const MainSt = styled.main `
   height: 80vh;
   width: 100vw;
   font-family: 'Roboto', sans-serif;
-  overflow: hidden;
-  /* overflow-y: auto; */
+  /* overflow: hidden; */
+  overflow-y: auto;
 `
 
 export const PlusSt = styled.div `
   justify-content: center;
   display: grid;
   padding: 15px 0;
+  grid-template-columns: 1fr auto 1fr;
+  div {
+    display: grid;
+    align-items: center;
+  }
 `
 
 export const ListsWrapper = styled.div `
@@ -52,6 +57,9 @@ export const ListsWrapper = styled.div `
   grid-template-rows: auto 1fr;
   justify-self: center;
   gap: 10px;
+  svg:hover {
+    cursor: pointer;
+  }
   .lists {
     overflow-y: auto;
     display: grid;
@@ -64,9 +72,12 @@ export const ListsWrapper = styled.div `
 export const WordsWrapper = styled.div `
   display: grid;
   width: 90%;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   gap: 10px;
   justify-self: center;
+  svg:hover {
+    cursor: pointer;
+  }
   .lists {
     overflow-y: auto;
     display: grid;
@@ -82,13 +93,22 @@ export const WordItemSt = styled.div `
   grid-template-rows: 1fr 1fr;
   border-radius: 5px;
   border: 1px solid #C7D1D9;
+  span:hover {
+    cursor: default;
+  }
+  input {
+    font-size: 16px;
+    /* height: 11px; */
+    border-top: unset;
+    border-left: unset;
+    border-right: unset;
+  }
   .word {
     padding: 10px;
     border-bottom: 1px solid #C7D1D9;
   }
   .translate {
     padding: 10px;
-
   }
   .functions {
     grid-column: 2;
@@ -109,6 +129,12 @@ export const ListItemSt = styled.div `
   border: 1px solid #C7D1D9;
   .name {
     padding: 10px;
+    textarea {
+      resize: both;
+    }
+    :hover {
+      cursor: pointer;
+    }
   }
   .functions {
     padding: 10px;
@@ -138,7 +164,6 @@ export const ModalSt = styled.div `
   display: grid;
   height: 80vh;
   background-color: rgba(0, 0, 0, 0.1);
-  /* box-shadow: 0px -4px 30px rgba(0, 0, 0, 0.25); */
   height: 80vh;
   width: 100vw;
   font-family: 'Roboto', sans-serif;
@@ -159,8 +184,45 @@ export const ModalSt = styled.div `
     .header {
       padding: 5px;
       display: grid;
-      grid-template-columns: 1fr auto;
+      /* grid-template-columns: 1fr auto; */
+      grid-template-columns: 1fr auto auto;
       border-bottom: 2px solid #C7D1D9;
+      svg {
+        align-self: center;
+        :hover {
+          cursor: pointer;
+        }
+      }
+    }
+    .testHeader {
+      text-align: left;
+      gap: 10px;
+      /* justify-items: right; */
+    }
+    .test {
+      display: grid;
+      grid-auto-flow: row;
+      gap: 10px;
+      align-content: baseline;
+      padding: 10px;
+      .answers {
+        display: grid;
+        grid-auto-flow: row;
+        gap: 10px;
+        button {
+          height: 30px;
+          border-radius: 10em;
+          color: #4285f4;
+          border: 2px solid #4285f4;
+          background-color: #ffffff;
+          box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+          transition: all.5s;
+          :active {
+            background-color: gainsboro;
+            box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15);
+          }
+        }
+      }
     }
     .main {
       display: grid;
@@ -168,6 +230,12 @@ export const ModalSt = styled.div `
       gap: 10px;
       align-content: baseline;
       padding: 10px;
+      .resultText {
+        text-align: center;
+      }
+      .error {
+        color: red;
+      }
       .item {
         display: grid;
         grid-auto-flow: row;
@@ -197,4 +265,32 @@ export const ModalSt = styled.div `
       }
     }
   }
+`
+
+export const MenuSt = styled.div`
+  @keyframes menuAnimIn {
+    from {right: 0;}
+    to {right: 100vw;}
+  }
+  display: grid;
+  height: 80vh;
+  background-color: #ffffff;
+  height: 80vh;
+  width: 100vw;
+  font-family: 'Roboto', sans-serif;
+  position: absolute;
+  top: 10vh;
+  /* left: 0; */
+  /* right: 0; */
+  animation-name: menuAnimIn;
+  animation-duration: 0.5s;
+  .wrapper {
+    display: grid;
+    justify-self: center;
+    width: 90%;
+  }
+`
+
+export const NotesSt = styled.div `
+  
 `

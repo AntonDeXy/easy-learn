@@ -2,23 +2,27 @@ import React from 'react'
 import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus';
 
-const Lists = () => {
-  const items = [{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'list name'},{name: 'last'},]
+const Lists = ({setCurrentListId, setModal, setCurrentPage}) => {
+  const items = [{_id:1, name: 'list name'},{_id:2, name: 'list name'},{_id:3, name: 'list name'},{_id:4, name: 'list name'},{_id:5, name: 'list name'},{_id:6, name: 'list name'},{_id:7, name: 'list name'},{_id:8, name: 'list name'},{_id:9, name: 'list name'},{_id:10, name: 'list name'},{_id:11, name: 'list name'},{_id:12, name: 'list name'},{_id:13, name: 'list name'},{_id:14, name: 'last'},]
   return (
     <ListsWrapper>
-      <Plus />
+      <Plus setModal={setModal} type='lists' />
       <div className="lists">
         {items.map(e => (
-          <List item={e} />
+          <List setCurrentPage={setCurrentPage} setCurrentListId={setCurrentListId} item={e} />
         )) }
       </div>
     </ListsWrapper>
   )
 }
 
-const List = ({item}) => {
+const List = ({setCurrentPage, setCurrentListId, item}) => {
+  const Click = () => {
+    setCurrentListId(item._id)
+    setCurrentPage('words')
+  }
   return (
-    <ListItemSt>
+    <ListItemSt onClick={() => Click()} >
       <div className="name">
         <span>{item.name}</span>
       </div>
