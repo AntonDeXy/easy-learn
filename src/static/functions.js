@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-// const baseUrl = 'http://localhost:5001/'
+const baseUrl = 'http://localhost:5001/'
 // const baseUrl = 'https://cors-anywhere.herokuapp.com/https://easylern-backend.herokuapp.com/'
-const baseUrl = 'http://64.227.4.228:5001/'
+// const baseUrl = 'http://64.227.4.228:5001/'
 // const baseUrl = 'https://cors-anywhere.herokuapp.com/https://easylern-backend.herokuapp.com/'
 
 export const get = (type, userId, success) => {
@@ -10,6 +10,7 @@ export const get = (type, userId, success) => {
   axios
     .get(url)
     .then(res => {success(res.data)})
+    .catch(err => console.log(err))
 }
 
 export const update = (type, noteId, newData, success) => {
@@ -18,6 +19,7 @@ export const update = (type, noteId, newData, success) => {
   axios
     .put(url, newData)
     .then(res => success(res.data))
+    .catch(err => console.log(err))
 }
 
 export const create = (type, obj, success) => {
@@ -25,6 +27,7 @@ export const create = (type, obj, success) => {
   axios
     .post(url, obj)
     .then(res => success(res))
+    .catch(err => console.log(err))
 }
 
 export const remove = (type, elId, success) => {
@@ -32,6 +35,7 @@ export const remove = (type, elId, success) => {
   axios
     .delete(url)
     .then(res => {success(res)})
+    .catch(err => console.log(err))
 }
 
 // var config = {
@@ -52,7 +56,7 @@ export const addCategoryToProfile = (data, success) => {
   axios
     .post(url, data)
     .then(res => success(res))
-    .catch(err => success(err))
+    .catch(err => console.log(err))
 }
 
 export const removeObjectFromProfile = (data, success) => {
@@ -61,7 +65,7 @@ export const removeObjectFromProfile = (data, success) => {
   axios
     .post(url, data)
     .then(res => success(res))
-    .catch(err => success(err))
+    .catch(err => console.log(err))
 }
 
 export const updateUserInfo = (token, success) => {
@@ -73,7 +77,7 @@ export const updateUserInfo = (token, success) => {
   axios
     .get(url, { headers })
     .then(res => success(res))
-    .catch(err => success(err))
+    .catch(err => console.log(err))
 }
 
 
@@ -83,7 +87,7 @@ export const removeMany = (data, success) => {
   axios
     .post(url, {ids: data})
     .then(res => success(res))
-    .catch(err => success(err))
+    .catch(err => console.log(err))
 }
 
 export const autoTranslate = (phrase, success) => {
@@ -93,7 +97,7 @@ export const autoTranslate = (phrase, success) => {
     axios
       .get(url)
       .then(res => success(res.data.translate))
-      .catch(err => success(err))
+      .catch(err => console.log(err))
   }
 }
 
@@ -103,5 +107,23 @@ export const updateCategoryTitle = (id ,newData, success) => {
   axios
     .put(url, newData)
     .then(res => success(res.data))
-    .catch(err => success(err))
+    .catch(err => console.log(err))
+}
+
+export const checkIfUserCreated = (userId, success) => {
+  const url = baseUrl + 'users/' + userId
+  
+  axios
+    .get(url)
+    .then(res => success(res.data))
+    .catch(err => console.log(err))
+}
+
+export const createNewUser = (userId, success) => {
+  const url = baseUrl + 'users/'
+
+  axios
+    .post(url, {userIdFromAuth0: userId})
+    .then(res => success(res.data))
+    .catch(err => console.log(err))
 }

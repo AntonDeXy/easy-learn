@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import Header from './Components/Header'
 import { MainSt } from './Components/Styled'
 import Footer from './Components/Footer'
@@ -8,7 +8,14 @@ import Words from './Components/Words'
 import Modal from './Components/Modal'
 import Menu from './Components/Menu'
 import "antd/dist/antd.css"
-import Notes from './Components/Notes';
+import Notes from './Components/Notes'
+import { useAuth0 } from "./react-auth0-spa"
+import Profile from "./Components/Profile"
+import history from "./utils/history"
+import PrivateRoute from './Components/PrivateRoute'
+import ExternalApi from "./views/ExternalApi"
+import { get, checkIfUserCreated, createNewUser } from './static/functions';
+import { useEffect } from 'react';
 
 const App = () => {
   const [modal, setModal] = useState({ isActive: false })
@@ -16,9 +23,38 @@ const App = () => {
   const [currentListId, setCurrentListId] = useState(undefined)
   const [currentList, setCurrentList] = useState(undefined)
   const [menuIsOpen, setMenuIsOpen] = useState(false)
+  const [categories, setCategories] = useState(false)
+  const { loading, user } = useAuth0()
+  const [userFromDb, setUserFromDb] = useState({})
+
+  const getCategories = useCallback(() => {
+    get('categories',userFromDb.userId, res => {
+      setCategories(res.data)
+    })
+  }, [userFromDb.userId])
+
+  useEffect(() => {
+    if (userFromDb.userId) getCategories()
+  }, [getCategories, userFromDb.userId])
+
+  useEffect(() => {
+    if (!loading && user) {
+      checkIfUserCreated(user.sub, (res) => {
+        if (res) setUserFromDb(res)
+        else createNewUser(user.sub, (res) => {
+          setUserFromDb(res)
+        })
+      })
+    }
+  }, [loading, user])
+
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <Router>
+    <Router history={history}>
       <div className="App">
         <Header togglerMenu={() => setMenuIsOpen(!menuIsOpen)} />
         {modal.isActive && (
@@ -29,6 +65,8 @@ const App = () => {
         }
         <MainSt>
           <Switch>
+            <PrivateRoute path="/profile" component={Profile} />
+            <PrivateRoute path="/external-api" component={ExternalApi} />
             <Route exact path="/">
               {currentPage === 'lists' && (
                 <Lists

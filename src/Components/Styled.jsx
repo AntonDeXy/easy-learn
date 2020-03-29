@@ -19,14 +19,29 @@ export const HeaderSt = styled.header `
     justify-self: center;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    .menu {
-
-    }
     span {
       color: #F24405;
     }
-    .logOut {
-      justify-self: right;
+    .logIn {
+      display: grid;
+      justify-items: right;
+      text-align: right;
+      /* justify-self: right; */
+      path {
+        align-self: center;
+        fill: #F3A184;
+      }
+    }
+    .userImg {
+      /* display: grid; */
+      a {
+        display: grid;
+      }
+      img {
+        height: 5vh;
+        border-radius: 100%;
+        justify-self: right;
+      }
     }
   }
 `
@@ -269,8 +284,8 @@ export const ModalSt = styled.div `
 
 export const MenuSt = styled.div`
   @keyframes menuAnimIn {
-    from {right: 0;}
-    to {right: 100vw;}
+    from {right: 100vw;}
+    to {right: 0;}
   }
   display: grid;
   height: 80vh;
@@ -288,6 +303,7 @@ export const MenuSt = styled.div`
     display: grid;
     justify-self: center;
     width: 90%;
+    align-content: baseline;
   }
 `
 

@@ -1,8 +1,12 @@
 import React from 'react'
 import { HeaderSt } from './Styled'
+import { useAuth0 } from "../react-auth0-spa"
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from "react-router-dom"
 
 const Header = ({togglerMenu}) => {
+  const { isAuthenticated, user, loginWithRedirect } = useAuth0()
+
   return (
     <HeaderSt>
       <div className="wrapper">
@@ -11,9 +15,22 @@ const Header = ({togglerMenu}) => {
           <path d="M0.75 6.1875H20.25C20.6642 6.1875 21 5.85173 21 5.4375V3.5625C21 3.14827 20.6642 2.8125 20.25 2.8125H0.75C0.335766 2.8125 0 3.14827 0 3.5625V5.4375C0 5.85173 0.335766 6.1875 0.75 6.1875ZM0.75 13.6875H20.25C20.6642 13.6875 21 13.3517 21 12.9375V11.0625C21 10.6483 20.6642 10.3125 20.25 10.3125H0.75C0.335766 10.3125 0 10.6483 0 11.0625V12.9375C0 13.3517 0.335766 13.6875 0.75 13.6875ZM0.75 21.1875H20.25C20.6642 21.1875 21 20.8517 21 20.4375V18.5625C21 18.1483 20.6642 17.8125 20.25 17.8125H0.75C0.335766 17.8125 0 18.1483 0 18.5625V20.4375C0 20.8517 0.335766 21.1875 0.75 21.1875Z" fill="#F3A184"/>
         </svg>
         <span>Your lists</span>
-        <svg className='logOut' width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {!isAuthenticated && (
+          <div className='logIn'>
+            <svg onClick={() => loginWithRedirect({})} width="24" height="24" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sign-in-alt" class="svg-inline--fa fa-sign-in-alt fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M416 448h-84c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h84c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32h-84c-6.6 0-12-5.4-12-12V76c0-6.6 5.4-12 12-12h84c53 0 96 43 96 96v192c0 53-43 96-96 96zm-47-201L201 79c-15-15-41-4.5-41 17v96H24c-13.3 0-24 10.7-24 24v96c0 13.3 10.7 24 24 24h136v96c0 21.5 26 32 41 17l168-168c9.3-9.4 9.3-24.6 0-34z"></path></svg>
+          </div>
+          // <button onClick={() => loginWithRedirect({})}>Log in</button>
+        )}
+
+        {isAuthenticated && <div className='userImg'>
+          {/* <Link to="/external-api">External API</Link> */}
+          <Link to='/profile'>
+            <img src={user.picture} alt=""/>
+          </Link>
+        </div>}
+        {/* <svg className='logOut' width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M19.5 21H15.5625C15.2531 21 15 20.7469 15 20.4375V18.5625C15 18.2531 15.2531 18 15.5625 18H19.5C20.3297 18 21 17.3297 21 16.5V7.5C21 6.67031 20.3297 6 19.5 6H15.5625C15.2531 6 15 5.74688 15 5.4375V3.5625C15 3.25313 15.2531 3 15.5625 3H19.5C21.9844 3 24 5.01562 24 7.5V16.5C24 18.9844 21.9844 21 19.5 21ZM17.2969 11.5781L9.42188 3.70312C8.71875 3 7.5 3.49219 7.5 4.5V9H1.125C0.501562 9 0 9.50156 0 10.125V14.625C0 15.2484 0.501562 15.75 1.125 15.75H7.5V20.25C7.5 21.2578 8.71875 21.75 9.42188 21.0469L17.2969 13.1719C17.7328 12.7312 17.7328 12.0188 17.2969 11.5781Z" fill="#F3A184"/>
-        </svg>
+        </svg> */}
       </div>
     </HeaderSt>
   )
