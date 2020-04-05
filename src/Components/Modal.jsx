@@ -1,7 +1,26 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { ModalSt } from './Styled'
+import { useState } from 'react'
+import { create } from '../static/functions';
 
-const Modal = ({ setModal, modal, items }) => {
+const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) => {
+  const [rightUnswersCount, setRightUnswersCount] = useState(0)
+  
+  const createNew = (data) => {
+    if (data.type === 'items') {
+      create(data.type, {
+        categoryId: currentListId,
+        word: data.word,
+        translate: data.translate
+      }, () =>  {getCategories(); setModal({isActive: false})} )
+    } else {
+      create(data.type, {
+        title: data.name,
+        authorId: user.sub
+      }, () =>  {getCategories(); setModal({isActive: false})} )
+    }
+  }
+
   return (
     <ModalSt>
       <div className="modal">
@@ -13,10 +32,11 @@ const Modal = ({ setModal, modal, items }) => {
             {modal.type === 'error' && <span>Error</span>}
             {modal.type === 'test' && <span>Test</span>}
             {modal.type === 'result' && <span>Result</span>}
+            {modal.type === 'share' && <span>Share</span>}
           </div>
           <div>
             {
-              modal.type === 'test' && <span>10/12</span>
+              modal.type === 'test' && <span>{rightUnswersCount}/12</span>
             }
           </div>
           <svg
@@ -33,14 +53,26 @@ const Modal = ({ setModal, modal, items }) => {
             />
           </svg>
         </div>
-        {modal.type === 'words' && <AddWord /> }
-        {modal.type === 'lists' && <AddList /> }
+        {modal.type === 'words' && <AddWord createNew={data => createNew(data)} /> }
+        {modal.type === 'lists' && <AddList createNew={data => createNew(data)} /> }
         {modal.type === 'notes' && <AddNote /> }
         {modal.type === 'error' && <Error modal={modal} /> }
         {modal.type === 'test' && <TestModal items={items} modal={modal} /> }
         {modal.type === 'result' && <ResultModal items={items} modal={modal} /> }
+        {modal.type === 'share' && <ShareModal categoryId={modal.categoryId} modal={modal} /> }
       </div>
     </ModalSt>
+  )
+}
+
+const ShareModal = ({categoryId}) => {
+  return(
+    <div className="main">
+      <div className="item">
+        <span>Share this ID</span>
+        <input type="text" contentEditable={false} value={categoryId} />
+      </div>
+    </div>
   )
 }
 
@@ -78,35 +110,40 @@ const Error = ({modal}) => {
   )
 }
 
-const AddWord = () => {
+const AddWord = ({createNew}) => {
+  const wordRef = useRef()
+  const translateRef = useRef()
+
   return (
     <div className="main">
       <div className="item">
         <span>Word</span>
-        <input type="text" />
+        <input ref={wordRef} type="text" />
       </div>
       <div className="item">
         <span>Translate</span>
-        <input type="text" />
+        <input ref={translateRef} type="text" />
       </div>
-      <button>Create</button>
+      <button onClick={() => createNew({type: 'items', word: wordRef.current.value, translate: translateRef.current.value})}>Create</button>
     </div>
   )
 }
 
-const AddList = () => {
+const AddList = ({createNew}) => {
+  const categoryNameRef = useRef()
+
   return (
     <div className="main">
       <div className="item">
         <span>Name</span>
-        <input type="text" />
+        <input ref={categoryNameRef} type="text" />
       </div>
-      <button>Create</button>
+      <button onClick={ () => createNew({type: 'categories', name: categoryNameRef.current.value})} >Create</button>
       <div className="item">
         <span>Enter list ID</span>
         <input type="text" />
       </div>
-      <button>Add</button>
+      <button >Add</button>
     </div>
   )
 }

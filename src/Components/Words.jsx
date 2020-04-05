@@ -1,25 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { WordsWrapper, WordItemSt } from './Styled'
 import Plus from './Plus'
-import { Popconfirm, Input } from 'antd'
+import { Popconfirm } from 'antd'
+import { update } from '../static/functions'
 
-const Words = ({ setModal, setCurrentPage }) => {
+const Words = ({ setModal, setCurrentPage, categoriesWords, getCategories }) => {
   return (
     <WordsWrapper>
       <Plus setModal={setModal} setCurrentPage={setCurrentPage} type="words" />
       <div className="lists">
-        <Word />
+        {categoriesWords.length > 0 &&
+          categoriesWords.map(word => <Word key={word._id} getCategories={getCategories} item={word} />)}
       </div>
     </WordsWrapper>
   )
 }
 
-const Word = () => {
+const Word = ({ item, getCategories }) => {
   const [editMode, setEditMode] = useState(false)
+  const wordRef = useRef()
+  const translateRef = useRef()
 
   const toggleEditMode = () => {
     if (editMode) {
-      setEditMode(!editMode)
+      let newData = {...item}
+      newData.word = wordRef.current.value
+      newData.translate = translateRef.current.value
+      update('items', item._id, newData, () => {setEditMode(!editMode); getCategories()})
     } else {
       setEditMode(!editMode)
     }
@@ -29,16 +36,16 @@ const Word = () => {
     <WordItemSt>
       <div className="word">
         {editMode ? (
-          <input defaultValue="defValue" type="text" />
+          <input ref={wordRef} defaultValue={item.word} type="text" />
         ) : (
-          <span>Word</span>
+          <span>{item.word}</span>
         )}
       </div>
       <div className="translate">
         {editMode ? (
-          <input defaultValue="defValue" type="text" />
+          <input ref={translateRef} defaultValue={item.translate} type="text" />
         ) : (
-          <span>Translate</span>
+          <span>{item.translate}</span>
         )}
       </div>
       <div className="functions">

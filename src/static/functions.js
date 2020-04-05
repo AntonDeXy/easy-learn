@@ -9,12 +9,12 @@ export const get = (type, userId, success) => {
   const url = baseUrl + type + '/' + userId
   axios
     .get(url)
-    .then(res => {success(res.data)})
+    .then(res => success(res.data))
     .catch(err => console.log(err))
 }
 
-export const update = (type, noteId, newData, success) => {
-  const url = baseUrl + type + '/' + noteId
+export const update = (type, id, newData, success) => {
+  const url = baseUrl + type + '/' + id
   
   axios
     .put(url, newData)
@@ -24,6 +24,7 @@ export const update = (type, noteId, newData, success) => {
 
 export const create = (type, obj, success) => {
   const url = baseUrl + type
+  
   axios
     .post(url, obj)
     .then(res => success(res))

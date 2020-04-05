@@ -21,15 +21,15 @@ const App = () => {
   const [modal, setModal] = useState({ isActive: false })
   const [currentPage, setCurrentPage] = useState('lists')
   const [currentListId, setCurrentListId] = useState(undefined)
-  const [currentList, setCurrentList] = useState(undefined)
+  const [categoriesWords, setCategoriesWords] = useState([])
   const [menuIsOpen, setMenuIsOpen] = useState(false)
-  const [categories, setCategories] = useState(false)
+  const [categories, setCategories] = useState([])
   const { loading, user } = useAuth0()
   const [userFromDb, setUserFromDb] = useState({})
 
   const getCategories = useCallback(() => {
     get('categories',userFromDb.userId, res => {
-      setCategories(res.data)
+      setCategories(res)
     })
   }, [userFromDb.userId])
 
@@ -48,6 +48,14 @@ const App = () => {
     }
   }, [loading, user])
 
+  useEffect(() => {
+    const temporaryWords = categories.find(e => e._id === currentListId)
+    if (!temporaryWords) {
+      setCategoriesWords([])
+    } else {
+      setCategoriesWords(temporaryWords.items)
+    }
+  }, [categories, currentListId])
 
   if (loading) {
     return <div>Loading...</div>;
@@ -58,7 +66,7 @@ const App = () => {
       <div className="App">
         <Header togglerMenu={() => setMenuIsOpen(!menuIsOpen)} />
         {modal.isActive && (
-          <Modal modal={modal} setModal={data => setModal(data)} />
+          <Modal currentListId={currentListId} user={user} getCategories={() => getCategories()} modal={modal} setModal={data => setModal(data)} />
         )}
         {
           menuIsOpen && <Menu />
@@ -67,9 +75,11 @@ const App = () => {
           <Switch>
             <PrivateRoute path="/profile" component={Profile} />
             <PrivateRoute path="/external-api" component={ExternalApi} />
-            <Route exact path="/">
+            <PrivateRoute exact path="/">
               {currentPage === 'lists' && (
                 <Lists
+                  categories={categories}
+                  getCategories={() => getCategories()}
                   setCurrentListId={(data) => setCurrentListId(data)}
                   setModal={data => setModal(data)}
                   setCurrentPage={data => setCurrentPage(data)}
@@ -77,12 +87,13 @@ const App = () => {
               )}
               {currentPage === 'words' && (
                 <Words
-                  currentList={currentList}
+                  getCategories={() => getCategories()}
+                  categoriesWords={categoriesWords}
                   setModal={data => setModal(data)}
                   setCurrentPage={data => setCurrentPage(data)}
                 />
               )}
-            </Route>
+            </PrivateRoute>
             <Route exact path='/help'>
               <div>
                 Help Page

@@ -260,7 +260,7 @@ export const ModalSt = styled.div `
         }
         input {
           border-radius: 5px;
-          height: 22px;
+          height: 30px;
           border: 1px solid #C7D1D9;
         }
         /* gap: 5px; */
