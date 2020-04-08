@@ -113,7 +113,6 @@ export const WordItemSt = styled.div `
   }
   input {
     font-size: 16px;
-    /* height: 11px; */
     border-top: unset;
     border-left: unset;
     border-right: unset;
@@ -144,8 +143,11 @@ export const ListItemSt = styled.div `
   border: 1px solid #C7D1D9;
   .name {
     padding: 10px;
-    textarea {
-      resize: both;
+    input {
+      font-size: 16px;
+      border-top: unset;
+      border-left: unset;
+      border-right: unset;
     }
     :hover {
       cursor: pointer;

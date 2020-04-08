@@ -3,6 +3,7 @@ import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus'
 import { remove, update } from '../static/functions'
 import { useState, useRef } from 'react';
+import AutosizeInput from 'react-input-autosize';
 
 const Lists = ({
   categories,
@@ -40,6 +41,7 @@ const Lists = ({
 
 const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCategories }) => {
   const [editMode, setEditMode] = useState(false)
+  const [newName, setNewName] = useState(item.title)
   const titleRef = useRef()
 
   const Click = () => {
@@ -51,10 +53,12 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
 
   const toggleEditMode = () => {
     if (editMode) {
-      let newData = {...item}
-      newData.title = titleRef.current.value
-      update('categories', item._id, newData, () => {setEditMode(!editMode); getCategories()})
-    } else {
+      if (item.title !== titleRef.current.props.value) {
+        let newData = {...item}
+        newData.title = titleRef.current.props.value
+        update('categories', item._id, newData, () => {setEditMode(!editMode); getCategories()})
+      }
+  } else {
       setEditMode(!editMode)
     }
   }
@@ -64,7 +68,17 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
       <div onClick={() => Click()} className="name">
         {
           editMode
-          ? <input autoFocus type="text" ref={titleRef} defaultValue={item.title} />
+          ? (
+            <AutosizeInput
+              autoFocus
+              ref={titleRef}
+              value={newName}
+              type="text"
+              onChange={(e) => {
+                setNewName(e.target.value)
+              }}
+            />
+          )
           : <span>{item.title}</span>
         }
       </div>

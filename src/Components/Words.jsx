@@ -3,6 +3,7 @@ import { WordsWrapper, WordItemSt } from './Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
 import { update } from '../static/functions'
+import AutosizeInput from 'react-input-autosize'
 
 const Words = ({ setModal, setCurrentPage, categoriesWords, getCategories }) => {
   return (
@@ -18,14 +19,16 @@ const Words = ({ setModal, setCurrentPage, categoriesWords, getCategories }) => 
 
 const Word = ({ item, getCategories }) => {
   const [editMode, setEditMode] = useState(false)
+  const [newWord, setNewWord] = useState(item.word)
+  const [newTranslate, setNewTranslate] = useState(item.translate)
   const wordRef = useRef()
   const translateRef = useRef()
 
   const toggleEditMode = () => {
     if (editMode) {
       let newData = {...item}
-      newData.word = wordRef.current.value
-      newData.translate = translateRef.current.value
+      newData.word = wordRef.current.props.value
+      newData.translate = translateRef.current.props.value
       update('items', item._id, newData, () => {setEditMode(!editMode); getCategories()})
     } else {
       setEditMode(!editMode)
@@ -36,14 +39,28 @@ const Word = ({ item, getCategories }) => {
     <WordItemSt>
       <div className="word">
         {editMode ? (
-          <input ref={wordRef} defaultValue={item.word} type="text" />
+          <AutosizeInput
+            ref={wordRef}
+            value={newWord}
+            type="text"
+            onChange={(e) => {
+              setNewWord(e.target.value)
+            }}
+          />
         ) : (
           <span>{item.word}</span>
         )}
       </div>
       <div className="translate">
         {editMode ? (
-          <input ref={translateRef} defaultValue={item.translate} type="text" />
+          <AutosizeInput
+            ref={translateRef}
+            value={newTranslate}
+            type="text"
+            onChange={(e) => {
+              setNewTranslate(e.target.value)
+            }}
+          />
         ) : (
           <span>{item.translate}</span>
         )}
@@ -53,7 +70,7 @@ const Word = ({ item, getCategories }) => {
           <Popconfirm
             onCancel={() => setEditMode(false)}
             onConfirm={() => toggleEditMode()}
-            title="Are you sure？"
+            title="Do you want to save changes"
             okText="Yes"
             cancelText="No"
           >
