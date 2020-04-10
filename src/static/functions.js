@@ -39,24 +39,34 @@ export const remove = (type, elId, success) => {
     .catch(err => console.log(err))
 }
 
-// var config = {
-//   headers: {'Access-Control-Allow-Origin': '*'}
-// }
-
-// export const loginOrRegister = (data, success) => {
-//   const url = baseUrl + data.type
-
-//   axios
-//     .post(url, {email: data.email, password: data.password}, config)
-//     .then(res => success(res))
-//     .catch(err => success(err))
-// }
-
 export const addCategoryToProfile = (data, success) => {
   const url = baseUrl + 'addCategoryToProfile'
+
   axios
     .post(url, data)
     .then(res => success(res))
+    .catch(err => console.log(err))
+}
+
+export const checkIfCategoryIsExist = (data, success) => {
+  const url = baseUrl + 'categoriesById/' + data.categoryId
+
+  axios
+    .get(url)
+    .then(res => {
+      success(res)
+    })
+    .catch(err => console.log(err))
+}
+
+export const checkIfUserHaveCurrCategory = (data, success) => {
+  const url = baseUrl + 'users/' + data.userId
+
+  axios
+    .get(url)
+    .then(res => {
+      success(res)
+    })
     .catch(err => console.log(err))
 }
 

@@ -1,11 +1,12 @@
 import React, { useRef } from 'react'
 import { ModalSt } from './Styled'
 import { useState } from 'react'
-import { create } from '../static/functions';
+import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCurrCategory } from '../static/functions';
 
 const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) => {
   const [rightUnswersCount, setRightUnswersCount] = useState(0)
-  
+  const [error, setError] = useState(undefined)
+
   const createNew = (data) => {
     if (data.type === 'items') {
       create(data.type, {
@@ -19,6 +20,46 @@ const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) =
         authorId: user.sub
       }, () =>  {getCategories(); setModal({isActive: false})} )
     }
+  }
+
+  const addListToProfile = (сategoryId) => {
+    setError(null)
+    checkIfCategoryIsExist(
+      {
+        categoryId: сategoryId
+      },
+      (res) => {
+        if(res.data.isExist) {
+          checkIfUserHaveCurrCategory(
+            {
+              userId: user.sub
+            },
+            (res) => {
+              let haveUserThisCategory = false
+              res.data.addedCategories.forEach(category => {
+                if (category._id === сategoryId) haveUserThisCategory = true
+              })
+              if (!haveUserThisCategory) {
+                addCategoryToProfile(
+                  {
+                    userId: user.sub,
+                    categoryId: сategoryId
+                  },
+                  () => {
+                    getCategories()
+                    setModal({isActive: false})
+                  }
+                )
+              } else {
+                setError('You already have this list')
+              }
+            }
+          )
+        } else {
+          setError('This list doesn`t exist, check list id')
+        }
+      }
+    )
   }
 
   return (
@@ -54,7 +95,7 @@ const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) =
           </svg>
         </div>
         {modal.type === 'words' && <AddWord createNew={data => createNew(data)} /> }
-        {modal.type === 'lists' && <AddList createNew={data => createNew(data)} /> }
+        {modal.type === 'lists' && <AddList error={error} addListToProfile={data => addListToProfile(data)} createNew={data => createNew(data)} /> }
         {modal.type === 'notes' && <AddNote /> }
         {modal.type === 'error' && <Error modal={modal} /> }
         {modal.type === 'test' && <TestModal items={items} modal={modal} /> }
@@ -129,11 +170,15 @@ const AddWord = ({createNew}) => {
   )
 }
 
-const AddList = ({createNew}) => {
+const AddList = ({createNew, addListToProfile, error}) => {
   const categoryNameRef = useRef()
+  const categoryIdRef = useRef(null)
 
   return (
     <div className="main">
+      <div className="error">
+        <span>{error}</span>
+      </div>
       <div className="item">
         <span>Name</span>
         <input ref={categoryNameRef} type="text" />
@@ -141,9 +186,9 @@ const AddList = ({createNew}) => {
       <button onClick={ () => createNew({type: 'categories', name: categoryNameRef.current.value})} >Create</button>
       <div className="item">
         <span>Enter list ID</span>
-        <input type="text" />
+        <input ref={categoryIdRef} type="text" />
       </div>
-      <button >Add</button>
+      <button onClick={ () => addListToProfile(categoryIdRef.current.value) } >Add</button>
     </div>
   )
 }

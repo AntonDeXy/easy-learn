@@ -1,7 +1,7 @@
 import React from 'react'
 import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus'
-import { remove, update } from '../static/functions'
+import { remove, update, removeObjectFromProfile } from '../static/functions'
 import { useState, useRef } from 'react';
 import AutosizeInput from 'react-input-autosize';
 
@@ -11,6 +11,8 @@ const Lists = ({
   setModal,
   setCurrentPage,
   getCategories,
+  user,
+  setCurrentListAuthorId
 }) => {
   const openShareModal = (categoryId) => {
     setModal({isActive: true, type: 'share', categoryId})
@@ -25,6 +27,9 @@ const Lists = ({
           categories.map((category) => {
             return (
               <List
+                setCurrentListAuthorId={setCurrentListAuthorId}
+                userId={user.sub}
+                isOwner={category.authorId === user.sub ? true : false}
                 openShareModal={data => openShareModal(data)}
                 key={category._id}
                 getCategories={getCategories}
@@ -39,16 +44,23 @@ const Lists = ({
   )
 }
 
-const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCategories }) => {
+const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCategories, isOwner, userId, setCurrentListAuthorId }) => {
   const [editMode, setEditMode] = useState(false)
   const [newName, setNewName] = useState(item.title)
   const titleRef = useRef()
 
   const Click = () => {
-      if (!editMode) {
+    if (!editMode) {
+      setCurrentListAuthorId(item.authorId)
       setCurrentListId(item._id)
       setCurrentPage('words')
     }
+  }
+
+  const removeList = () => {
+    isOwner
+    ? remove('categories', item._id, () => getCategories())
+    : removeObjectFromProfile({userId, categoryId: item._id }, () => getCategories())
   }
 
   const toggleEditMode = () => {
@@ -98,22 +110,27 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
           />
         </svg>
         {/* edit */}
-        <svg
-          onClick={() => toggleEditMode()}
-          width="23"
-          height="20"
-          viewBox="0 0 23 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M16.2266 3.25079L19.75 6.77423C19.8984 6.92267 19.8984 7.16486 19.75 7.31329L11.2188 15.8445L7.59375 16.2469C7.10938 16.3016 6.69922 15.8914 6.75391 15.407L7.15625 11.782L15.6875 3.25079C15.8359 3.10236 16.0781 3.10236 16.2266 3.25079ZM22.5547 2.35626L20.6484 0.450012C20.0547 -0.143738 19.0898 -0.143738 18.4922 0.450012L17.1094 1.83282C16.9609 1.98126 16.9609 2.22345 17.1094 2.37189L20.6328 5.89532C20.7812 6.04376 21.0234 6.04376 21.1719 5.89532L22.5547 4.51251C23.1484 3.91486 23.1484 2.95001 22.5547 2.35626ZM15.5 13.5242V17.5008H3V5.00079H11.9766C12.1016 5.00079 12.2188 4.95001 12.3086 4.86407L13.8711 3.30157C14.168 3.0047 13.957 2.50079 13.5391 2.50079H2.375C1.33984 2.50079 0.5 3.34064 0.5 4.37579V18.1258C0.5 19.1609 1.33984 20.0008 2.375 20.0008H16.125C17.1602 20.0008 18 19.1609 18 18.1258V11.9617C18 11.5438 17.4961 11.3367 17.1992 11.6297L15.6367 13.1922C15.5508 13.282 15.5 13.3992 15.5 13.5242Z"
-            fill="#5B659A"
-          />
-        </svg>
+        {
+          isOwner && (
+            <svg
+              onClick={() => toggleEditMode()}
+              width="23"
+              height="20"
+              viewBox="0 0 23 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16.2266 3.25079L19.75 6.77423C19.8984 6.92267 19.8984 7.16486 19.75 7.31329L11.2188 15.8445L7.59375 16.2469C7.10938 16.3016 6.69922 15.8914 6.75391 15.407L7.15625 11.782L15.6875 3.25079C15.8359 3.10236 16.0781 3.10236 16.2266 3.25079ZM22.5547 2.35626L20.6484 0.450012C20.0547 -0.143738 19.0898 -0.143738 18.4922 0.450012L17.1094 1.83282C16.9609 1.98126 16.9609 2.22345 17.1094 2.37189L20.6328 5.89532C20.7812 6.04376 21.0234 6.04376 21.1719 5.89532L22.5547 4.51251C23.1484 3.91486 23.1484 2.95001 22.5547 2.35626ZM15.5 13.5242V17.5008H3V5.00079H11.9766C12.1016 5.00079 12.2188 4.95001 12.3086 4.86407L13.8711 3.30157C14.168 3.0047 13.957 2.50079 13.5391 2.50079H2.375C1.33984 2.50079 0.5 3.34064 0.5 4.37579V18.1258C0.5 19.1609 1.33984 20.0008 2.375 20.0008H16.125C17.1602 20.0008 18 19.1609 18 18.1258V11.9617C18 11.5438 17.4961 11.3367 17.1992 11.6297L15.6367 13.1922C15.5508 13.282 15.5 13.3992 15.5 13.5242Z"
+                fill="#5B659A"
+              />
+            </svg>
+          )
+        }
+        
         {/* remove */}
         <svg
-          onClick={() => remove('categories', item._id, () => getCategories())}
+          onClick={() => removeList()}
           width="17"
           height="20"
           viewBox="0 0 17 20"

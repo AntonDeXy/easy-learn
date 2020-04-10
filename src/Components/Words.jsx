@@ -5,19 +5,21 @@ import { Popconfirm } from 'antd'
 import { update } from '../static/functions'
 import AutosizeInput from 'react-input-autosize'
 
-const Words = ({ setModal, setCurrentPage, categoriesWords, getCategories }) => {
+const Words = ({ setModal, setCurrentPage, categoriesWords, getCategories, user, currentListAuthorId }) => {
+  const isOwner = user.sub === currentListAuthorId ? true : false
+  
   return (
     <WordsWrapper>
-      <Plus setModal={setModal} setCurrentPage={setCurrentPage} type="words" />
+      <Plus setModal={setModal} isOwner={isOwner} setCurrentPage={setCurrentPage} type="words" />
       <div className="lists">
         {categoriesWords.length > 0 &&
-          categoriesWords.map(word => <Word key={word._id} getCategories={getCategories} item={word} />)}
+          categoriesWords.map(word => <Word isOwner={isOwner} key={word._id} getCategories={getCategories} item={word} />)}
       </div>
     </WordsWrapper>
   )
 }
 
-const Word = ({ item, getCategories }) => {
+const Word = ({ item, getCategories, isOwner }) => {
   const [editMode, setEditMode] = useState(false)
   const [newWord, setNewWord] = useState(item.word)
   const [newTranslate, setNewTranslate] = useState(item.translate)
@@ -65,6 +67,7 @@ const Word = ({ item, getCategories }) => {
           <span>{item.translate}</span>
         )}
       </div>
+      { isOwner && (
       <div className="functions">
         {editMode ? (
           <Popconfirm
@@ -115,6 +118,7 @@ const Word = ({ item, getCategories }) => {
           />
         </svg>
       </div>
+      )}
     </WordItemSt>
   )
 }

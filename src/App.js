@@ -21,6 +21,7 @@ const App = () => {
   const [modal, setModal] = useState({ isActive: false })
   const [currentPage, setCurrentPage] = useState('lists')
   const [currentListId, setCurrentListId] = useState(undefined)
+  const [currentListAuthorId, setCurrentListAuthorId] = useState(undefined)
   const [categoriesWords, setCategoriesWords] = useState([])
   const [menuIsOpen, setMenuIsOpen] = useState(false)
   const [categories, setCategories] = useState([])
@@ -28,8 +29,10 @@ const App = () => {
   const [userFromDb, setUserFromDb] = useState({})
 
   const getCategories = useCallback(() => {
-    get('categories',userFromDb.userId, res => {
-      setCategories(res)
+    get('categories',userFromDb.userId, categoriesList => {
+      checkIfUserCreated(userFromDb.userId, user => {
+        setCategories([...categoriesList, ...user.addedCategories])
+      })
     })
   }, [userFromDb.userId])
 
@@ -78,6 +81,8 @@ const App = () => {
             <PrivateRoute exact path="/">
               {currentPage === 'lists' && (
                 <Lists
+                  setCurrentListAuthorId={setCurrentListAuthorId}
+                  user={user}
                   categories={categories}
                   getCategories={() => getCategories()}
                   setCurrentListId={(data) => setCurrentListId(data)}
@@ -87,6 +92,8 @@ const App = () => {
               )}
               {currentPage === 'words' && (
                 <Words
+                  currentListAuthorId={currentListAuthorId}
+                  user={user}
                   getCategories={() => getCategories()}
                   categoriesWords={categoriesWords}
                   setModal={data => setModal(data)}

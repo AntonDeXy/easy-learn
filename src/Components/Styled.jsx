@@ -123,6 +123,7 @@ export const WordItemSt = styled.div `
   }
   .translate {
     padding: 10px;
+    grid-row: 2;
   }
   .functions {
     grid-column: 2;
