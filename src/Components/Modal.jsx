@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { ModalSt } from './Styled'
 import { useState } from 'react'
-import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCurrCategory } from '../static/functions';
+import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCurrCategory, isUserListOwner } from '../static/functions';
 
 const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) => {
   const [rightUnswersCount, setRightUnswersCount] = useState(0)
@@ -32,24 +32,34 @@ const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) =
         if(res.data.isExist) {
           checkIfUserHaveCurrCategory(
             {
-              userId: user.sub
+              userId: user.sub,
+              listId: сategoryId
             },
             (res) => {
-              let haveUserThisCategory = false
-              res.data.addedCategories.forEach(category => {
-                if (category._id === сategoryId) haveUserThisCategory = true
-              })
-              if (!haveUserThisCategory) {
-                addCategoryToProfile(
+              if (!res.isUserHave) {
+                isUserListOwner(
                   {
                     userId: user.sub,
-                    categoryId: сategoryId
+                    listId: сategoryId
                   },
-                  () => {
-                    getCategories()
-                    setModal({isActive: false})
+                  (res) => {
+                    if (!res.isUserOwner) {
+                      addCategoryToProfile(
+                        {
+                          userId: user.sub,
+                          categoryId: сategoryId
+                        },
+                        () => {
+                          getCategories()
+                          setModal({isActive: false})
+                        }
+                      )
+                    } else {
+                      setError('You cant add your list')
+                    }
                   }
                 )
+                
               } else {
                 setError('You already have this list')
               }

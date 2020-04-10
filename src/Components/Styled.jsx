@@ -313,3 +313,78 @@ export const MenuSt = styled.div`
 export const NotesSt = styled.div `
   
 `
+
+export const AddListUrlStyled = styled.div `
+  display: grid;
+  width: auto;
+  justify-self: center;
+  align-self: center;
+  max-height: 90%;
+  justify-content: center;
+  box-shadow: 0 0 20px black;
+  gap: 10px;
+  overflow-y: scroll;
+  border-radius: 20px;
+  .header {
+    padding: 10px 10px 0 10px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr auto;
+    box-shadow: 0 0 10px black;
+  }
+  .main {
+    padding: 0 10px 10px 10px;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 5px;
+    .error {
+      color: red;
+    }
+    svg {
+      height: 10px;
+    }
+    .list-content {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+    .active {
+      transform: rotate(180deg);
+    }
+    h2 {
+      margin: 0;
+    }
+    span {
+
+    }
+    .content {
+      display: grid;
+      grid-auto-flow: row;
+      gap: 15px;
+      .list-item {
+        display: grid;
+        grid-auto-flow: row;
+        border: 1px solid #C7D1D9;
+        border-radius: 10px;
+        div {
+          padding: 5px;
+        }
+        .word {
+          border-bottom: 1px solid #C7D1D9;
+        }
+        .translate {
+
+        }
+      }
+    }
+    button {
+      background-color: #1c1;
+      justify-self: center;
+      color: white;
+      border-radius: 10px;
+      border: unset;
+      padding: 10px;
+      width: 90%;
+    }
+  }
+`

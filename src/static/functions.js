@@ -65,7 +65,30 @@ export const checkIfUserHaveCurrCategory = (data, success) => {
   axios
     .get(url)
     .then(res => {
-      success(res)
+      let haveUserThisCategory = false
+      res.data.addedCategories.forEach(category => {
+        if (data.listId === category._id) haveUserThisCategory = true
+      })
+      if (haveUserThisCategory) {
+        success({isUserHave: true})
+      }
+      success({isUserHave: false})
+    })
+    .catch(err => console.log(err))
+}
+
+export const isUserListOwner = (data, success) => {
+  const url = baseUrl + 'categories/' + data.userId
+
+  axios
+    .get(url)
+    .then(res => {
+      for (let id = 0; id < res.data.length; id++) {
+        if (res.data[id]._id === data.listId) {
+          return success({isUserOwner: true})
+        }
+      }
+      success({isUserOwner: false})
     })
     .catch(err => console.log(err))
 }

@@ -16,6 +16,7 @@ import PrivateRoute from './Components/PrivateRoute'
 import ExternalApi from "./views/ExternalApi"
 import { get, checkIfUserCreated, createNewUser } from './static/functions';
 import { useEffect } from 'react';
+import AddListUrl from './Components/AddListUrl'
 
 const App = () => {
   const [modal, setModal] = useState({ isActive: false })
@@ -76,6 +77,10 @@ const App = () => {
         }
         <MainSt>
           <Switch>
+            <PrivateRoute
+              path='/lists/add/:listId'
+              render={(props) =>  <AddListUrl {...props} getCategories={getCategories} user={user} />}
+            />
             <PrivateRoute path="/profile" component={Profile} />
             <PrivateRoute path="/external-api" component={ExternalApi} />
             <PrivateRoute exact path="/">
