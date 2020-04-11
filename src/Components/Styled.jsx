@@ -64,6 +64,12 @@ export const PlusSt = styled.div `
     display: grid;
     align-items: center;
   }
+  svg {
+    height: 50px;
+    :hover {
+      cursor: pointer;
+    }
+  }
 `
 
 export const ListsWrapper = styled.div `
@@ -72,8 +78,10 @@ export const ListsWrapper = styled.div `
   grid-template-rows: auto 1fr;
   justify-self: center;
   gap: 10px;
-  svg:hover {
-    cursor: pointer;
+  .spiner {
+    height: 100px;
+    justify-self: center;
+    align-self: baseline;
   }
   .lists {
     overflow-y: auto;
@@ -117,6 +125,12 @@ export const WordItemSt = styled.div `
     border-left: unset;
     border-right: unset;
   }
+  svg {
+    margin-left: 10px;
+    height: 42px;
+    grid-row: 1/3;
+    align-self: center;
+  }
   .word {
     padding: 10px;
     border-bottom: 1px solid #C7D1D9;
@@ -142,8 +156,14 @@ export const ListItemSt = styled.div `
   grid-template-columns: 1fr auto;
   border-radius: 5px;
   border: 1px solid #C7D1D9;
+  svg {
+      height: 16px;
+    }
   .name {
     padding: 10px;
+    .spiner {
+      height: 16px;
+    }
     input {
       font-size: 16px;
       border-top: unset;
@@ -157,10 +177,27 @@ export const ListItemSt = styled.div `
   .functions {
     padding: 10px;
     display: grid;
+    align-content: center;
     border-left: 1px solid #C7D1D9;
     gap: 10px;
     grid-auto-flow: column;
+    svg:hover {
+      cursor: pointer;
+    }
   }
+`
+
+export const SpinerStyled = styled.svg `
+  @keyframes rotating {
+    from{
+      transform: rotate(0deg);
+    }
+    to{
+      transform: rotate(360deg);
+    }
+  }
+  display: grid;
+  animation: rotating 2s linear infinite;
 `
 
 export const FooterSt = styled.footer `
@@ -191,6 +228,7 @@ export const ModalSt = styled.div `
   .modal {
     display: grid;
     justify-self: center;
+    z-index: 1;
     align-self: center;
     border-radius: 5px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);

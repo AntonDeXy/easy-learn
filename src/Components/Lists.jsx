@@ -4,6 +4,7 @@ import Plus from './Plus'
 import { remove, update, removeObjectFromProfile } from '../static/functions'
 import { useState, useRef } from 'react';
 import AutosizeInput from 'react-input-autosize';
+import Spiner from './Spiner';
 
 const Lists = ({
   categories,
@@ -12,34 +13,41 @@ const Lists = ({
   setCurrentPage,
   getCategories,
   user,
-  setCurrentListAuthorId
-}) => {
+  setCurrentListAuthorId,
+  generalLoading
+}) => {  
   const openShareModal = (categoryId) => {
     setModal({isActive: true, type: 'share', categoryId})
   }
+
   // const items = [{_id:1, name: 'list name'},{_id:2, name: 'list name'},{_id:3, name: 'list name'},{_id:4, name: 'list name'},{_id:5, name: 'list name'},{_id:6, name: 'list name'},{_id:7, name: 'list name'},{_id:8, name: 'list name'},{_id:9, name: 'list name'},{_id:10, name: 'list name'},{_id:11, name: 'list name'},{_id:12, name: 'list name'},{_id:13, name: 'list name'},{_id:14, name: 'last'},]
   return (
     <ListsWrapper>
       <Plus setModal={setModal} type="lists" />
-
-      <div className="lists">
-        {categories.length > 0 &&
-          categories.map((category) => {
-            return (
-              <List
-                setCurrentListAuthorId={setCurrentListAuthorId}
-                userId={user.sub}
-                isOwner={category.authorId === user.sub ? true : false}
-                openShareModal={data => openShareModal(data)}
-                key={category._id}
-                getCategories={getCategories}
-                setCurrentPage={setCurrentPage}
-                setCurrentListId={setCurrentListId}
-                item={category}
-              />
-            )
-          })}
-      </div>
+      {
+        generalLoading
+        ? <Spiner />
+        : (
+          <div className="lists">
+            {categories.length > 0 &&
+              categories.map((category) => {
+                return (
+                  <List
+                    setCurrentListAuthorId={setCurrentListAuthorId}
+                    userId={user.sub}
+                    isOwner={category.authorId === user.sub ? true : false}
+                    openShareModal={data => openShareModal(data)}
+                    key={category._id}
+                    getCategories={getCategories}
+                    setCurrentPage={setCurrentPage}
+                    setCurrentListId={setCurrentListId}
+                    item={category}
+                  />
+                )
+              })}
+          </div>
+        )
+      }
     </ListsWrapper>
   )
 }
@@ -48,6 +56,7 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
   const [editMode, setEditMode] = useState(false)
   const [newName, setNewName] = useState(item.title)
   const titleRef = useRef()
+  const [isLoading, setIsLoading] = useState(false)
 
   const Click = () => {
     if (!editMode) {
@@ -58,17 +67,21 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
   }
 
   const removeList = () => {
+    setIsLoading(true)
     isOwner
-    ? remove('categories', item._id, () => getCategories())
-    : removeObjectFromProfile({userId, categoryId: item._id }, () => getCategories())
+    ? remove('categories', item._id, () => {getCategories(); setIsLoading(false)})
+    : removeObjectFromProfile({userId, categoryId: item._id }, () => {getCategories(); setIsLoading(false)})
   }
 
   const toggleEditMode = () => {
     if (editMode) {
       if (item.title !== titleRef.current.props.value) {
+        setIsLoading(true)
         let newData = {...item}
         newData.title = titleRef.current.props.value
-        update('categories', item._id, newData, () => {setEditMode(!editMode); getCategories()})
+        update('categories', item._id, newData, () => {setEditMode(!editMode); getCategories(); setIsLoading(false)})
+      } else {
+        setEditMode(!editMode)
       }
   } else {
       setEditMode(!editMode)
@@ -80,7 +93,9 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
       <div onClick={() => Click()} className="name">
         {
           editMode
-          ? (
+          ? isLoading
+            ? <Spiner />
+            : (
             <AutosizeInput
               autoFocus
               ref={titleRef}

@@ -28,11 +28,14 @@ const App = () => {
   const [categories, setCategories] = useState([])
   const { loading, user } = useAuth0()
   const [userFromDb, setUserFromDb] = useState({})
+  const [generalLoading, setGeneralLoading] = useState(true)
 
   const getCategories = useCallback(() => {
+    setGeneralLoading(true)
     get('categories',userFromDb.userId, categoriesList => {
       checkIfUserCreated(userFromDb.userId, user => {
         setCategories([...categoriesList, ...user.addedCategories])
+        setGeneralLoading(false)
       })
     })
   }, [userFromDb.userId])
@@ -70,7 +73,7 @@ const App = () => {
       <div className="App">
         <Header togglerMenu={() => setMenuIsOpen(!menuIsOpen)} />
         {modal.isActive && (
-          <Modal currentListId={currentListId} user={user} getCategories={() => getCategories()} modal={modal} setModal={data => setModal(data)} />
+          <Modal setGeneralLoadingTrue={() => setGeneralLoading(true)} currentListId={currentListId} user={user} getCategories={() => getCategories()} modal={modal} setModal={data => setModal(data)} />
         )}
         {
           menuIsOpen && <Menu />
@@ -86,6 +89,7 @@ const App = () => {
             <PrivateRoute exact path="/">
               {currentPage === 'lists' && (
                 <Lists
+                  generalLoading={generalLoading}
                   setCurrentListAuthorId={setCurrentListAuthorId}
                   user={user}
                   categories={categories}
@@ -97,6 +101,7 @@ const App = () => {
               )}
               {currentPage === 'words' && (
                 <Words
+                  generalLoading={generalLoading}
                   currentListAuthorId={currentListAuthorId}
                   user={user}
                   getCategories={() => getCategories()}

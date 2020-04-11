@@ -3,26 +3,34 @@ import { ModalSt } from './Styled'
 import { useState } from 'react'
 import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCurrCategory, isUserListOwner } from '../static/functions';
 
-const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) => {
+const Modal = ({ currentListId, setModal, modal, items, user, getCategories, setGeneralLoadingTrue }) => {
   const [rightUnswersCount, setRightUnswersCount] = useState(0)
   const [error, setError] = useState(undefined)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const disabledButtonStyle = {
+    backgroundColor: 'grey'
+  }
 
   const createNew = (data) => {
+    setIsLoading(true)
+    setGeneralLoadingTrue()
     if (data.type === 'items') {
       create(data.type, {
         categoryId: currentListId,
         word: data.word,
         translate: data.translate
-      }, () =>  {getCategories(); setModal({isActive: false})} )
+      }, () =>  {getCategories(); setIsLoading(false); setModal({isActive: false})} )
     } else {
       create(data.type, {
         title: data.name,
         authorId: user.sub
-      }, () =>  {getCategories(); setModal({isActive: false})} )
+      }, () =>  {getCategories(); setIsLoading(false); setModal({isActive: false})} )
     }
   }
 
   const addListToProfile = (сategoryId) => {
+    setIsLoading(true)
     setError(null)
     checkIfCategoryIsExist(
       {
@@ -50,6 +58,7 @@ const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) =
                           categoryId: сategoryId
                         },
                         () => {
+                          setIsLoading(false)
                           getCategories()
                           setModal({isActive: false})
                         }
@@ -104,8 +113,8 @@ const Modal = ({ currentListId, setModal, modal, items, user, getCategories }) =
             />
           </svg>
         </div>
-        {modal.type === 'words' && <AddWord createNew={data => createNew(data)} /> }
-        {modal.type === 'lists' && <AddList error={error} addListToProfile={data => addListToProfile(data)} createNew={data => createNew(data)} /> }
+        {modal.type === 'words' && <AddWord disabledButtonStyle={disabledButtonStyle} isLoading={isLoading} createNew={data => createNew(data)} /> }
+        {modal.type === 'lists' && <AddList disabledButtonStyle={disabledButtonStyle} isLoading={isLoading} error={error} addListToProfile={data => addListToProfile(data)} createNew={data => createNew(data)} /> }
         {modal.type === 'notes' && <AddNote /> }
         {modal.type === 'error' && <Error modal={modal} /> }
         {modal.type === 'test' && <TestModal items={items} modal={modal} /> }
@@ -161,7 +170,7 @@ const Error = ({modal}) => {
   )
 }
 
-const AddWord = ({createNew}) => {
+const AddWord = ({createNew, isLoading, disabledButtonStyle}) => {
   const wordRef = useRef()
   const translateRef = useRef()
 
@@ -175,12 +184,12 @@ const AddWord = ({createNew}) => {
         <span>Translate</span>
         <input ref={translateRef} type="text" />
       </div>
-      <button onClick={() => createNew({type: 'items', word: wordRef.current.value, translate: translateRef.current.value})}>Create</button>
+      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={() => createNew({type: 'items', word: wordRef.current.value, translate: translateRef.current.value})}>Create</button>
     </div>
   )
 }
 
-const AddList = ({createNew, addListToProfile, error}) => {
+const AddList = ({createNew, addListToProfile, error, isLoading, disabledButtonStyle}) => {
   const categoryNameRef = useRef()
   const categoryIdRef = useRef(null)
 
@@ -193,12 +202,12 @@ const AddList = ({createNew, addListToProfile, error}) => {
         <span>Name</span>
         <input ref={categoryNameRef} type="text" />
       </div>
-      <button onClick={ () => createNew({type: 'categories', name: categoryNameRef.current.value})} >Create</button>
+      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={ () => createNew({type: 'categories', name: categoryNameRef.current.value})} >Create</button>
       <div className="item">
         <span>Enter list ID</span>
         <input ref={categoryIdRef} type="text" />
       </div>
-      <button onClick={ () => addListToProfile(categoryIdRef.current.value) } >Add</button>
+      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={ () => addListToProfile(categoryIdRef.current.value) } >Add</button>
     </div>
   )
 }
