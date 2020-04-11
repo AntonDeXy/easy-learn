@@ -328,17 +328,17 @@ export const MenuSt = styled.div`
     from {right: 100vw;}
     to {right: 0;}
   }
+  @keyframes menuAnimOut {
+    from {right: 0;}
+    to {right: 100vw;}
+  }
   display: grid;
   height: 80vh;
   background-color: #ffffff;
-  height: 80vh;
   width: 100vw;
   font-family: 'Roboto', sans-serif;
   position: absolute;
   top: 10vh;
-  /* left: 0; */
-  /* right: 0; */
-  animation-name: menuAnimIn;
   animation-duration: 0.5s;
   .wrapper {
     display: grid;

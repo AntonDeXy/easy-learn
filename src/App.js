@@ -29,6 +29,19 @@ const App = () => {
   const { loading, user } = useAuth0()
   const [userFromDb, setUserFromDb] = useState({})
   const [generalLoading, setGeneralLoading] = useState(true)
+  const [menuStyle, setMenuStyle] = useState({animationName: 'menuAnimIn'})
+
+  const menuToggle = () => {
+    if (menuIsOpen) {
+      setMenuStyle({animationName: 'menuAnimOut'})
+      setTimeout(() => {
+        setMenuIsOpen(!menuIsOpen)
+      }, 500)
+    } else {
+      setMenuStyle({animationName: 'menuAnimIn'})
+      setMenuIsOpen(!menuIsOpen)
+    }
+  }
 
   const getCategories = useCallback(() => {
     setGeneralLoading(true)
@@ -71,12 +84,12 @@ const App = () => {
   return (
     <Router history={history}>
       <div className="App">
-        <Header togglerMenu={() => setMenuIsOpen(!menuIsOpen)} />
+        <Header togglerMenu={() => menuToggle()} />
         {modal.isActive && (
           <Modal setGeneralLoadingTrue={() => setGeneralLoading(true)} currentListId={currentListId} user={user} getCategories={() => getCategories()} modal={modal} setModal={data => setModal(data)} />
         )}
         {
-          menuIsOpen && <Menu />
+          menuIsOpen && <Menu menuStyle={menuStyle} />
         }
         <MainSt>
           <Switch>
