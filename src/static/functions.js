@@ -35,7 +35,7 @@ export const remove = (type, elId, success) => {
   const url = baseUrl + type + '/' + elId
   axios
     .delete(url)
-    .then(res => {success(res)})
+    .then(res => success(res))
     .catch(err => console.log(err))
 }
 

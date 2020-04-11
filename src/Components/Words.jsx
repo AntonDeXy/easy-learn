@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { WordsWrapper, WordItemSt } from './Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
-import { update } from '../static/functions'
+import { update, remove } from '../static/functions'
 import AutosizeInput from 'react-input-autosize'
 
 const Words = ({ setModal, setCurrentPage, categoriesWords, getCategories, user, currentListAuthorId }) => {
@@ -106,6 +106,7 @@ const Word = ({ item, getCategories, isOwner }) => {
           </svg>
         )}
         <svg
+          onClick={() => remove('items', item._id, () => getCategories())}
           width="17"
           height="20"
           viewBox="0 0 17 20"
