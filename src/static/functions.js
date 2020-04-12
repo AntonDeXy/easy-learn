@@ -132,6 +132,8 @@ export const autoTranslate = (phrase, success) => {
       .get(url)
       .then(res => success(res.data.translate))
       .catch(err => console.log(err))
+  } else {
+    success([])
   }
 }
 

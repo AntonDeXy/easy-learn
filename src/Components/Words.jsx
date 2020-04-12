@@ -12,10 +12,17 @@ const Words = ({ setModal, setCurrentPage, categoriesWords, getCategories, user,
   return (
     <WordsWrapper>
       <Plus setModal={setModal} isOwner={isOwner} setCurrentPage={setCurrentPage} type="words" />
-      <div className="lists">
-        {categoriesWords.length > 0 &&
-          categoriesWords.map(word => <Word isOwner={isOwner} key={word._id} getCategories={getCategories} item={word} />)}
-      </div>
+      {
+        generalLoading
+        ? <Spiner />
+        : (
+          <div className="lists">
+            {categoriesWords.length > 0 &&
+              categoriesWords.map(word => <Word isOwner={isOwner} key={word._id} getCategories={getCategories} item={word} />)}
+          </div>
+        )
+      }
+      
     </WordsWrapper>
   )
 }

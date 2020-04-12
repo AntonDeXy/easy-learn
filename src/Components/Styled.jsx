@@ -98,8 +98,10 @@ export const WordsWrapper = styled.div `
   grid-template-rows: auto auto 1fr;
   gap: 10px;
   justify-self: center;
-  svg:hover {
-    cursor: pointer;
+  .spiner {
+    height: 100px;
+    justify-self: center;
+    align-self: baseline;
   }
   .lists {
     overflow-y: auto;
@@ -107,6 +109,9 @@ export const WordsWrapper = styled.div `
     align-content: baseline;
     gap: 20px;
     padding-bottom: 15px;
+    svg:hover {
+     cursor: pointer;
+    }
   }
 `
 
@@ -305,6 +310,30 @@ export const ModalSt = styled.div `
           border: 1px solid #C7D1D9;
         }
         /* gap: 5px; */
+      }
+      .spiner {
+        justify-self: center;
+        height: 35px;
+      }
+      .translates {
+        display: grid;
+        grid-auto-flow: row;
+        h2 {
+          font-size: 16px;
+          margin: 0;
+        }
+        .translate {
+
+        }
+        
+        ul {
+          li {
+            :hover {
+              color: #8a0000;
+              cursor: pointer;
+            }
+          }
+        }
       }
       button {
         /* display: grid; */

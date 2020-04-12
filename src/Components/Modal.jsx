@@ -1,7 +1,8 @@
 import React, { useRef } from 'react'
 import { ModalSt } from './Styled'
 import { useState } from 'react'
-import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCurrCategory, isUserListOwner } from '../static/functions';
+import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCurrCategory, isUserListOwner, autoTranslate } from '../static/functions';
+import Spiner from './Spiner';
 
 const Modal = ({ currentListId, setModal, modal, items, user, getCategories, setGeneralLoadingTrue }) => {
   const [rightUnswersCount, setRightUnswersCount] = useState(0)
@@ -171,19 +172,54 @@ const Error = ({modal}) => {
 }
 
 const AddWord = ({createNew, isLoading, disabledButtonStyle}) => {
+  const [translates, setTranslates] = useState([])
+  const [isTranslatesLoading, setTranslatesLoading] = useState(false)
   const wordRef = useRef()
   const translateRef = useRef()
+
+  const getAutoTranslates = (phrase) => {
+    setTranslatesLoading(true)
+    autoTranslate(
+      phrase,
+      (res) => {
+        setTranslatesLoading(false)
+        setTranslates(res)
+      }
+    )
+  }
+
+  const chooseTranslate = (value) => {
+    translateRef.current.value = value
+  }
 
   return (
     <div className="main">
       <div className="item">
         <span>Word</span>
-        <input ref={wordRef} type="text" />
+        <input onBlur={(e) => getAutoTranslates(e.target.value)} autoFocus ref={wordRef} type="text" />
       </div>
       <div className="item">
         <span>Translate</span>
         <input ref={translateRef} type="text" />
       </div>
+      {
+        isTranslatesLoading
+        ? <Spiner />
+        : (
+          <div className='translates'>
+            {
+              translates.length > 0 && <h2>You can choose one of this translates</h2>
+            }
+            <ul>
+              {
+                translates.map(item => (
+                  <li onClick={() => chooseTranslate(item.value)} >{item.value}</li>
+                ))
+              }
+            </ul>
+          </div>
+        )
+      }
       <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={() => createNew({type: 'items', word: wordRef.current.value, translate: translateRef.current.value})}>Create</button>
     </div>
   )
