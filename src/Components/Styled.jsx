@@ -53,6 +53,11 @@ export const MainSt = styled.main `
   font-family: 'Roboto', sans-serif;
   /* overflow: hidden; */
   overflow-y: auto;
+  .spiner {
+    height: 100px;
+    justify-self: center;
+    align-self: center;
+  }
 `
 
 export const PlusSt = styled.div `

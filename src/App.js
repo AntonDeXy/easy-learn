@@ -17,6 +17,7 @@ import ExternalApi from "./views/ExternalApi"
 import { get, checkIfUserCreated, createNewUser } from './static/functions';
 import { useEffect } from 'react';
 import AddListUrl from './Components/AddListUrl'
+import Spiner from './Components/Spiner';
 
 const App = () => {
   const [modal, setModal] = useState({ isActive: false })
@@ -78,7 +79,15 @@ const App = () => {
   }, [categories, currentListId])
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Router>
+        <Header />
+        <MainSt>
+          <Spiner />
+        </MainSt>
+        <Footer />
+      </Router>
+    )
   }
 
   return (
