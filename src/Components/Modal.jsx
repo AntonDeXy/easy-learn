@@ -5,10 +5,11 @@ import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCu
 import Spiner from './Spiner';
 import { connect } from 'react-redux';
 import { setModal } from '../redux/reducers/modal/modalReducer'
-import { createListThunk } from '../redux/reducers/lists/listsReducer';
+import { createListThunk, createItemThunk, getAutoTranslatesThunk } from '../redux/reducers/lists/listsReducer';
 import { addListToProfileThunk } from '../redux/reducers/users/usersReducer';
+import { mainReducer } from '../redux/reducers/main/mainReducer';
 
-const Modal = ({ setModal, modal, items, user, addListToProfileThunk, getCategories, setGeneralLoadingTrue, createNewList }) => {
+const Modal = ({ createItemThunk, setModal, currentListId, autoTranslates, getAutoTranslatesThunk, modal, items, user, addListToProfileThunk, getCategories, setGeneralLoadingTrue, createNewList }) => {
   const [rightUnswersCount, setRightUnswersCount] = useState(0)
   const [error, setError] = useState(undefined)
   const [isLoading, setIsLoading] = useState(false)
@@ -16,76 +17,6 @@ const Modal = ({ setModal, modal, items, user, addListToProfileThunk, getCategor
   const disabledButtonStyle = {
     backgroundColor: 'grey'
   }
-
-  // const createNew = (data) => {
-  //   setIsLoading(true)
-  //   setGeneralLoadingTrue()
-  //   if (data.type === 'items') {
-  //     create(data.type, {
-  //       categoryId: modal.listId,
-  //       word: data.word,
-  //       translate: data.translate
-  //     }, () =>  {getCategories(); setIsLoading(false); setModal({isActive: false})} )
-  //   } else {
-  //     create(data.type, {
-  //       title: data.name,
-  //       authorId: user.sub
-  //     }, () =>  {getCategories(); setIsLoading(false); setModal({isActive: false})} )
-  //   }
-  // }
-
-  const addListToProfile = (сategoryId) => {
-    setIsLoading(true)
-    setError(null)
-    checkIfCategoryIsExist(
-      {
-        categoryId: сategoryId
-      },
-      (res) => {
-        if(res.data.isExist) {
-          checkIfUserHaveCurrCategory(
-            {
-              userId: user.sub,
-              listId: сategoryId
-            },
-            (res) => {
-              if (!res.isUserHave) {
-                isUserListOwner(
-                  {
-                    userId: user.sub,
-                    listId: сategoryId
-                  },
-                  (res) => {
-                    if (!res.isUserOwner) {
-                      addCategoryToProfile(
-                        {
-                          userId: user.sub,
-                          categoryId: сategoryId
-                        },
-                        () => {
-                          setIsLoading(false)
-                          getCategories()
-                          setModal({isActive: false})
-                        }
-                      )
-                    } else {
-                      setError('You cant add your list')
-                    }
-                  }
-                )
-                
-              } else {
-                setError('You already have this list')
-              }
-            }
-          )
-        } else {
-          setError('This list doesn`t exist, check list id')
-        }
-      }
-    )
-  }
-
 
   return (
     <ModalSt>
@@ -119,7 +50,7 @@ const Modal = ({ setModal, modal, items, user, addListToProfileThunk, getCategor
             />
           </svg>
         </div>
-        {modal.type === 'words' && <AddWord disabledButtonStyle={disabledButtonStyle} isLoading={isLoading} /> }
+        {modal.type === 'words' && <AddWord createItemThunk={createItemThunk} autoTranslates={autoTranslates} closeModal={() => setModal({isActive: false})} currentListId={currentListId} getAutoTranslatesThunk={getAutoTranslatesThunk} disabledButtonStyle={disabledButtonStyle} isLoading={isLoading} /> }
         {modal.type === 'lists' && <AddList
           closeModal={() => setModal({isActive: false})} 
           disabledButtonStyle={disabledButtonStyle} 
@@ -188,25 +119,37 @@ const Error = ({modal}) => {
   )
 }
 
-const AddWord = ({createNew, isLoading, disabledButtonStyle}) => {
-  const [translates, setTranslates] = useState([])
+const AddWord = ({createNew, autoTranslates, closeModal, currentListId, getAutoTranslatesThunk, createItemThunk, disabledButtonStyle}) => {
   const [isTranslatesLoading, setTranslatesLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const wordRef = useRef()
   const translateRef = useRef()
 
   const getAutoTranslates = (phrase) => {
     setTranslatesLoading(true)
-    autoTranslate(
+    getAutoTranslatesThunk(
       phrase,
       (res) => {
         setTranslatesLoading(false)
-        setTranslates(res)
       }
     )
   }
 
   const chooseTranslate = (value) => {
     translateRef.current.value = value
+  }
+
+  const addWord = () => {
+    createItemThunk(
+      {
+        word: wordRef.current.value,
+        translate: translateRef.current.value
+      },
+      currentListId,
+      () => {
+        closeModal()
+      }
+    )
   }
 
   return (
@@ -225,11 +168,11 @@ const AddWord = ({createNew, isLoading, disabledButtonStyle}) => {
         : (
           <div className='translates'>
             {
-              translates.length > 0 && <h2>You can choose one of this translates</h2>
+              autoTranslates.length > 0 && <h2>You can choose one of this translates</h2>
             }
             <ul>
               {
-                translates.map(item => (
+                autoTranslates.map(item => (
                   <li onClick={() => chooseTranslate(item.value)} >{item.value}</li>
                 ))
               }
@@ -237,7 +180,7 @@ const AddWord = ({createNew, isLoading, disabledButtonStyle}) => {
           </div>
         )
       }
-      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={() => createNew({type: 'items', word: wordRef.current.value, translate: translateRef.current.value})}>Create</button>
+      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={() => addWord()}>Create</button>
     </div>
   )
 }
@@ -294,13 +237,17 @@ const AddNote = () => {
 const mapStateToProps = (state, ownProps) => ({
   modal: state.modalReducer,
   user: state.userReducer,
+  autoTranslates: state.listsReducer.autoTranslates,
+  currentListId: state.mainReducer.currentList._id,
   ...ownProps
 })
 
 const mapDispatchToProps = (dispatch) => ({
   addListToProfileThunk: (listId, userId, success) => dispatch(addListToProfileThunk(listId, userId, success)),
   setModal: (data) => dispatch(setModal(data)),
-  createNewList: (data, success) => dispatch(createListThunk(data, success))
+  createNewList: (data, success) => dispatch(createListThunk(data, success)),
+  getAutoTranslatesThunk: (phrase, success) => dispatch(getAutoTranslatesThunk(phrase, success)),
+  createItemThunk: (item, listId, success) => dispatch(createItemThunk(item, listId, success))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)

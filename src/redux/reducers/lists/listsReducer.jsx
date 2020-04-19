@@ -22,7 +22,8 @@ const listsState = {
   ],
   isLoading: false,
   // currentList: {},
-  errorMessage: ''
+  errorMessage: '',
+  autoTranslates: []
 }
 
 const listsReducer = (state = listsState, action) => {
@@ -52,7 +53,7 @@ const listsReducer = (state = listsState, action) => {
     case ADD_NEW_ITEM: {
       let newState = {...state}
       for(let i = 0; i < newState.lists.length; i++) {
-        if (newState.lists._id === action.listId) {
+        if (newState.lists[i]._id === action.listId) {
           newState.lists[i].items.push(action.newItem)
         }
       }
@@ -76,7 +77,7 @@ const listsReducer = (state = listsState, action) => {
     case REMOVE_ITEM: {
       let newState = {...state}
       for(let i = 0; i < newState.lists.length; i++) {
-        if (newState.lists._id === action.listId) {
+        if (newState.lists[i]._id === action.listId) {
           newState.lists[i].items.filter(item => item._id !== action.itemId)
         }
       }
@@ -91,6 +92,12 @@ const listsReducer = (state = listsState, action) => {
     
     case SET_LOADING: {
       return {...state, loading: action.isLoading}
+    }
+    case 'SET_TRANSLATES': {
+      return {...state, autoTranslates: action.translates}
+    }
+    case 'CLEAR_TRANSLATES': {
+      return {...state, autoTranslates: []}
     }
     // case 'ADD_USERS_LISTS': {
     //   return {...state, lists: [...state.lists, ...action.userLists]}
@@ -109,6 +116,9 @@ export const createList = (newList) => ({type: CREATE_LIST, newList})
 export const toggleLoading = (isLoading) => ({type: SET_LOADING, isLoading})
 export const changeItemData = (listId, itemId, newItem) => ({type: CHANGE_ITEM_DATA, listId, itemId, newItem})
 export const addUsersLists = (userLists) => ({type: 'ADD_USERS_LISTS', userLists})
+export const createItem = (newItem, listId) => ({type: ADD_NEW_ITEM, newItem, listId})
+const setAutoTranslates = (translates) => ({type: 'SET_TRANSLATES', translates})
+const clearAutoTranslates = () => ({type: 'CLEAR_TRANSLATES'})
 // thunks
 export const getListsThunk = (userId) => async (dispatch) => {
   dispatch(toggleLoading(true))
@@ -163,14 +173,21 @@ export const updateItemThunk = (listId, itemId, newItem, success) => async (disp
   }
 }
 
-export const createItemThunk = (listData) => async (dispatch) => {
-  let res = await listsAPI.createList(listData)
-  if (res.success) {
-    dispatch(createList(res.data))
+export const createItemThunk = (item, listId, success) => async (dispatch) => {
+  let res = await itemsAPI.createItem(listId, item.translate, item.word)
+  if (res.data.success) {
+    dispatch(createItem(res.data.doc, listId))
+    dispatch(clearAutoTranslates())
+    success()
   } else {
     dispatch(setError(res.errorMessage))
   }
 }
 
+export const getAutoTranslatesThunk = (phrase, success) => async (dispatch) => {
+  let data = await itemsAPI.getAutoTranslate(phrase)
+  dispatch(setAutoTranslates(data))
+  success()
+}
 
 export default listsReducer

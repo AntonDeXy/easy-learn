@@ -1,3 +1,5 @@
+import { itemsAPI } from "../../../API/Api"
+
 const modalState = {
   isActive: false,
   type: '',
@@ -14,5 +16,6 @@ const modalReducer = (state = modalState, action) => {
 }
 
 export const setModal = (modalData) => ({type: 'SET_MODAL', modalData})
+
 
 export default modalReducer
