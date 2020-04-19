@@ -3,7 +3,7 @@ import Header from './Components/Header'
 import { MainSt } from './Components/Styled'
 import Footer from './Components/Footer'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import Lists from './Components/Lists'
+import ListsContainer from './Components/Lists'
 import Words from './Components/Words'
 import Modal from './Components/Modal'
 import Menu from './Components/Menu'
@@ -14,22 +14,17 @@ import Profile from "./Components/Profile"
 import history from "./utils/history"
 import PrivateRoute from './Components/PrivateRoute'
 import ExternalApi from "./views/ExternalApi"
-import { get, checkIfUserCreated, createNewUser } from './static/functions';
 import { useEffect } from 'react';
 import AddListUrl from './Components/AddListUrl'
 import Spiner from './Components/Spiner';
+import { connect } from 'react-redux'
+import { setModal } from './redux/reducers/modal/modalReducer';
+import { setUserThunk } from './redux/reducers/users/usersReducer';
+import { getListsThunk } from './redux/reducers/lists/listsReducer'
 
-const App = () => {
-  const [modal, setModal] = useState({ isActive: false })
-  const [currentPage, setCurrentPage] = useState('lists')
-  const [currentListId, setCurrentListId] = useState(undefined)
-  const [currentListAuthorId, setCurrentListAuthorId] = useState(undefined)
-  const [categoriesWords, setCategoriesWords] = useState([])
+const App = ({modal, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
-  const [categories, setCategories] = useState([])
-  const { loading, user } = useAuth0()
-  const [userFromDb, setUserFromDb] = useState({})
-  const [generalLoading, setGeneralLoading] = useState(true)
+  const { loading, userAuth0 } = useAuth0()
   const [menuStyle, setMenuStyle] = useState({animationName: 'menuAnimIn'})
 
   const menuToggle = () => {
@@ -44,39 +39,16 @@ const App = () => {
     }
   }
 
-  const getCategories = useCallback(() => {
-    setGeneralLoading(true)
-    get('categories',userFromDb.userId, categoriesList => {
-      checkIfUserCreated(userFromDb.userId, user => {
-        setCategories([...categoriesList, ...user.addedCategories])
-        setGeneralLoading(false)
-      })
-    })
-  }, [userFromDb.userId])
+  useEffect(() => {
+    if (user.userId) getLists(user.userId)
+  }, [getLists, user])
 
   useEffect(() => {
-    if (userFromDb.userId) getCategories()
-  }, [getCategories, userFromDb.userId])
-
-  useEffect(() => {
-    if (!loading && user) {
-      checkIfUserCreated(user.sub, (res) => {
-        if (res) setUserFromDb(res)
-        else createNewUser(user.sub, (res) => {
-          setUserFromDb(res)
-        })
-      })
+    if (!loading && userAuth0) {
+      setUserThunk(userAuth0.sub)
     }
-  }, [loading, user])
+  }, [loading, setUserThunk, userAuth0])
 
-  useEffect(() => {
-    const temporaryWords = categories.find(e => e._id === currentListId)
-    if (!temporaryWords) {
-      setCategoriesWords([])
-    } else {
-      setCategoriesWords(temporaryWords.items)
-    }
-  }, [categories, currentListId])
 
   if (loading) {
     return (
@@ -95,7 +67,13 @@ const App = () => {
       <div className="App">
         <Header togglerMenu={() => menuToggle()} />
         {modal.isActive && (
-          <Modal setGeneralLoadingTrue={() => setGeneralLoading(true)} currentListId={currentListId} user={user} getCategories={() => getCategories()} modal={modal} setModal={data => setModal(data)} />
+          <Modal
+            setModal={setModal}
+            // setGeneralLoadingTrue={() => setGeneralLoading(true)}
+            // currentListId={currentListId}
+            // user={user}
+            // getCategories={() => getCategories()}
+          />
         )}
         {
           menuIsOpen && <Menu menuStyle={menuStyle} />
@@ -104,32 +82,22 @@ const App = () => {
           <Switch>
             <PrivateRoute
               path='/lists/add/:listId'
-              render={(props) =>  <AddListUrl {...props} getCategories={getCategories} user={user} />}
+              render={(props) =>  <AddListUrl {...props} /*getCategories={getCategories}*/ user={user} />}
             />
             <PrivateRoute path="/profile" component={Profile} />
             <PrivateRoute path="/external-api" component={ExternalApi} />
             <PrivateRoute exact path="/">
               {currentPage === 'lists' && (
-                <Lists
-                  generalLoading={generalLoading}
-                  setCurrentListAuthorId={setCurrentListAuthorId}
-                  user={user}
-                  categories={categories}
-                  getCategories={() => getCategories()}
-                  setCurrentListId={(data) => setCurrentListId(data)}
-                  setModal={data => setModal(data)}
-                  setCurrentPage={data => setCurrentPage(data)}
-                />
+                <ListsContainer />
               )}
               {currentPage === 'words' && (
                 <Words
-                  generalLoading={generalLoading}
-                  currentListAuthorId={currentListAuthorId}
+                  // generalLoading={generalLoading}
+                  // currentListAuthorId={currentListAuthorId}
                   user={user}
-                  getCategories={() => getCategories()}
-                  categoriesWords={categoriesWords}
+                  // getCategories={() => getCategories()}
+                  // categoriesWords={categoriesWords}
                   setModal={data => setModal(data)}
-                  setCurrentPage={data => setCurrentPage(data)}
                 />
               )}
             </PrivateRoute>
@@ -143,10 +111,23 @@ const App = () => {
             </Route>
           </Switch>
         </MainSt>
-        <Footer setCurrentPage={data => setCurrentPage(data)} currentPage={currentPage} setModal={(data) => setModal(data)} />
+        <Footer currentPage={currentPage} setModal={(data) => setModal(data)} />
       </div>
     </Router>
   )
 }
 
-export default App
+const mapStateToProps = state => ({
+  listsState: state.listsReducer,
+  modal: state.modalReducer,
+  currentPage: state.mainReducer.currentPage,
+  user: state.userReducer
+})
+
+const mapDispatchToProps = dispatch => ({
+  getLists: (userId) => dispatch(getListsThunk(userId)),
+  setUserThunk: (data) => dispatch(setUserThunk(data)),
+  setModal: (data) => dispatch(setModal(data))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

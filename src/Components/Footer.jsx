@@ -1,6 +1,8 @@
 import React from 'react'
 import { FooterSt } from './Styled'
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { changeCurrentPageType } from '../redux/reducers/main/mainReducer';
 
 const Footer = ({currentPage, setCurrentPage, setModal}) => {
   const StartTest = () => {
@@ -37,4 +39,11 @@ const Footer = ({currentPage, setCurrentPage, setModal}) => {
   )
 }
 
-export default Footer
+const mapStateToProps = state => ({
+
+})
+
+const mapDispatchToProps = dispatch => ({
+  setCurrentPage: data => dispatch(changeCurrentPageType(data))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Footer)

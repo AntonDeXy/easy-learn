@@ -7,9 +7,10 @@
     {
       "type": "firefox",
       "request": "launch",
-      "name": "Launch Chrome against localhost",
+      "name": "Firefox debug",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}"
+        "reAttach": true,
+        "webRoot": "${workspaceFolder}"
     }
   ]
 }

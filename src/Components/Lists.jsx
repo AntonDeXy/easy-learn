@@ -2,88 +2,135 @@ import React from 'react'
 import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus'
 import { remove, update, removeObjectFromProfile } from '../static/functions'
-import { useState, useRef } from 'react';
-import AutosizeInput from 'react-input-autosize';
-import Spiner from './Spiner';
+import { useState, useRef } from 'react'
+import AutosizeInput from 'react-input-autosize'
+import Spiner from './Spiner'
+import { connect } from 'react-redux'
+import { removeAddedListThunk } from '../redux/reducers/users/usersReducer';
+import {
+  getListsThunk,
+  removeListThunk,
+  updateListThunk,
+} from '../redux/reducers/lists/listsReducer'
+import { changeCurrentPageType, setCurrentList } from '../redux/reducers/main/mainReducer'
+import { setModal } from '../redux/reducers/modal/modalReducer';
+
+const ListsContainer = (props) => {
+  return (
+    <ListsWrapper>
+      <Plus openModal={() => props.setModal({isActive: true, type: 'lists'})} type="lists" />
+      {props.loading ? (
+        <Spiner />
+      ) : (
+        <div className="lists">
+          {props.listsState.lists.map((list) => {
+            return (
+              <List
+                changeCurrentPageType={() => props.changeCurrentPageToWords()}
+                key={list._id}
+                isOwner={props.user.userId === list.authorId ? true : false}
+                list={list}
+                userId={props.user.userId}
+                setCurrentList={props.setCurrentList}
+                openShareModal={() => props.setModal({isActive: true, type: 'share', listId: list._id})}
+                updateListThunk={props.updateListThunk}
+                removeListThunk={props.removeListThunk}
+                removeAddedListThunk={props.removeAddedListThunk}
+              />
+            )
+          })}
+        </div>
+      )}
+    </ListsWrapper>
+  )
+}
 
 const Lists = ({
   categories,
-  setCurrentListId,
+  setCurrentList,
   setModal,
   setCurrentPage,
   getCategories,
   user,
   setCurrentListAuthorId,
-  generalLoading
-}) => {  
+  generalLoading,
+}) => {
   const openShareModal = (categoryId) => {
-    setModal({isActive: true, type: 'share', categoryId})
+    setModal({ isActive: true, type: 'share', categoryId })
   }
 
   // const items = [{_id:1, name: 'list name'},{_id:2, name: 'list name'},{_id:3, name: 'list name'},{_id:4, name: 'list name'},{_id:5, name: 'list name'},{_id:6, name: 'list name'},{_id:7, name: 'list name'},{_id:8, name: 'list name'},{_id:9, name: 'list name'},{_id:10, name: 'list name'},{_id:11, name: 'list name'},{_id:12, name: 'list name'},{_id:13, name: 'list name'},{_id:14, name: 'last'},]
   return (
     <ListsWrapper>
-      <Plus setModal={setModal} type="lists" />
-      {
-        generalLoading
-        ? <Spiner />
-        : (
-          <div className="lists">
-            {categories.length > 0 &&
-              categories.map((category) => {
-                return (
-                  <List
-                    setCurrentListAuthorId={setCurrentListAuthorId}
-                    userId={user.sub}
-                    isOwner={category.authorId === user.sub ? true : false}
-                    openShareModal={data => openShareModal(data)}
-                    key={category._id}
-                    getCategories={getCategories}
-                    setCurrentPage={setCurrentPage}
-                    setCurrentListId={setCurrentListId}
-                    item={category}
-                  />
-                )
-              })}
-          </div>
-        )
-      }
+      {generalLoading ? (
+        <Spiner />
+      ) : (
+        <div className="lists">
+          {categories.length > 0 &&
+            categories.map((category) => {
+              return (
+                <List
+                  setCurrentListAuthorId={setCurrentListAuthorId}
+                  userId={user.sub}
+                  isOwner={category.authorId === user.sub ? true : false}
+                  // openShareModal={(data) => openShareModal(data)}
+                  key={category._id}
+                  getCategories={getCategories}
+                  setCurrentPage={setCurrentPage}
+                  setCurrentList={setCurrentList}
+                  item={category}
+                />
+              )
+            })}
+        </div>
+      )}
     </ListsWrapper>
   )
 }
 
-const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCategories, isOwner, userId, setCurrentListAuthorId }) => {
+const List = ({
+  changeCurrentPageType,
+  setCurrentList,
+  list,
+  openShareModal,
+  isOwner,
+  userId,
+  updateListThunk,
+  removeListThunk,
+  removeAddedListThunk
+}) => {
   const [editMode, setEditMode] = useState(false)
-  const [newName, setNewName] = useState(item.title)
+  const [newName, setNewName] = useState(list.name)
   const titleRef = useRef()
   const [isLoading, setIsLoading] = useState(false)
 
   const Click = () => {
     if (!editMode) {
-      setCurrentListAuthorId(item.authorId)
-      setCurrentListId(item._id)
-      setCurrentPage('words')
+      setCurrentList(list)
+      changeCurrentPageType()
     }
   }
 
   const removeList = () => {
-    setIsLoading(true)
     isOwner
-    ? remove('categories', item._id, () => {getCategories(); setIsLoading(false)})
-    : removeObjectFromProfile({userId, categoryId: item._id }, () => {getCategories(); setIsLoading(false)})
+    ? removeListThunk(list._id)
+    : removeAddedListThunk(userId, list._id)
   }
 
   const toggleEditMode = () => {
     if (editMode) {
-      if (item.title !== titleRef.current.props.value) {
+      if (list.name !== titleRef.current.props.value) {
         setIsLoading(true)
-        let newData = {...item}
-        newData.title = titleRef.current.props.value
-        update('categories', item._id, newData, () => {setEditMode(!editMode); getCategories(); setIsLoading(false)})
+        let newData = { ...list }
+        newData.name = titleRef.current.props.value
+        updateListThunk(list._id, newData, () => {
+          setEditMode(!editMode)
+          setIsLoading(false)
+        })
       } else {
         setEditMode(!editMode)
       }
-  } else {
+    } else {
       setEditMode(!editMode)
     }
   }
@@ -91,11 +138,10 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
   return (
     <ListItemSt>
       <div onClick={() => Click()} className="name">
-        {
-          editMode
-          ? isLoading
-            ? <Spiner />
-            : (
+        {editMode ? (
+          isLoading ? (
+            <Spiner />
+          ) : (
             <AutosizeInput
               autoFocus
               ref={titleRef}
@@ -106,13 +152,14 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
               }}
             />
           )
-          : <span>{item.title}</span>
-        }
+        ) : (
+          <span>{list.name}</span>
+        )}
       </div>
       <div className="functions">
         {/* share */}
         <svg
-          onClick={() => openShareModal(item._id)}
+          onClick={() => openShareModal()}
           width="18"
           height="20"
           viewBox="0 0 18 20"
@@ -125,24 +172,21 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
           />
         </svg>
         {/* edit */}
-        {
-          isOwner && (
-            <svg
-              onClick={() => toggleEditMode()}
-              width="23"
-              height="20"
-              viewBox="0 0 23 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M16.2266 3.25079L19.75 6.77423C19.8984 6.92267 19.8984 7.16486 19.75 7.31329L11.2188 15.8445L7.59375 16.2469C7.10938 16.3016 6.69922 15.8914 6.75391 15.407L7.15625 11.782L15.6875 3.25079C15.8359 3.10236 16.0781 3.10236 16.2266 3.25079ZM22.5547 2.35626L20.6484 0.450012C20.0547 -0.143738 19.0898 -0.143738 18.4922 0.450012L17.1094 1.83282C16.9609 1.98126 16.9609 2.22345 17.1094 2.37189L20.6328 5.89532C20.7812 6.04376 21.0234 6.04376 21.1719 5.89532L22.5547 4.51251C23.1484 3.91486 23.1484 2.95001 22.5547 2.35626ZM15.5 13.5242V17.5008H3V5.00079H11.9766C12.1016 5.00079 12.2188 4.95001 12.3086 4.86407L13.8711 3.30157C14.168 3.0047 13.957 2.50079 13.5391 2.50079H2.375C1.33984 2.50079 0.5 3.34064 0.5 4.37579V18.1258C0.5 19.1609 1.33984 20.0008 2.375 20.0008H16.125C17.1602 20.0008 18 19.1609 18 18.1258V11.9617C18 11.5438 17.4961 11.3367 17.1992 11.6297L15.6367 13.1922C15.5508 13.282 15.5 13.3992 15.5 13.5242Z"
-                fill="#5B659A"
-              />
-            </svg>
-          )
-        }
-        
+        {isOwner && (
+          <svg
+            onClick={() => toggleEditMode()}
+            width="23"
+            height="20"
+            viewBox="0 0 23 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16.2266 3.25079L19.75 6.77423C19.8984 6.92267 19.8984 7.16486 19.75 7.31329L11.2188 15.8445L7.59375 16.2469C7.10938 16.3016 6.69922 15.8914 6.75391 15.407L7.15625 11.782L15.6875 3.25079C15.8359 3.10236 16.0781 3.10236 16.2266 3.25079ZM22.5547 2.35626L20.6484 0.450012C20.0547 -0.143738 19.0898 -0.143738 18.4922 0.450012L17.1094 1.83282C16.9609 1.98126 16.9609 2.22345 17.1094 2.37189L20.6328 5.89532C20.7812 6.04376 21.0234 6.04376 21.1719 5.89532L22.5547 4.51251C23.1484 3.91486 23.1484 2.95001 22.5547 2.35626ZM15.5 13.5242V17.5008H3V5.00079H11.9766C12.1016 5.00079 12.2188 4.95001 12.3086 4.86407L13.8711 3.30157C14.168 3.0047 13.957 2.50079 13.5391 2.50079H2.375C1.33984 2.50079 0.5 3.34064 0.5 4.37579V18.1258C0.5 19.1609 1.33984 20.0008 2.375 20.0008H16.125C17.1602 20.0008 18 19.1609 18 18.1258V11.9617C18 11.5438 17.4961 11.3367 17.1992 11.6297L15.6367 13.1922C15.5508 13.282 15.5 13.3992 15.5 13.5242Z"
+              fill="#5B659A"
+            />
+          </svg>
+        )}
         {/* remove */}
         <svg
           onClick={() => removeList()}
@@ -162,4 +206,21 @@ const List = ({ setCurrentPage, setCurrentListId, item, openShareModal, getCateg
   )
 }
 
-export default Lists
+const mapStateToProps = (state) => ({
+  listsState: {...state.listsReducer, lists: [...state.listsReducer.lists, ...state.userReducer.addedLists]},
+  currentList: state.listsReducer.currentList,
+  errorMessage: state.listsReducer.errorMessage,
+  user: state.userReducer
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  // getLists: dispatch((userId) => getListsThunk(userId)),
+  setCurrentList: (list) => dispatch(setCurrentList(list)),
+  changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
+  setModal: (data) => dispatch(setModal(data)),
+  updateListThunk: (listId, newData, success) => dispatch(updateListThunk(listId, newData, success)),
+  removeListThunk: (data) => dispatch(removeListThunk(data)),
+  removeAddedListThunk: (userId, listId) => dispatch(removeAddedListThunk(userId, listId))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListsContainer)

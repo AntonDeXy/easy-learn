@@ -4,18 +4,18 @@ import React, { Fragment } from "react";
 import { useAuth0 } from "../react-auth0-spa";
 
 const Profile = () => {
-  const { loading, user } = useAuth0();
+  const { loading, userAuth0 } = useAuth0();
 
-  if (loading || !user) {
+  if (loading || !userAuth0) {
     return <div>Loading...</div>;
   }
 
   return (
     <Fragment>
-      <img src={user.picture} alt="Profile" />
-      <h2>{user.name}</h2>
-      <p>{user.email}</p>
-      <code>{JSON.stringify(user, null, 2)}</code>
+      <img src={userAuth0.picture} alt="Profile" />
+      <h2>{userAuth0.name}</h2>
+      <p>{userAuth0.email}</p>
+      <code>{JSON.stringify(userAuth0, null, 2)}</code>
     </Fragment>
   );
 };

@@ -3,8 +3,12 @@ import { ModalSt } from './Styled'
 import { useState } from 'react'
 import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCurrCategory, isUserListOwner, autoTranslate } from '../static/functions';
 import Spiner from './Spiner';
+import { connect } from 'react-redux';
+import { setModal } from '../redux/reducers/modal/modalReducer'
+import { createListThunk } from '../redux/reducers/lists/listsReducer';
+import { addListToProfileThunk } from '../redux/reducers/users/usersReducer';
 
-const Modal = ({ currentListId, setModal, modal, items, user, getCategories, setGeneralLoadingTrue }) => {
+const Modal = ({ setModal, modal, items, user, addListToProfileThunk, getCategories, setGeneralLoadingTrue, createNewList }) => {
   const [rightUnswersCount, setRightUnswersCount] = useState(0)
   const [error, setError] = useState(undefined)
   const [isLoading, setIsLoading] = useState(false)
@@ -13,22 +17,22 @@ const Modal = ({ currentListId, setModal, modal, items, user, getCategories, set
     backgroundColor: 'grey'
   }
 
-  const createNew = (data) => {
-    setIsLoading(true)
-    setGeneralLoadingTrue()
-    if (data.type === 'items') {
-      create(data.type, {
-        categoryId: currentListId,
-        word: data.word,
-        translate: data.translate
-      }, () =>  {getCategories(); setIsLoading(false); setModal({isActive: false})} )
-    } else {
-      create(data.type, {
-        title: data.name,
-        authorId: user.sub
-      }, () =>  {getCategories(); setIsLoading(false); setModal({isActive: false})} )
-    }
-  }
+  // const createNew = (data) => {
+  //   setIsLoading(true)
+  //   setGeneralLoadingTrue()
+  //   if (data.type === 'items') {
+  //     create(data.type, {
+  //       categoryId: modal.listId,
+  //       word: data.word,
+  //       translate: data.translate
+  //     }, () =>  {getCategories(); setIsLoading(false); setModal({isActive: false})} )
+  //   } else {
+  //     create(data.type, {
+  //       title: data.name,
+  //       authorId: user.sub
+  //     }, () =>  {getCategories(); setIsLoading(false); setModal({isActive: false})} )
+  //   }
+  // }
 
   const addListToProfile = (сategoryId) => {
     setIsLoading(true)
@@ -82,6 +86,7 @@ const Modal = ({ currentListId, setModal, modal, items, user, getCategories, set
     )
   }
 
+
   return (
     <ModalSt>
       <div className="modal">
@@ -114,13 +119,20 @@ const Modal = ({ currentListId, setModal, modal, items, user, getCategories, set
             />
           </svg>
         </div>
-        {modal.type === 'words' && <AddWord disabledButtonStyle={disabledButtonStyle} isLoading={isLoading} createNew={data => createNew(data)} /> }
-        {modal.type === 'lists' && <AddList disabledButtonStyle={disabledButtonStyle} isLoading={isLoading} error={error} addListToProfile={data => addListToProfile(data)} createNew={data => createNew(data)} /> }
+        {modal.type === 'words' && <AddWord disabledButtonStyle={disabledButtonStyle} isLoading={isLoading} /> }
+        {modal.type === 'lists' && <AddList
+          closeModal={() => setModal({isActive: false})} 
+          disabledButtonStyle={disabledButtonStyle} 
+          isLoading={isLoading} 
+          userId={user.userId} 
+          addListToProfileThunk={addListToProfileThunk}
+          createNewList={createNewList} />
+        }
         {modal.type === 'notes' && <AddNote /> }
         {modal.type === 'error' && <Error modal={modal} /> }
         {modal.type === 'test' && <TestModal items={items} modal={modal} /> }
         {modal.type === 'result' && <ResultModal items={items} modal={modal} /> }
-        {modal.type === 'share' && <ShareModal categoryId={modal.categoryId} modal={modal} /> }
+        {modal.type === 'share' && <ShareModal categoryId={modal.listId} modal={modal} /> }
       </div>
     </ModalSt>
   )
@@ -230,9 +242,23 @@ const AddWord = ({createNew, isLoading, disabledButtonStyle}) => {
   )
 }
 
-const AddList = ({createNew, addListToProfile, error, isLoading, disabledButtonStyle}) => {
+const AddList = ({closeModal, addListToProfileThunk, isLoading, disabledButtonStyle, createNewList, userId}) => {
   const categoryNameRef = useRef()
   const categoryIdRef = useRef(null)
+  const [error, setError] = useState(undefined)
+
+  const addListToProfile = () => {
+    addListToProfileThunk(
+      categoryIdRef.current.value, 
+      userId,
+      (data) => {
+        if (data.error) {
+          setError(data.error)
+        } else {
+          closeModal()
+        }
+    })
+  }
 
   return (
     <div className="main">
@@ -243,12 +269,12 @@ const AddList = ({createNew, addListToProfile, error, isLoading, disabledButtonS
         <span>Name</span>
         <input ref={categoryNameRef} type="text" />
       </div>
-      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={ () => createNew({type: 'categories', name: categoryNameRef.current.value})} >Create</button>
+      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={ () => createNewList({authorId: userId, name: categoryNameRef.current.value}, () => closeModal())} >Create</button>
       <div className="item">
         <span>Enter list ID</span>
         <input ref={categoryIdRef} type="text" />
       </div>
-      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={ () => addListToProfile(categoryIdRef.current.value) } >Add</button>
+      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={ () => addListToProfile() } >Add</button>
     </div>
   )
 }
@@ -265,4 +291,16 @@ const AddNote = () => {
   )
 }
 
-export default Modal
+const mapStateToProps = (state, ownProps) => ({
+  modal: state.modalReducer,
+  user: state.userReducer,
+  ...ownProps
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  addListToProfileThunk: (listId, userId, success) => dispatch(addListToProfileThunk(listId, userId, success)),
+  setModal: (data) => dispatch(setModal(data)),
+  createNewList: (data, success) => dispatch(createListThunk(data, success))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Modal)

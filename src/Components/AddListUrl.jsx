@@ -2,66 +2,43 @@ import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {AddListUrlStyled} from './Styled'
-import { addCategoryToProfile, checkIfUserHaveCurrCategory, checkIfCategoryIsExist, isUserListOwner, get } from '../static/functions'
+import { connect } from 'react-redux';
+import { listCheckerThunk, addListWithoutCheckThunk } from '../redux/reducers/users/usersReducer'
 
-const AddListUrl = (props) => { 
+const AddListUrl = ({listCheckerThunk, addListWithoutCheckThunk, userId, ...props}) => { 
   const [isConfirmed, setIsConformed] = useState(false)
   const [listId, setListId] = useState(props.match.params.listId)
   const [isListVisible, setIsListVisible] = useState(false)
   const [error, setError] = useState(undefined)
-  const [items, setItems] = useState([])
+  const [listForAdd, setListForAdd] = useState({})
 
   useEffect(() => {
     setError(null)
-    checkIfCategoryIsExist(
-      {
-        categoryId: listId
-      },
-      (res) => {
-        if(res.data.isExist) {
-          checkIfUserHaveCurrCategory(
-            {
-              userId: props.user.sub,
-              listId
-            },
-            (res) => {
-              if (res.isUserHave) {
-                setError('You already have this list')
-              } else {
-                isUserListOwner(
-                  {
-                    userId: props.user.sub,
-                    listId
-                  },
-                  (res) => {
-                    if (res.isUserOwner) {
-                      setError('You cant add your list')
-                    } else {
-                      get('categories', props.user.sub, (res) => {
-                        setItems(res[0].items)
-                      })
-                    }
-                  }
-                )
-              }
-            }
-          )
+    listCheckerThunk(
+      listId, 
+      userId,  
+      (data) => {
+        if (data.error) {
+          setError(data.error)
         } else {
-          setError('This list doesn`t exist, check list id')
+          setListForAdd(data.data)
+        }
+      })
+  }, [listCheckerThunk, listId, userId])
+
+  const addList = () => {
+    setError(null)
+    addListWithoutCheckThunk(
+      listForAdd,
+      userId,
+      (data) => {
+        if (data.error) {
+          setError(data.error)
+        } else {
+          setIsConformed(true)
         }
       }
     )
-  }, [listId, props.user.sub])
-
-  const addList = () => {
-    addCategoryToProfile({
-      userId: props.user.sub,
-      categoryId: listId
-    },
-    () => {
-      props.getCategories()
-      setIsConformed(true)
-    })
   }
 
   return (
@@ -105,13 +82,13 @@ const AddListUrl = (props) => {
                 <span>
                   List content:
                 </span>
-                <svg onClick={() => setIsListVisible(!isListVisible)} className={`isListVisible ${isListVisible && 'active'}`} version="1.1" id="Layer_1" focusable="false" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 286.1 168.2">
+                <svg onClick={() => {if (listForAdd) {setIsListVisible(!isListVisible)}}} className={`isListVisible ${isListVisible && 'active'}`} version="1.1" id="Layer_1" focusable="false" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 286.1 168.2">
                   <path d="M262.1,168.2h-238c-21.4,0-32.1-25.9-17-41l119-119c9.4-9.4,24.6-9.4,33.9,0l119,119C294.2,142.3,283.5,168.2,262.1,168.2z"/>
                 </svg>
               </div>
               <div className="content">
                 {
-                  isListVisible && items.map(item => {
+                  isListVisible && listForAdd.items.map(item => {
                   return <ListItem item={item} />
                   })
                 }
@@ -144,4 +121,16 @@ const ListItem = ({item}) => {
   )
 }
 
-export default AddListUrl
+
+const mapStateToProps = (state, ownProps) => ({
+  modal: state.modalReducer,
+  userId: state.userReducer.userId,
+  ...ownProps
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  listCheckerThunk: (listId, userId, success) => dispatch(listCheckerThunk(listId, userId, success)),
+  addListWithoutCheckThunk: (list, userId, success) => dispatch(addListWithoutCheckThunk(list, userId, success))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddListUrl)

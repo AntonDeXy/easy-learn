@@ -5,29 +5,31 @@ import { Popconfirm } from 'antd'
 import { update, remove } from '../static/functions'
 import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
+import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
+import { connect } from 'react-redux';
+import { updateItemThunk } from '../redux/reducers/lists/listsReducer'
 
-const Words = ({ setModal, setCurrentPage, categoriesWords, getCategories, user, currentListAuthorId, generalLoading }) => {
-  const isOwner = user.sub === currentListAuthorId ? true : false
+const Words = (props) => {
+  const isOwner = props.user.userId === props.currentList.authorId ? true : false
   
   return (
     <WordsWrapper>
-      <Plus setModal={setModal} isOwner={isOwner} setCurrentPage={setCurrentPage} type="words" />
-      {
+      <Plus toGeneralPage={() => props.changeCurrentPageToLists()} openModal={() => props.setModal({isActive: true, type: 'words'})} isOwner={isOwner} type="words" />
+      {/* {
         generalLoading
         ? <Spiner />
-        : (
+        : ( */}
           <div className="lists">
-            {categoriesWords.length > 0 &&
-              categoriesWords.map(word => <Word isOwner={isOwner} key={word._id} getCategories={getCategories} item={word} />)}
+            {props.currentList.items.length > 0 &&
+              props.currentList.items.map(word => <Word currentListId={props.currentList._id} updateItemThunk={props.updateItemThunk} isOwner={isOwner} key={word._id} item={word} />)}
           </div>
-        )
-      }
-      
+        {/* )
+      } */}
     </WordsWrapper>
   )
 }
 
-const Word = ({ item, getCategories, isOwner }) => {
+const Word = ({ item, getCategories, isOwner, updateItemThunk, currentListId }) => {
   const [editMode, setEditMode] = useState(false)
   const [newWord, setNewWord] = useState(item.word)
   const [newTranslate, setNewTranslate] = useState(item.translate)
@@ -41,7 +43,7 @@ const Word = ({ item, getCategories, isOwner }) => {
       let newData = {...item}
       newData.word = wordRef.current.props.value
       newData.translate = translateRef.current.props.value
-      update('items', item._id, newData, () => {setIsLoading(false) ;setEditMode(!editMode); getCategories()})
+      updateItemThunk(currentListId, item._id, newData, () => {setIsLoading(false); setEditMode(!editMode)})
     } else {
       setEditMode(!editMode)
     }
@@ -140,4 +142,21 @@ const Word = ({ item, getCategories, isOwner }) => {
   )
 }
 
-export default Words
+const mapStateToProps = (state, ownProps) => ({
+  lists: state.listsReducer.lists,
+  currentList: state.mainReducer.currentList,
+  errorMessage: state.listsReducer.errorMessage,
+  // user: state.userReducer.user
+  ...ownProps
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  // setCurrentList: (listId) => dispatch(setCurrentList(listId)),
+  changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
+  // setModal: (data) => dispatch(setModal(data)),
+  // updateListThunk: (listId, newData, success) => dispatch(updateListThunk(listId, newData, success)),
+  // removeListThunk: (data) => dispatch(removeListThunk(data)),
+  updateItemThunk: (listId, itemId, newItem, success) => dispatch(updateItemThunk(listId, itemId, newItem, success))
+  // removeAddedListThunk: (data) => dispatch(removeAddedListThunk(data))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Words)

@@ -83,6 +83,7 @@ export const ListsWrapper = styled.div `
   grid-template-rows: auto 1fr;
   justify-self: center;
   gap: 10px;
+  align-items: baseline;
   .spiner {
     height: 100px;
     justify-self: center;
@@ -135,9 +136,10 @@ export const WordItemSt = styled.div `
     border-left: unset;
     border-right: unset;
   }
-  svg {
+  .spiner {
     margin-left: 10px;
     height: 42px;
+    justify-self: left;
     grid-row: 1/3;
     align-self: center;
   }

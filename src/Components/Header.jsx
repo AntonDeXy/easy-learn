@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import DefUserIcon from '../static/user-solid.svg'
 
 const Header = ({togglerMenu}) => {
-  const { isAuthenticated, user, loginWithRedirect } = useAuth0()
+  const { isAuthenticated, userAuth0, loginWithRedirect } = useAuth0()
 
   return (
     <HeaderSt>
@@ -23,7 +23,7 @@ const Header = ({togglerMenu}) => {
         {isAuthenticated && <div className='userImg'>
           {/* <Link to="/external-api">External API</Link> */}
           <Link to='/profile'>
-            <img src={user ? user.picture : DefUserIcon} alt=""/>
+            <img src={userAuth0 ? userAuth0.picture : DefUserIcon} alt=""/>
           </Link>
         </div>}
       </div>
