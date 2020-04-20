@@ -100,6 +100,25 @@ export const userAPI = {
   }
 }
 
+export const notesAPI = {
+  getNotes (userId) {
+    return instance.get(`notes/${userId}`)
+      .then(res => res.data)
+  },
+  updateNote (noteId) {
+    return instance.put(`notes/edit/${noteId}`)
+      .then(res => res.data)
+  },
+  createNote (userId, data) {
+    return instance.post(`notes/new`, data)
+      .then(res => res.data)
+  },
+  removeNote (noteId) {
+    return instance.delete(`notes/remove/${noteId}`)
+      .then(res => res.data)
+  }
+}
+
 // export const usersAPI = {
 //   getUsers(currentPage = 1, pageSize = 10) {
 //     return instance.get(`users?page=${currentPage}&count=${pageSize}`)

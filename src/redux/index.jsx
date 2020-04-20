@@ -5,8 +5,9 @@ import userReducer from './reducers/users/usersReducer'
 import mainReducer from './reducers/main/mainReducer'
 import modalReducer from './reducers/modal/modalReducer'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { notesReducer } from './reducers/notes/notesReducer'
 
-const reducer = combineReducers({listsReducer, mainReducer, userReducer, modalReducer})
+const reducer = combineReducers({listsReducer, mainReducer, userReducer, modalReducer, notesReducer})
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware))
 
 const store = createStore(reducer, middleware) 

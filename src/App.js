@@ -21,8 +21,9 @@ import { connect } from 'react-redux'
 import { setModal } from './redux/reducers/modal/modalReducer';
 import { setUserThunk } from './redux/reducers/users/usersReducer';
 import { getListsThunk } from './redux/reducers/lists/listsReducer'
+import { getNotes } from './redux/reducers/notes/notesReducer';
 
-const App = ({modal, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
+const App = ({modal, getNotes, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
   const { loading, userAuth0 } = useAuth0()
   const [menuStyle, setMenuStyle] = useState({animationName: 'menuAnimIn'})
@@ -40,8 +41,11 @@ const App = ({modal, setModal, currentPage, user, setUserThunk, getLists, ...pro
   }
 
   useEffect(() => {
-    if (user.userId) getLists(user.userId)
-  }, [getLists, user])
+    if (user.userId) {
+      getLists(user.userId)
+      getNotes(user.userId)
+    }
+  }, [getLists, getNotes, user])
 
   useEffect(() => {
     if (!loading && userAuth0) {
@@ -107,7 +111,7 @@ const App = ({modal, setModal, currentPage, user, setUserThunk, getLists, ...pro
               </div>
             </Route>
             <Route exact path='/notes'>
-              <Notes setModal={data => setModal(data)} />
+              <Notes />
             </Route>
           </Switch>
         </MainSt>
@@ -125,6 +129,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  getNotes: (userId) => dispatch(getNotes(userId)),
   getLists: (userId) => dispatch(getListsThunk(userId)),
   setUserThunk: (data) => dispatch(setUserThunk(data)),
   setModal: (data) => dispatch(setModal(data))
