@@ -58,15 +58,15 @@ export const itemsAPI = {
     return instance.post(`items/new/`, {listId, translate, word})
   },
   updateItem(data) {
-    return instance.put(`items/${data.listId}`, data.newItem)
+    return instance.put(`items/edit/${data.itemId}`, data.newItem)
       .then(res => res.data)
   },
   removeMany(data) {
     return instance.post('itemsRemoveMany', {ids: data})
       .then(res => res.data)
   },
-  removeItem(data) {
-    return instance.delete(`items/${data.listId}`)
+  removeItem(itemId) {
+    return instance.delete(`items/remove/${itemId}`)
       .then(res => res.data)
   },
   getAutoTranslate(phrase) {

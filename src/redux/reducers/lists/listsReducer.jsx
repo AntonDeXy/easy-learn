@@ -63,7 +63,7 @@ const listsReducer = (state = listsState, action) => {
       let newState = {...state}
       for(let i = 0; i < newState.lists.length; i++) {
         if (newState.lists[i]._id === action.listId) {
-          for(let w = 0; w < newState.lists[w].items.length; w++) {
+          for(let w = 0; w < newState.lists[i].items.length; w++) {
             if (newState.lists[i].items[w]._id === action.itemId) {
               newState.lists[i].items[w] = action.newItem
               break
@@ -78,7 +78,8 @@ const listsReducer = (state = listsState, action) => {
       let newState = {...state}
       for(let i = 0; i < newState.lists.length; i++) {
         if (newState.lists[i]._id === action.listId) {
-          newState.lists[i].items.filter(item => item._id !== action.itemId)
+          const newItems = newState.lists[i].items.filter(item => item._id !== action.itemId)
+          newState.lists[i].items = newItems
         }
       }
       return {...newState}
@@ -114,11 +115,12 @@ export const clearErorr = () => ({type: CLEAR_ERROR})
 export const removeList = (listId) => ({type: REMOVE_LIST, listId})
 export const createList = (newList) => ({type: CREATE_LIST, newList})
 export const toggleLoading = (isLoading) => ({type: SET_LOADING, isLoading})
-export const changeItemData = (listId, itemId, newItem) => ({type: CHANGE_ITEM_DATA, listId, itemId, newItem})
+export const changeItemData = (itemId, newItem) => ({type: CHANGE_ITEM_DATA, itemId, newItem})
 export const addUsersLists = (userLists) => ({type: 'ADD_USERS_LISTS', userLists})
 export const createItem = (newItem, listId) => ({type: ADD_NEW_ITEM, newItem, listId})
 const setAutoTranslates = (translates) => ({type: 'SET_TRANSLATES', translates})
 const clearAutoTranslates = () => ({type: 'CLEAR_TRANSLATES'})
+const removeItem = (listId, itemId) => ({type: REMOVE_ITEM, listId, itemId})
 // thunks
 export const getListsThunk = (userId) => async (dispatch) => {
   dispatch(toggleLoading(true))
@@ -152,6 +154,7 @@ export const updateListThunk = (listId, newData, success) => async (dispatch) =>
 
 export const removeListThunk = (listId) => async (dispatch) => {
   let res = await listsAPI.removeList(listId)
+
   if (res.success) {
     dispatch(removeList(listId))
   } else {
@@ -159,8 +162,21 @@ export const removeListThunk = (listId) => async (dispatch) => {
   }
 }
 
+export const removeItemThunk = (listId, itemId, success) => async (dispatch) => {
+  let res = await itemsAPI.removeItem(itemId)
+
+  if (res.success) {
+    success()
+    dispatch(removeItem(listId, itemId))
+  } else {
+    success()
+    dispatch(setError(res.errorMessage))
+  }
+
+}
+
 export const updateItemThunk = (listId, itemId, newItem, success) => async (dispatch) => {
-  let res = await itemsAPI.updateItem({listId, itemId, newItem})
+  let res = await itemsAPI.updateItem({itemId, newItem})
   // success()
   // dispatch(changeItemData(listId, itemId, newItem))
 

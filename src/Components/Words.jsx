@@ -7,7 +7,7 @@ import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
 import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
 import { connect } from 'react-redux';
-import { updateItemThunk } from '../redux/reducers/lists/listsReducer'
+import { updateItemThunk, removeItemThunk } from '../redux/reducers/lists/listsReducer'
 
 const Words = (props) => {
   const isOwner = props.user.userId === props.currentList.authorId ? true : false
@@ -21,7 +21,7 @@ const Words = (props) => {
         : ( */}
           <div className="lists">
             {props.currentList.items.length > 0 &&
-              props.currentList.items.map(word => <Word currentListId={props.currentList._id} updateItemThunk={props.updateItemThunk} isOwner={isOwner} key={word._id} item={word} />)}
+              props.currentList.items.map(word => <Word removeItemThunk={props.removeItemThunk} currentListId={props.currentList._id} updateItemThunk={props.updateItemThunk} isOwner={isOwner} key={word._id} item={word} />)}
           </div>
         {/* )
       } */}
@@ -29,7 +29,7 @@ const Words = (props) => {
   )
 }
 
-const Word = ({ item, getCategories, isOwner, updateItemThunk, currentListId }) => {
+const Word = ({ item, getCategories, isOwner, updateItemThunk, currentListId, removeItemThunk }) => {
   const [editMode, setEditMode] = useState(false)
   const [newWord, setNewWord] = useState(item.word)
   const [newTranslate, setNewTranslate] = useState(item.translate)
@@ -125,7 +125,7 @@ const Word = ({ item, getCategories, isOwner, updateItemThunk, currentListId }) 
           </svg>
         )}
         <svg
-          onClick={() => !isLoading && remove('items', item._id, () => {getCategories(); setIsLoading(false)})}
+          onClick={() => !isLoading && removeItemThunk(currentListId, item._id, () => setIsLoading(false))}
           width="17"
           height="20"
           viewBox="0 0 17 20"
@@ -156,7 +156,8 @@ const mapDispatchToProps = (dispatch) => ({
   // setModal: (data) => dispatch(setModal(data)),
   // updateListThunk: (listId, newData, success) => dispatch(updateListThunk(listId, newData, success)),
   // removeListThunk: (data) => dispatch(removeListThunk(data)),
-  updateItemThunk: (listId, itemId, newItem, success) => dispatch(updateItemThunk(listId, itemId, newItem, success))
+  updateItemThunk: (listId, itemId, newItem, success) => dispatch(updateItemThunk(listId, itemId, newItem, success)),
   // removeAddedListThunk: (data) => dispatch(removeAddedListThunk(data))
+  removeItemThunk: (listId, itemId, success) => dispatch(removeItemThunk(listId, itemId, success))
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Words)
