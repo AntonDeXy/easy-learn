@@ -8,8 +8,9 @@ import { setModal } from '../redux/reducers/modal/modalReducer'
 import { createListThunk, createItemThunk, getAutoTranslatesThunk } from '../redux/reducers/lists/listsReducer';
 import { addListToProfileThunk } from '../redux/reducers/users/usersReducer';
 import { mainReducer } from '../redux/reducers/main/mainReducer';
+import { createNoteThunk } from '../redux/reducers/notes/notesReducer';
 
-const Modal = ({ createItemThunk, setModal, currentListId, autoTranslates, getAutoTranslatesThunk, modal, items, user, addListToProfileThunk, getCategories, setGeneralLoadingTrue, createNewList }) => {
+const Modal = ({ createItemThunk, createNote, setModal, currentListId, autoTranslates, getAutoTranslatesThunk, modal, items, user, addListToProfileThunk, getCategories, setGeneralLoadingTrue, createNewList }) => {
   const [rightUnswersCount, setRightUnswersCount] = useState(0)
   const [error, setError] = useState(undefined)
   const [isLoading, setIsLoading] = useState(false)
@@ -59,7 +60,11 @@ const Modal = ({ createItemThunk, setModal, currentListId, autoTranslates, getAu
           addListToProfileThunk={addListToProfileThunk}
           createNewList={createNewList} />
         }
-        {modal.type === 'notes' && <AddNote /> }
+        {modal.type === 'notes' && <AddNote 
+          userId={user.userId} 
+          createNote={createNote}
+          disabledButtonStyle={disabledButtonStyle} 
+          closeModal={() => setModal({isActive: false})} /> }
         {modal.type === 'error' && <Error modal={modal} /> }
         {modal.type === 'test' && <TestModal items={items} modal={modal} /> }
         {modal.type === 'result' && <ResultModal items={items} modal={modal} /> }
@@ -222,14 +227,31 @@ const AddList = ({closeModal, addListToProfileThunk, isLoading, disabledButtonSt
   )
 }
 
-const AddNote = () => {
+const AddNote = ({createNote, userId, disabledButtonStyle, closeModal}) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const contentRef = useRef(null)
+
+  const createNewNote = () => {
+    setIsLoading(true)
+    createNote(
+      {
+        content: contentRef.current.value,
+        authorId: userId
+      },
+      () => {
+        setIsLoading(false)
+        closeModal()
+      }
+    )
+  }
+
   return (
     <div className="main">
       <div className="item">
         <span>Content</span>
-        <input type="text" />
+        <input ref={contentRef} type="text" />
       </div>
-      <button>Add</button>
+      <button onClick={() => createNewNote()} >Add</button>
     </div>
   )
 }
@@ -247,7 +269,8 @@ const mapDispatchToProps = (dispatch) => ({
   setModal: (data) => dispatch(setModal(data)),
   createNewList: (data, success) => dispatch(createListThunk(data, success)),
   getAutoTranslatesThunk: (phrase, success) => dispatch(getAutoTranslatesThunk(phrase, success)),
-  createItemThunk: (item, listId, success) => dispatch(createItemThunk(item, listId, success))
+  createItemThunk: (item, listId, success) => dispatch(createItemThunk(item, listId, success)),
+  createNote: (data, success) => dispatch(createNoteThunk(data, success))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)

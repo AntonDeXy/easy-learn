@@ -169,12 +169,20 @@ export const ListItemSt = styled.div `
   border-radius: 5px;
   border: 1px solid #C7D1D9;
   svg {
-      height: 16px;
-    }
+    height: 16px;
+  }
   .name {
     padding: 10px;
     .spiner {
       height: 16px;
+    }
+    span {
+      word-break: break-word;
+    }
+    textarea {
+      height: auto;
+      resize: none;
+      width: 100%;
     }
     input {
       font-size: 16px;

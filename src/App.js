@@ -21,7 +21,7 @@ import { connect } from 'react-redux'
 import { setModal } from './redux/reducers/modal/modalReducer';
 import { setUserThunk } from './redux/reducers/users/usersReducer';
 import { getListsThunk } from './redux/reducers/lists/listsReducer'
-import { getNotes } from './redux/reducers/notes/notesReducer';
+import { getNotes, getNotesThunk } from './redux/reducers/notes/notesReducer';
 
 const App = ({modal, getNotes, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
@@ -129,7 +129,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getNotes: (userId) => dispatch(getNotes(userId)),
+  getNotes: (userId) => dispatch(getNotesThunk(userId)),
   getLists: (userId) => dispatch(getListsThunk(userId)),
   setUserThunk: (data) => dispatch(setUserThunk(data)),
   setModal: (data) => dispatch(setModal(data))

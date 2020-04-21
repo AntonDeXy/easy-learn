@@ -26,7 +26,7 @@ export const notesReducer = (state = notesState, action) => {
       let newState = {...state}
       
       for(let i = 0; i < newState.notes.length; i++) {
-        if (newState.notes[i]._id === action.data.listId) {
+        if (newState.notes[i]._id === action.noteId) {
           newState.notes[i].content = action.newContent
           break
         }
@@ -47,29 +47,29 @@ const setNotes = (notes) => ({type: 'SET_NOTES', notes})
 const updateNote = (noteId, newContent) => ({type: 'UPDATE_NOTE', noteId, newContent})
 const removeNote = (noteId) => ({type: 'REMOVE_NOTE', noteId})
 
-export const createNoteThunk = (newNote, userId, success) => async (dispatch) => {
-  let data = await notesAPI.createNote(userId, newNote)
+export const createNoteThunk = (newNote, success) => async (dispatch) => {
+  let data = await notesAPI.createNote(newNote.authorId, newNote)
 
-  if (data.data.success) {
-    dispatch(createNote(newNote))
+  if (data.success) {
+    dispatch(createNote(data.note))
     success()
   } else {
     success({error: data.errorMessage})
   }
 }
 
-export const getNotes = (userId) => async (dispatch) => {
+export const getNotesThunk = (userId) => async (dispatch) => {
   let data = await notesAPI.getNotes(userId)
 
   if (data.success) {
-    dispatch(setNotes(data.notes))
+    dispatch(setNotes(data.data))
   } else {
     setError("Something went wrong! Try again")
   }
 }
 
 export const updateNoteThunk = (noteId, newContent, success) => async (dispatch) => {
-  let data = await notesAPI.updateNote(noteId)
+  let data = await notesAPI.updateNote(noteId, newContent)
   
   if (data.success) {
     dispatch(updateNote(noteId, newContent))

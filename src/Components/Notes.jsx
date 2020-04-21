@@ -5,14 +5,15 @@ import { Popconfirm } from 'antd'
 import { createNoteThunk, getNotes, updateNoteThunk, removeNoteThunk } from '../redux/reducers/notes/notesReducer'
 import { connect } from 'react-redux'
 import { setModal } from '../redux/reducers/modal/modalReducer'
+import TextareaAutosize from 'react-textarea-autosize'
 
-const Notes = ({setModal, updateNoteThunk, removeNoteThunk, notes, error}) => {
+const Notes = ({setModal, updateNoteThunk, removeNoteThunk, notesReducer, error}) => {
   return (
     <ListsWrapper>
       <Plus openModal={() => setModal({isActive: true, type: 'notes'})} type="notes" />
       <div className="lists">
         {
-          notes.map(note => <Note note={note} updateNote={updateNoteThunk} removeNote={() => removeNoteThunk(note._id)} />)
+          notesReducer.notes.map(note => <Note note={note} updateNote={updateNoteThunk} removeNote={() => removeNoteThunk(note._id)} />)
         }
       </div>
     </ListsWrapper>
@@ -41,11 +42,11 @@ const Note = ({removeNote, updateNote, note}) => {
     <ListItemSt>
       <div className="name">
         {editMode ? (
-          <textarea ref={newContentRef} defaultValue={note.content}></textarea>
+          <TextareaAutosize inputRef={newContentRef} defaultValue={note.content} />
         ) : (
           <span>{note.content}</span>
         )}
-        </div>
+      </div>
       <div className="functions">
       {editMode ? (
           <Popconfirm
@@ -92,7 +93,7 @@ const Note = ({removeNote, updateNote, note}) => {
 }
 
 const mapStateToProps = (state) => ({
-  notes: state.notesReducer.notes,
+  notesReducer: state.notesReducer,
   error: state.notesReducer.error
 })
 

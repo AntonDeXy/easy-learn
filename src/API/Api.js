@@ -105,8 +105,8 @@ export const notesAPI = {
     return instance.get(`notes/${userId}`)
       .then(res => res.data)
   },
-  updateNote (noteId) {
-    return instance.put(`notes/edit/${noteId}`)
+  updateNote (noteId, newContent) {
+    return instance.put(`notes/edit/${noteId}`, {newContent})
       .then(res => res.data)
   },
   createNote (userId, data) {
