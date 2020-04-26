@@ -1,14 +1,12 @@
 import React from 'react'
 import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus'
-import { remove, update, removeObjectFromProfile } from '../static/functions'
 import { useState, useRef } from 'react'
 import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
 import { connect } from 'react-redux'
 import { removeAddedListThunk } from '../redux/reducers/users/usersReducer';
 import {
-  getListsThunk,
   removeListThunk,
   updateListThunk,
 } from '../redux/reducers/lists/listsReducer'
@@ -39,49 +37,6 @@ const ListsContainer = (props) => {
               />
             )
           })}
-        </div>
-      )}
-    </ListsWrapper>
-  )
-}
-
-const Lists = ({
-  categories,
-  setCurrentList,
-  setModal,
-  setCurrentPage,
-  getCategories,
-  user,
-  setCurrentListAuthorId,
-  generalLoading,
-}) => {
-  const openShareModal = (categoryId) => {
-    setModal({ isActive: true, type: 'share', categoryId })
-  }
-
-  // const items = [{_id:1, name: 'list name'},{_id:2, name: 'list name'},{_id:3, name: 'list name'},{_id:4, name: 'list name'},{_id:5, name: 'list name'},{_id:6, name: 'list name'},{_id:7, name: 'list name'},{_id:8, name: 'list name'},{_id:9, name: 'list name'},{_id:10, name: 'list name'},{_id:11, name: 'list name'},{_id:12, name: 'list name'},{_id:13, name: 'list name'},{_id:14, name: 'last'},]
-  return (
-    <ListsWrapper>
-      {generalLoading ? (
-        <Spiner />
-      ) : (
-        <div className="lists">
-          {categories.length > 0 &&
-            categories.map((category) => {
-              return (
-                <List
-                  setCurrentListAuthorId={setCurrentListAuthorId}
-                  userId={user.sub}
-                  isOwner={category.authorId === user.sub ? true : false}
-                  // openShareModal={(data) => openShareModal(data)}
-                  key={category._id}
-                  getCategories={getCategories}
-                  setCurrentPage={setCurrentPage}
-                  setCurrentList={setCurrentList}
-                  item={category}
-                />
-              )
-            })}
         </div>
       )}
     </ListsWrapper>

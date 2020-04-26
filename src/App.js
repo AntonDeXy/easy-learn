@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import Header from './Components/Header'
 import { MainSt } from './Components/Styled'
 import Footer from './Components/Footer'
@@ -14,14 +14,14 @@ import Profile from "./Components/Profile"
 import history from "./utils/history"
 import PrivateRoute from './Components/PrivateRoute'
 import ExternalApi from "./views/ExternalApi"
-import { useEffect } from 'react';
+import { useEffect } from 'react'
 import AddListUrl from './Components/AddListUrl'
-import Spiner from './Components/Spiner';
+import Spiner from './Components/Spiner'
 import { connect } from 'react-redux'
-import { setModal } from './redux/reducers/modal/modalReducer';
-import { setUserThunk } from './redux/reducers/users/usersReducer';
+import { setModal } from './redux/reducers/modal/modalReducer'
+import { setUserThunk } from './redux/reducers/users/usersReducer'
 import { getListsThunk } from './redux/reducers/lists/listsReducer'
-import { getNotes, getNotesThunk } from './redux/reducers/notes/notesReducer';
+import { getNotesThunk } from './redux/reducers/notes/notesReducer'
 
 const App = ({modal, getNotes, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
@@ -73,10 +73,6 @@ const App = ({modal, getNotes, setModal, currentPage, user, setUserThunk, getLis
         {modal.isActive && (
           <Modal
             setModal={setModal}
-            // setGeneralLoadingTrue={() => setGeneralLoading(true)}
-            // currentListId={currentListId}
-            // user={user}
-            // getCategories={() => getCategories()}
           />
         )}
         {
@@ -84,32 +80,34 @@ const App = ({modal, getNotes, setModal, currentPage, user, setUserThunk, getLis
         }
         <MainSt>
           <Switch>
+
             <PrivateRoute
               path='/lists/add/:listId'
-              render={(props) =>  <AddListUrl {...props} /*getCategories={getCategories}*/ user={user} />}
+              render={(props) =>  <AddListUrl {...props} user={user} />}
             />
             <PrivateRoute path="/profile" component={Profile} />
+
             <PrivateRoute path="/external-api" component={ExternalApi} />
+
             <PrivateRoute exact path="/">
               {currentPage === 'lists' && (
                 <ListsContainer />
               )}
               {currentPage === 'words' && (
                 <Words
-                  // generalLoading={generalLoading}
-                  // currentListAuthorId={currentListAuthorId}
+                  isLoading={loading}
                   user={user}
-                  // getCategories={() => getCategories()}
-                  // categoriesWords={categoriesWords}
                   setModal={data => setModal(data)}
                 />
               )}
             </PrivateRoute>
+
             <Route exact path='/help'>
               <div>
                 Help Page
               </div>
             </Route>
+
             <Route exact path='/notes'>
               <Notes />
             </Route>

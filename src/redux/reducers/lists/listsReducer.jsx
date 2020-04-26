@@ -1,27 +1,9 @@
-import { SET_LIST_ITEMS, SET_NEW_LIST_NAME, REMOVE_LIST, CREATE_LIST, ADD_NEW_ITEM, CHANGE_ITEM_DATA, REMOVE_ITEM, SET_ERROR, CLEAR_ERROR, SET_CURRENT_LIST, SET_LOADING } from './listsReducerTypes';
+import { SET_LIST_ITEMS, SET_NEW_LIST_NAME, REMOVE_LIST, CREATE_LIST, ADD_NEW_ITEM, CHANGE_ITEM_DATA, REMOVE_ITEM, SET_ERROR, CLEAR_ERROR, SET_LOADING } from './listsReducerTypes';
 import { listsAPI, itemsAPI } from '../../../API/Api';
 
 const listsState = {
-  lists: [
-    {
-      _id: 1,
-      name: 'title',
-      items: [
-        {
-          _id: 1,
-          word: 'word',
-          translate: 'translate'
-        },
-        {
-          _id: 2,
-          word: 'word2',
-          translate: 'translate2'
-        }
-      ]
-    }
-  ],
+  lists: [],
   isLoading: false,
-  // currentList: {},
   errorMessage: '',
   autoTranslates: []
 }
@@ -177,8 +159,6 @@ export const removeItemThunk = (listId, itemId, success) => async (dispatch) => 
 
 export const updateItemThunk = (listId, itemId, newItem, success) => async (dispatch) => {
   let res = await itemsAPI.updateItem({itemId, newItem})
-  // success()
-  // dispatch(changeItemData(listId, itemId, newItem))
 
   if (res.success) {
     success()

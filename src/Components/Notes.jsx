@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus';
 import { Popconfirm } from 'antd'
-import { createNoteThunk, getNotes, updateNoteThunk, removeNoteThunk } from '../redux/reducers/notes/notesReducer'
+import { updateNoteThunk, removeNoteThunk } from '../redux/reducers/notes/notesReducer'
 import { connect } from 'react-redux'
 import { setModal } from '../redux/reducers/modal/modalReducer'
 import TextareaAutosize from 'react-textarea-autosize'

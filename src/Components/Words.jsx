@@ -2,29 +2,30 @@ import React, { useState, useRef } from 'react'
 import { WordsWrapper, WordItemSt } from './Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
-import { update, remove } from '../static/functions'
 import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
 import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
 import { connect } from 'react-redux';
 import { updateItemThunk, removeItemThunk } from '../redux/reducers/lists/listsReducer'
 
-const Words = (props) => {
-  const isOwner = props.user.userId === props.currentList.authorId ? true : false
+const Words = ({user, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal}) => {
+  const isOwner = user.userId === currentList.authorId ? true : false
   
   return (
     <WordsWrapper>
-      <Plus toGeneralPage={() => props.changeCurrentPageToLists()} openModal={() => props.setModal({isActive: true, type: 'words'})} isOwner={isOwner} type="words" />
-      {/* {
-        generalLoading
-        ? <Spiner />
-        : ( */}
-          <div className="lists">
-            {props.currentList.items.length > 0 &&
-              props.currentList.items.map(word => <Word isTestStarted={props.modalType === 'test' ? true : false} removeItemThunk={props.removeItemThunk} currentListId={props.currentList._id} updateItemThunk={props.updateItemThunk} isOwner={isOwner} key={word._id} item={word} />)}
-          </div>
-        {/* )
-      } */}
+      <Plus toGeneralPage={() => changeCurrentPageToLists()} openModal={() => setModal({isActive: true, type: 'words'})} isOwner={isOwner} type="words" />
+        <div className="lists">
+          {currentList.items.length > 0 &&
+            currentList.items.map(word => {
+              return <Word
+                isTestStarted={modalType === 'test' ? true : false}
+                removeItemThunk={removeItemThunk}
+                currentListId={currentList._id}
+                updateItemThunk={updateItemThunk}
+                isOwner={isOwner} key={word._id} item={word} />
+            })
+          }
+        </div>
     </WordsWrapper>
   )
 }
@@ -147,18 +148,12 @@ const mapStateToProps = (state, ownProps) => ({
   currentList: state.mainReducer.currentList,
   errorMessage: state.listsReducer.errorMessage,
   modalType: state.modalReducer.type,
-  // user: state.userReducer.user
   ...ownProps
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  // setCurrentList: (listId) => dispatch(setCurrentList(listId)),
   changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
-  // setModal: (data) => dispatch(setModal(data)),
-  // updateListThunk: (listId, newData, success) => dispatch(updateListThunk(listId, newData, success)),
-  // removeListThunk: (data) => dispatch(removeListThunk(data)),
   updateItemThunk: (listId, itemId, newItem, success) => dispatch(updateItemThunk(listId, itemId, newItem, success)),
-  // removeAddedListThunk: (data) => dispatch(removeAddedListThunk(data))
   removeItemThunk: (listId, itemId, success) => dispatch(removeItemThunk(listId, itemId, success))
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Words)

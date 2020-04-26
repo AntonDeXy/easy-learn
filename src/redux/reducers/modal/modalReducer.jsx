@@ -1,5 +1,3 @@
-import { itemsAPI } from "../../../API/Api"
-
 const modalState = {
   isActive: false,
   type: '',

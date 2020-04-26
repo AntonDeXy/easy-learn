@@ -2,7 +2,6 @@ import React from 'react'
 import { PlusSt } from './Styled'
 
 const Plus = (props) => {
-  // const Plus = ({type, setModal, setCurrentPage, isOwner}) => {
   return (
     <PlusSt>
       <div>

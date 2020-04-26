@@ -446,7 +446,7 @@ export const AddListUrlStyled = styled.div `
     display: grid;
     gap: 20px;
     grid-template-columns: 1fr auto;
-    box-shadow: 0 0 10px black;
+    border-bottom: 2px solid #C7D1D9;
   }
   .main {
     padding: 0 10px 10px 10px;
