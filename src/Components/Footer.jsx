@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeCurrentPageType } from '../redux/reducers/main/mainReducer';
 
-const Footer = ({currentPage, setCurrentPage, setModal}) => {
+const Footer = ({currentPage, setCurrentPage, setModal, listWordsCount}) => {
   const StartTest = () => {
     if (currentPage === 'words') {
-      setModal({isActive: true, type: 'chooseTestType'})
+      if (listWordsCount < 5) {
+        setModal({isActive: true, type: 'error', errorMessage: 'Words count must be greater or equal 5'})
+      } else {
+        setModal({isActive: true, type: 'chooseTestType'})
+      }
     } else {
       setModal({isActive: true, type: 'error', errorMessage: 'Choose list for start test'})
     }
@@ -40,7 +44,7 @@ const Footer = ({currentPage, setCurrentPage, setModal}) => {
 }
 
 const mapStateToProps = state => ({
-
+  listWordsCount: state.mainReducer.currentList.items.length
 })
 
 const mapDispatchToProps = dispatch => ({

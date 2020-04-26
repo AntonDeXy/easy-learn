@@ -360,7 +360,6 @@ export const ModalSt = styled.div `
           border: 1px solid #C7D1D9;
           resize: none;
         }
-        /* gap: 5px; */
       }
       .spiner {
         justify-self: center;

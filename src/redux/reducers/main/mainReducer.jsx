@@ -2,7 +2,9 @@ import { SET_CURRENT_LIST } from "../lists/listsReducerTypes"
 
 const mainState = {
   currentPage: 'lists',
-  currentList: {}
+  currentList: {
+    items: []
+  }
 }
 
 export const mainReducer = (state = mainState, action) => {
