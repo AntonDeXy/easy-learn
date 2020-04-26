@@ -355,6 +355,11 @@ export const ModalSt = styled.div `
           height: 30px;
           border: 1px solid #C7D1D9;
         }
+        textarea {
+          border-radius: 5px;
+          border: 1px solid #C7D1D9;
+          resize: none;
+        }
         /* gap: 5px; */
       }
       .spiner {
@@ -371,7 +376,6 @@ export const ModalSt = styled.div `
         .translate {
 
         }
-        
         ul {
           li {
             :hover {

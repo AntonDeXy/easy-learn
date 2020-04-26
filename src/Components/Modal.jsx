@@ -10,6 +10,7 @@ import { addListToProfileThunk } from '../redux/reducers/users/usersReducer';
 import { mainReducer } from '../redux/reducers/main/mainReducer';
 import { createNoteThunk } from '../redux/reducers/notes/notesReducer';
 import { useEffect } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
 
 const Modal = (
   {
@@ -128,12 +129,6 @@ const ChooseTestTypeModal = ({setTestType}) => {
 }
 
 const TestModal = ({currentQuestion, getNextQuestion, setModal}) => {
-  // button bg & color
-  // rightanswer: #ff3547
-  // wronganswer: green
-
-  // increaseRightAnswerCount()
-
   return (
     <div className="test">
       <div><span>Choose right meaning for <b>{currentQuestion && currentQuestion.value1}</b></span></div>
@@ -317,7 +312,7 @@ const AddNote = ({createNote, userId, disabledButtonStyle, closeModal}) => {
     <div className="main">
       <div className="item">
         <span>Content</span>
-        <input ref={contentRef} type="text" />
+        <TextareaAutosize autoFocus inputRef={contentRef} />
       </div>
       <button onClick={() => createNewNote()} >Add</button>
     </div>
