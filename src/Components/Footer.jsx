@@ -7,7 +7,7 @@ import { changeCurrentPageType } from '../redux/reducers/main/mainReducer';
 const Footer = ({currentPage, setCurrentPage, setModal}) => {
   const StartTest = () => {
     if (currentPage === 'words') {
-      setModal({isActive: true, type: 'test'})
+      setModal({isActive: true, type: 'chooseTestType'})
     } else {
       setModal({isActive: true, type: 'error', errorMessage: 'Choose list for start test'})
     }

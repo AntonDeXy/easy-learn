@@ -4,15 +4,22 @@ import { useState } from 'react'
 import { create, addCategoryToProfile, checkIfCategoryIsExist, checkIfUserHaveCurrCategory, isUserListOwner, autoTranslate } from '../static/functions';
 import Spiner from './Spiner';
 import { connect } from 'react-redux';
-import { setModal } from '../redux/reducers/modal/modalReducer'
+import { setModal, setTestModal, getNextQuestion } from '../redux/reducers/modal/modalReducer'
 import { createListThunk, createItemThunk, getAutoTranslatesThunk } from '../redux/reducers/lists/listsReducer';
 import { addListToProfileThunk } from '../redux/reducers/users/usersReducer';
 import { mainReducer } from '../redux/reducers/main/mainReducer';
 import { createNoteThunk } from '../redux/reducers/notes/notesReducer';
+import { useEffect } from 'react';
 
-const Modal = ({ createItemThunk, createNote, setModal, currentListId, autoTranslates, getAutoTranslatesThunk, modal, items, user, addListToProfileThunk, getCategories, setGeneralLoadingTrue, createNewList }) => {
-  const [rightUnswersCount, setRightUnswersCount] = useState(0)
-  const [error, setError] = useState(undefined)
+const Modal = (
+  {
+    test, setTestModal, createItemThunk,
+    createNote, setModal, currentList,
+    currentListId, autoTranslates, getAutoTranslatesThunk,
+    modal, items, user, addListToProfileThunk,
+    getCategories, setGeneralLoadingTrue, createNewList,
+    getNextQuestion
+  }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const disabledButtonStyle = {
@@ -34,11 +41,11 @@ const Modal = ({ createItemThunk, createNote, setModal, currentListId, autoTrans
           </div>
           <div>
             {
-              modal.type === 'test' && <span>{rightUnswersCount}/12</span>
+              modal.type === 'test' && <span>{test.questionId}/{test.questionsCount}</span>
             }
           </div>
           <svg
-            onClick={() => setModal({ isActive: false })}
+            onClick={() => setModal({ isActive: false, type: '' })}
             width="17"
             height="18"
             viewBox="0 0 17 18"
@@ -66,8 +73,24 @@ const Modal = ({ createItemThunk, createNote, setModal, currentListId, autoTrans
           disabledButtonStyle={disabledButtonStyle} 
           closeModal={() => setModal({isActive: false})} /> }
         {modal.type === 'error' && <Error modal={modal} /> }
-        {modal.type === 'test' && <TestModal items={items} modal={modal} /> }
-        {modal.type === 'result' && <ResultModal items={items} modal={modal} /> }
+
+        {modal.type === 'test' && <TestModal
+          getNextQuestion={getNextQuestion}
+          currentQuestion={test.currentQuestion}
+          setModal={setModal}
+        />}
+
+        {modal.type === 'chooseTestType' &&<ChooseTestTypeModal
+          setTestType={
+            (testType) => {
+              setTestModal(
+              {
+                isActive: true, type: 'test',
+                test: {type: testType, initialItems: currentList.items}
+              })
+            }
+            }/> }
+        {modal.type === 'result' && <ResultModal test={test} /> }
         {modal.type === 'share' && <ShareModal categoryId={modal.listId} modal={modal} /> }
       </div>
     </ModalSt>
@@ -90,26 +113,73 @@ const ShareModal = ({categoryId}) => {
   )
 }
 
-const TestModal = ({items}) => {
+const ChooseTestTypeModal = ({setTestType}) => {
+  return (
+    <div className="choose-test-type">
+      <div className='title' ><span>Choose test type</span></div>
+      <button onClick={() => setTestType('wordTranslates')} >
+        <span>Word => tranlates</span>
+      </button>
+      <button onClick={() => setTestType('translateWords')} >
+        <span>Translate => words</span>
+      </button>
+    </div>
+  )
+}
+
+const TestModal = ({currentQuestion, getNextQuestion, setModal}) => {
   // button bg & color
   // rightanswer: #ff3547
   // wronganswer: green
+
+  // increaseRightAnswerCount()
+
+  
   return (
     <div className="test">
-      <div><span>Choose right meaning for 'word'</span></div>
+      <div><span>Choose right meaning for <b>'{currentQuestion && currentQuestion.value1}'</b></span></div>
       <div className="answers">
-        <button>Answer</button>
-        <button>Answer</button>
-        <button>Answer</button>
+        {
+          currentQuestion && currentQuestion.variants.map((variant, index) => {
+            let isClicked = false
+            return (
+              <button
+                onClick={(e) => {
+                  if (variant.value === currentQuestion.rightAnswer) {
+                    isClicked = true
+                    if (isClicked) {
+                      e.target.style.color = '#00b500'
+                      e.target.style.borderColor = '#00b500'
+                    }
+                  } else {
+                    isClicked = true
+                    if (isClicked) {
+                      e.target.style.color = '#ff3547'
+                      e.target.style.borderColor = '#ff3547'
+                    }
+                  }
+                 
+                  setTimeout(
+                    () => {
+                      getNextQuestion(variant.value)
+                    },
+                    500
+                  )
+                }}
+                key={variant.key}
+              >{variant.value}</button>
+            )
+          })
+        }
       </div>
     </div>
   )
 }
 
-const ResultModal = () => {
+const ResultModal = ({test}) => {
   return (
     <div className="main">
-      <span className='resultText'>Your result 12/12</span>
+      <span className='resultText'>Your result {test.rightAnswersCount}/{test.questionsCount}</span>
     </div>
   )
 }
@@ -261,6 +331,8 @@ const mapStateToProps = (state, ownProps) => ({
   user: state.userReducer,
   autoTranslates: state.listsReducer.autoTranslates,
   currentListId: state.mainReducer.currentList._id,
+  currentList: state.mainReducer.currentList,
+  test: state.modalReducer.test,
   ...ownProps
 })
 
@@ -270,7 +342,9 @@ const mapDispatchToProps = (dispatch) => ({
   createNewList: (data, success) => dispatch(createListThunk(data, success)),
   getAutoTranslatesThunk: (phrase, success) => dispatch(getAutoTranslatesThunk(phrase, success)),
   createItemThunk: (item, listId, success) => dispatch(createItemThunk(item, listId, success)),
-  createNote: (data, success) => dispatch(createNoteThunk(data, success))
+  createNote: (data, success) => dispatch(createNoteThunk(data, success)),
+  setTestModal: (data) => dispatch(setTestModal(data)),
+  getNextQuestion: (answer) => dispatch(getNextQuestion(answer))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)

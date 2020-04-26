@@ -298,6 +298,37 @@ export const ModalSt = styled.div `
             box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15);
           }
         }
+        .rightAnswer {
+          color: #00b500;
+          border-color: #00b500;
+        }
+        .wrongAnswer {
+          color: #ff3547;
+          border-color: #ff3547;
+        }
+      }
+    }
+    .choose-test-type {
+      display: grid;
+      grid-template-columns: repeat(1fr, 3);
+      align-content: baseline;
+      gap: 10px;
+      padding: 10px;
+      .title {
+        grid-column: 1/4;
+      }
+      button {
+        height: 30px;
+        border-radius: 10em;
+        color: #4285f4;
+        border: 2px solid #4285f4;
+        background-color: #ffffff;
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+        transition: all.5s;
+        :active {
+          background-color: gainsboro;
+          box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15);
+        }
       }
     }
     .main {

@@ -21,7 +21,7 @@ const Words = (props) => {
         : ( */}
           <div className="lists">
             {props.currentList.items.length > 0 &&
-              props.currentList.items.map(word => <Word removeItemThunk={props.removeItemThunk} currentListId={props.currentList._id} updateItemThunk={props.updateItemThunk} isOwner={isOwner} key={word._id} item={word} />)}
+              props.currentList.items.map(word => <Word isTestStarted={props.modalType === 'test' ? true : false} removeItemThunk={props.removeItemThunk} currentListId={props.currentList._id} updateItemThunk={props.updateItemThunk} isOwner={isOwner} key={word._id} item={word} />)}
           </div>
         {/* )
       } */}
@@ -29,7 +29,7 @@ const Words = (props) => {
   )
 }
 
-const Word = ({ item, getCategories, isOwner, updateItemThunk, currentListId, removeItemThunk }) => {
+const Word = ({ isTestStarted, item, getCategories, isOwner, updateItemThunk, currentListId, removeItemThunk }) => {
   const [editMode, setEditMode] = useState(false)
   const [newWord, setNewWord] = useState(item.word)
   const [newTranslate, setNewTranslate] = useState(item.translate)
@@ -67,7 +67,7 @@ const Word = ({ item, getCategories, isOwner, updateItemThunk, currentListId, re
                   }}
                 />
               ) : (
-                <span>{item.word}</span>
+                <span style={isTestStarted ? {opacity: '0'} : {}} >{item.word}</span>
               )}
             </div>
             <div className="translate">
@@ -81,7 +81,7 @@ const Word = ({ item, getCategories, isOwner, updateItemThunk, currentListId, re
                   }}
                 />
               ) : (
-                <span>{item.translate}</span>
+                <span style={isTestStarted ? {opacity: '0'} : {}} >{item.translate}</span>
               )}
             </div>
           </>
@@ -146,6 +146,7 @@ const mapStateToProps = (state, ownProps) => ({
   lists: state.listsReducer.lists,
   currentList: state.mainReducer.currentList,
   errorMessage: state.listsReducer.errorMessage,
+  modalType: state.modalReducer.type,
   // user: state.userReducer.user
   ...ownProps
 })
