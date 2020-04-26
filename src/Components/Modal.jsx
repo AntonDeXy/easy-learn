@@ -118,10 +118,10 @@ const ChooseTestTypeModal = ({setTestType}) => {
     <div className="choose-test-type">
       <div className='title' ><span>Choose test type</span></div>
       <button onClick={() => setTestType('wordTranslates')} >
-        <span>Word => tranlates</span>
+        <span>Word → tranlates</span>
       </button>
       <button onClick={() => setTestType('translateWords')} >
-        <span>Translate => words</span>
+        <span>Translate → words</span>
       </button>
     </div>
   )
@@ -134,10 +134,9 @@ const TestModal = ({currentQuestion, getNextQuestion, setModal}) => {
 
   // increaseRightAnswerCount()
 
-  
   return (
     <div className="test">
-      <div><span>Choose right meaning for <b>'{currentQuestion && currentQuestion.value1}'</b></span></div>
+      <div><span>Choose right meaning for <b>{currentQuestion && currentQuestion.value1}</b></span></div>
       <div className="answers">
         {
           currentQuestion && currentQuestion.variants.map((variant, index) => {
@@ -158,7 +157,6 @@ const TestModal = ({currentQuestion, getNextQuestion, setModal}) => {
                       e.target.style.borderColor = '#ff3547'
                     }
                   }
-                 
                   setTimeout(
                     () => {
                       getNextQuestion(variant.value)
