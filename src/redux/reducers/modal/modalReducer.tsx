@@ -1,4 +1,31 @@
-const modalState = {
+import { SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS, NEXT_QUESTION, SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES, SHUFLE_ITEMS, SET_MODAL } from "./modalReducerTypes"
+import { ItemType } from "../main/mainReducer"
+
+type QuestionType = {
+  value1: string
+  rightAnswer: string
+  variants: Array<{value: string, key: number}>
+}
+
+type TestType = {
+  type: string
+  questionsCount: number
+  questionId: 0
+  rightAnswersCount: 0
+  initialItems: Array<ItemType>
+  shufledItems: Array<ItemType>
+  itemsForTest: Array<QuestionType>
+  currentQuestion: QuestionType
+}
+
+type ModalStateType = {
+  isActive: boolean
+  type: string
+  listId: string
+  test: TestType
+}
+
+const modalState:ModalStateType = {
   isActive: false,
   type: '',
   listId: '',
@@ -10,33 +37,37 @@ const modalState = {
     initialItems: [],
     shufledItems: [],
     itemsForTest: [],
-    currentQuestion: {}
+    currentQuestion: {
+      value1: '',
+      rightAnswer: '',
+      variants: []
+    }
   }
 }
 
-const modalReducer = (state = modalState, action) => {
+const modalReducer = (state = modalState, action:any) => {
   switch (action.type) {
-    case 'SET_MODAL': {
+    case SET_MODAL: {
       return {...state, ...action.modalData}
     }
-    case 'SHUFLE_ITEMS': {
+    case SHUFLE_ITEMS: {
       let newState = {...state}
-      const shuffle = (a) => {
+      const shuffle = (a:Array<ItemType>) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
+            [a[i], a[j]] = [a[j], a[i]]
         }
-        return a;
+        return a
       }
       const shufledItems = shuffle([...newState.test.initialItems])
       newState.test.shufledItems = shufledItems
       return newState
     }
-    case 'SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES': {
+    case SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES: {
       let newState = {...state}
       let itemsForTest = []
       for (let i = 0; i < newState.test.shufledItems.length; i++) {
-        let temporaryItem = {
+        let temporaryItem:QuestionType = {
           value1: '',
           rightAnswer: '',
           variants: []
@@ -47,11 +78,10 @@ const modalReducer = (state = modalState, action) => {
 
         for (let v = 0; v < action.data.variantsCount; v++) {
           let isItemOnArray = true
-          let randomNum
+          let randomNum:number = 0
           while (isItemOnArray) {
-            let temp = Math.random() * (newState.test.shufledItems.length)
-            randomNum = Math.floor(temp)
-            let temporaryVariants = []
+            randomNum = Math.floor(Math.random() * (newState.test.shufledItems.length))
+            let temporaryVariants:Array<string> = []
             temporaryItem.variants.forEach(v => temporaryVariants.push(v.value))
             if (!temporaryVariants.includes(newState.test.shufledItems[randomNum].translate)) {
               isItemOnArray = false
@@ -60,7 +90,7 @@ const modalReducer = (state = modalState, action) => {
           temporaryItem.variants.push({value: newState.test.shufledItems[randomNum].translate, key: Math.random() * 10})
         }
 
-        let temporaryVariants = []
+        let temporaryVariants:Array<string> = []
         temporaryItem.variants.forEach(v => temporaryVariants.push(v.value))
         
         if (!temporaryVariants.includes(temporaryItem.rightAnswer)) {
@@ -80,11 +110,11 @@ const modalReducer = (state = modalState, action) => {
       
       return newState
     }
-    case 'SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS': {
+    case SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS: {
       let newState = {...state}
       let itemsForTest = []
       for (let i = 0; i < newState.test.shufledItems.length; i++) {
-        let temporaryItem = {
+        let temporaryItem:QuestionType = {
           value1: '',
           rightAnswer: '',
           variants: []
@@ -95,11 +125,11 @@ const modalReducer = (state = modalState, action) => {
 
         for (let v = 0; v < action.data.variantsCount; v++) {
           let isItemOnArray = true
-          let randomNum
+          let randomNum:number = 0
           while (isItemOnArray) {
             let temp = Math.random() * (newState.test.shufledItems.length)
             randomNum = Math.floor(temp)
-            let temporaryVariants = []
+            let temporaryVariants:Array<string> = []
             temporaryItem.variants.forEach(v => temporaryVariants.push(v.value))
             if (!temporaryVariants.includes(newState.test.shufledItems[randomNum].translate)) {
               isItemOnArray = false
@@ -108,7 +138,7 @@ const modalReducer = (state = modalState, action) => {
           temporaryItem.variants.push({value: newState.test.shufledItems[randomNum].word, key: Math.random() * 10})
         }
 
-        let temporaryVariants = []
+        let temporaryVariants:Array<string> = []
         temporaryItem.variants.forEach(v => temporaryVariants.push(v.value))
         
         if (!temporaryVariants.includes(temporaryItem.rightAnswer)) {
@@ -128,7 +158,7 @@ const modalReducer = (state = modalState, action) => {
       
       return newState
     }
-    case 'NEXT_QUESTION': {
+    case NEXT_QUESTION: {
       let newState = {...state}
 
       if (action.answer === newState.test.currentQuestion.rightAnswer) {
@@ -149,13 +179,40 @@ const modalReducer = (state = modalState, action) => {
   }
 }
 
-export const setModal = (modalData) => ({type: 'SET_MODAL', modalData})
-export const shufleItems = () => ({type: 'SHUFLE_ITEMS'})
-export const setItemsForTestWordToTranslates = (variantsCount) => ({type: 'SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES', data: {variantsCount: variantsCount ? variantsCount : 3}})
-export const setItemsForTestTranslateToWords = (variantsCount) => ({type: 'SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS', data: {variantsCount: variantsCount ? variantsCount : 3}})
-export const getNextQuestion = (answer) => ({type: 'NEXT_QUESTION', answer})
+type SetModalActionType = {
+  type: typeof SET_MODAL
+  modalData: ModalStateType
+}
+export const setModal = (modalData:ModalStateType):SetModalActionType => ({type: SET_MODAL, modalData})
 
-export const setTestModal = (modalData, variantsCount) => async (dispatch) => {
+type ShufleItemsActionType = {
+  type: typeof SHUFLE_ITEMS
+}
+export const shufleItems = ():ShufleItemsActionType => ({type: SHUFLE_ITEMS})
+
+type SetItemsForTestWordToTranslatesActionType = {
+  type: typeof SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES
+  data: {
+    variantsCount: number
+  }
+}
+export const setItemsForTestWordToTranslates = (variantsCount:number):SetItemsForTestWordToTranslatesActionType => ({type: SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES, data: {variantsCount: variantsCount ? variantsCount : 3}})
+
+type SetItemsForTestTranslateToWords = {
+  type: typeof SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS
+  data: {
+    variantsCount: number
+  }
+}
+export const setItemsForTestTranslateToWords = (variantsCount:number):SetItemsForTestTranslateToWords => ({type: SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS, data: {variantsCount: variantsCount ? variantsCount : 3}})
+
+type getNextQuestion = {
+  type: typeof NEXT_QUESTION
+  answer: string
+}
+export const getNextQuestion = (answer:string) => ({type: NEXT_QUESTION, answer})
+
+export const setTestModal = (modalData:ModalStateType, variantsCount:number) => async (dispatch:any) => {
   await dispatch(setModal(modalData))
   await dispatch(shufleItems())
   if (modalData.test.type === 'wordTranslates') {

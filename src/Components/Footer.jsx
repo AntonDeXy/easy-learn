@@ -1,8 +1,8 @@
 import React from 'react'
 import { FooterSt } from './Styled'
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { changeCurrentPageType } from '../redux/reducers/main/mainReducer';
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
 
 const Footer = ({currentPage, setCurrentPage, setModal, listWordsCount}) => {
   const StartTest = () => {

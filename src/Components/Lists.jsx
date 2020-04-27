@@ -5,13 +5,13 @@ import { useState, useRef } from 'react'
 import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
 import { connect } from 'react-redux'
-import { removeAddedListThunk } from '../redux/reducers/users/usersReducer';
+import { removeAddedListThunk } from '../redux/reducers/users/usersReducer'
 import {
   removeListThunk,
   updateListThunk,
 } from '../redux/reducers/lists/listsReducer'
 import { changeCurrentPageType, setCurrentList } from '../redux/reducers/main/mainReducer'
-import { setModal } from '../redux/reducers/modal/modalReducer';
+import { setModal } from '../redux/reducers/modal/modalReducer'
 
 const ListsContainer = (props) => {
   return (

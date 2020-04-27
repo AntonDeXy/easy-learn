@@ -5,7 +5,7 @@ import { Popconfirm } from 'antd'
 import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
 import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import { updateItemThunk, removeItemThunk } from '../redux/reducers/lists/listsReducer'
 
 const Words = ({user, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal}) => {
@@ -44,7 +44,15 @@ const Word = ({ isTestStarted, item, getCategories, isOwner, updateItemThunk, cu
       let newData = {...item}
       newData.word = wordRef.current.props.value
       newData.translate = translateRef.current.props.value
-      updateItemThunk(currentListId, item._id, newData, () => {setIsLoading(false); setEditMode(!editMode)})
+      updateItemThunk(
+        currentListId,
+        item._id,
+        newData,
+        () => {
+          setIsLoading(false)
+          setEditMode(!editMode)
+        }
+      )
     } else {
       setEditMode(!editMode)
     }

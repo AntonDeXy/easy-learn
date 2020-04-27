@@ -56,6 +56,7 @@ export const listsAPI = {
 export const itemsAPI = {
   createItem(listId, translate, word) {
     return instance.post(`items/new/`, {listId, translate, word})
+      .then(res => res.data)
   },
   updateItem(data) {
     return instance.put(`items/edit/${data.itemId}`, data.newItem)
