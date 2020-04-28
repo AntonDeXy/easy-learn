@@ -2,13 +2,15 @@ import { userAPI, listsAPI } from '../../../API/Api'
 import { ADD_LIST_TO_PROFILE, CLEAR_ERROR, SET_ERROR, REMOVE_ADDED_LIST, SET_USER } from './usersReducerTypes'
 import { ListType } from '../main/mainReducer'
 
-type UserStateType = {
+export type UserStateType = {
   _id: string
+  userId: string
   addedLists: Array<ListType>
 }
 
 const userState:UserStateType = {
   _id: '',
+  userId: '',
   addedLists: []
 }
 
@@ -101,6 +103,9 @@ export const listCheckerThunk = (listId:string, userId:string, success:any) => a
 }
 
 export const addListWithoutCheckThunk = (list:ListType, userId:string, success:any) => async (dispatch:any) => {
+  if (!list._id) {
+    return success({error: 'Something went wrong! Try again!'})
+  }
   let data = await userAPI.addListToProfile({userId, listId: list._id})
 
   if (data.data.success) {

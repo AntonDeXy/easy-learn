@@ -2,11 +2,22 @@ import { SET_LIST_ITEMS, SET_NEW_LIST_NAME, REMOVE_LIST, CREATE_LIST, ADD_NEW_IT
 import { listsAPI, itemsAPI } from '../../../API/Api'
 import { ListType, ItemType } from '../main/mainReducer'
 
+export type TranslateType = {
+  id: number
+  is_user?: null
+  pic_url: string
+  translate_value: string
+  ut?: null
+  value: string
+  votes: number
+  vt: number
+}
+
 type ListsStateType = {
   lists: Array<ListType>
   isLoading: boolean
   errorMessage: string
-  autoTranslates: Array<string>
+  autoTranslates: Array<TranslateType>
 }
 
 const listsState:ListsStateType = {
@@ -242,8 +253,8 @@ export const updateItemThunk = (listId:string, itemId:string, newItem:ItemType, 
 
 export const createItemThunk = (item:ItemType, listId:string, success:any) => async (dispatch:any) => {
   let res = await itemsAPI.createItem(listId, item.translate, item.word)
-  if (res.data.success) {
-    dispatch(createItem(res.data.doc, listId))
+  if (res.success) {
+    dispatch(createItem(res.doc, listId))
     dispatch(clearAutoTranslates())
     success()
   } else {

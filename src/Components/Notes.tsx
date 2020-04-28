@@ -2,31 +2,45 @@ import React, { useState, useRef } from 'react'
 import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
-import { updateNoteThunk, removeNoteThunk } from '../redux/reducers/notes/notesReducer'
+import { updateNoteThunk, removeNoteThunk, NoteType } from '../redux/reducers/notes/notesReducer'
 import { connect } from 'react-redux'
-import { setModal } from '../redux/reducers/modal/modalReducer'
+import { setModal, SetModalType } from '../redux/reducers/modal/modalReducer'
 import TextareaAutosize from 'react-textarea-autosize'
+import Spiner from './Spiner'
 
-const Notes = ({setModal, updateNoteThunk, removeNoteThunk, notesReducer, error}) => {
+type NotesType = {
+  setModal: (data:SetModalType) => void
+  updateNoteThunk: (noteId:string, newContent:string, success:any) => void
+  removeNoteThunk: (noteId:string) => void
+  notesReducer: {notes: Array<NoteType>}
+}
+
+const Notes:React.FC<NotesType> = ({setModal, updateNoteThunk, removeNoteThunk, notesReducer}) => {
   return (
     <ListsWrapper>
       <Plus openModal={() => setModal({isActive: true, type: 'notes'})} type="notes" />
       <div className="lists">
         {
-          notesReducer.notes.map(note => <Note note={note} updateNote={updateNoteThunk} removeNote={() => removeNoteThunk(note._id)} />)
+          notesReducer.notes.map(note => <Note note={note} updateNote={updateNoteThunk} removeNote={() => note._id && removeNoteThunk(note._id)} />)
         }
       </div>
     </ListsWrapper>
   )
 }
 
-const Note = ({removeNote, updateNote, note}) => {
+type Note = {
+  removeNote: () => void
+  updateNote: (noteId:string, newContent:string, success:any) => void
+  note: NoteType
+}
+
+const Note:React.FC<Note> = ({removeNote, updateNote, note}) => {
   const [editMode, setEditMode] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const newContentRef = useRef(null)
+  const newContentRef = useRef<HTMLTextAreaElement>(null)
 
   const toggleEditMode = () => {
-    if (editMode && newContentRef.current.value !== note.content) {
+    if (editMode && newContentRef?.current && newContentRef.current.value !== note.content && note._id) {
       setIsLoading(true)
       setEditMode(!editMode)
       updateNote(note._id, newContentRef.current.value, () => {
@@ -44,7 +58,9 @@ const Note = ({removeNote, updateNote, note}) => {
         {editMode ? (
           <TextareaAutosize inputRef={newContentRef} defaultValue={note.content} />
         ) : (
-          <span>{note.content}</span>
+          isLoading
+          ? <Spiner />
+          : <span>{note.content}</span>
         )}
       </div>
       <div className="functions">
@@ -92,16 +108,14 @@ const Note = ({removeNote, updateNote, note}) => {
   )
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
   notesReducer: state.notesReducer,
-  error: state.notesReducer.error
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  setModal: (data) => dispatch(setModal(data)),
-  // createNoteThunk: (newNote, userId, success) => dispatch(createNoteThunk(newNote, userId, success)),
-  updateNoteThunk: (noteId, newContent, success) => dispatch(updateNoteThunk(noteId, newContent, success)),
-  removeNoteThunk: (noteId) => dispatch(removeNoteThunk(noteId))
+const mapDispatchToProps = (dispatch:any) => ({
+  setModal: (data:SetModalType) => dispatch(setModal(data)),
+  updateNoteThunk: (noteId:string, newContent:string, success:any) => dispatch(updateNoteThunk(noteId, newContent, success)),
+  removeNoteThunk: (noteId:string) => dispatch(removeNoteThunk(noteId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notes)

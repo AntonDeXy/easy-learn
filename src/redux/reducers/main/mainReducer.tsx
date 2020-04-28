@@ -6,7 +6,7 @@ export type ItemType = {
   translate: string
 }
 
-type pageType = 'words' | 'lists' 
+export type pageType = 'words' | 'lists' | 'notes'
 
 export type ListType = {
   _id?: string

@@ -1,14 +1,26 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { WordsWrapper, WordItemSt } from './Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
 import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
-import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
+import { changeCurrentPageType, ItemType, ListType } from '../redux/reducers/main/mainReducer'
 import { connect } from 'react-redux'
 import { updateItemThunk, removeItemThunk } from '../redux/reducers/lists/listsReducer'
+import { UserStateType } from '../redux/reducers/users/usersReducer'
+import { SetModalType } from '../redux/reducers/modal/modalReducer'
 
-const Words = ({user, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal}) => {
+type WordsType = {
+  user: UserStateType
+  modalType: string
+  setModal: (data:SetModalType) => void
+  currentList: ListType
+  updateItemThunk: (listId:string, itemId:string, newItem:ItemType, success:any) => any
+  removeItemThunk: (listId:string, itemId:string, success:any) => any
+  changeCurrentPageToLists: () => void
+}
+
+const Words:React.FC<WordsType> = ({user, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal}) => {
   const isOwner = user.userId === currentList.authorId ? true : false
   
   return (
@@ -20,9 +32,10 @@ const Words = ({user, modalType, updateItemThunk, removeItemThunk, currentList, 
               return <Word
                 isTestStarted={modalType === 'test' ? true : false}
                 removeItemThunk={removeItemThunk}
-                currentListId={currentList._id}
+                currentListId={currentList ? currentList._id : ''}
                 updateItemThunk={updateItemThunk}
-                isOwner={isOwner} key={word._id} item={word} />
+                isOwner={isOwner}
+                key={word._id} item={word} />
             })
           }
         </div>
@@ -30,20 +43,27 @@ const Words = ({user, modalType, updateItemThunk, removeItemThunk, currentList, 
   )
 }
 
-const Word = ({ isTestStarted, item, getCategories, isOwner, updateItemThunk, currentListId, removeItemThunk }) => {
+type WordType = {
+  isTestStarted: boolean
+  item: ItemType
+  isOwner: boolean
+  currentListId: string | undefined
+  updateItemThunk: (listId:string, itemId:string, newItem:ItemType, success:any) => any
+  removeItemThunk: (listId:string, itemId:string, success:any) => any
+}
+
+const Word:React.FC<WordType> = ({ isTestStarted, item, updateItemThunk, isOwner, currentListId, removeItemThunk }) => {
   const [editMode, setEditMode] = useState(false)
   const [newWord, setNewWord] = useState(item.word)
   const [newTranslate, setNewTranslate] = useState(item.translate)
-  const wordRef = useRef()
-  const translateRef = useRef()
   const [isLoading, setIsLoading] = useState(false)
 
   const toggleEditMode = () => {
-    if (editMode) {
+    if (editMode && currentListId && item?._id) {
       setIsLoading(true)
       let newData = {...item}
-      newData.word = wordRef.current.props.value
-      newData.translate = translateRef.current.props.value
+      newData.word = newWord
+      newData.translate = newTranslate
       updateItemThunk(
         currentListId,
         item._id,
@@ -68,7 +88,6 @@ const Word = ({ isTestStarted, item, getCategories, isOwner, updateItemThunk, cu
             <div className="word">
               {editMode ? (
                 <AutosizeInput
-                  ref={wordRef}
                   value={newWord}
                   type="text"
                   onChange={(e) => {
@@ -82,7 +101,6 @@ const Word = ({ isTestStarted, item, getCategories, isOwner, updateItemThunk, cu
             <div className="translate">
               {editMode ? (
                 <AutosizeInput
-                  ref={translateRef}
                   value={newTranslate}
                   type="text"
                   onChange={(e) => {
@@ -99,7 +117,7 @@ const Word = ({ isTestStarted, item, getCategories, isOwner, updateItemThunk, cu
       <div className="functions">
         {editMode ? (
           <Popconfirm
-            onCancel={() => setEditMode(false)}
+            onCancel={() => {setEditMode(false); setNewTranslate(item.translate); setNewWord(item.word)}}
             onConfirm={() => toggleEditMode()}
             title="Do you want to save changes"
             okText="Yes"
@@ -134,7 +152,7 @@ const Word = ({ isTestStarted, item, getCategories, isOwner, updateItemThunk, cu
           </svg>
         )}
         <svg
-          onClick={() => !isLoading && removeItemThunk(currentListId, item._id, () => setIsLoading(false))}
+          onClick={() => (!isLoading && currentListId && item?._id) && removeItemThunk(currentListId, item._id, () => setIsLoading(false))}
           width="17"
           height="20"
           viewBox="0 0 17 20"
@@ -151,7 +169,7 @@ const Word = ({ isTestStarted, item, getCategories, isOwner, updateItemThunk, cu
   )
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state:any, ownProps:any) => ({
   lists: state.listsReducer.lists,
   currentList: state.mainReducer.currentList,
   errorMessage: state.listsReducer.errorMessage,
@@ -159,9 +177,9 @@ const mapStateToProps = (state, ownProps) => ({
   ...ownProps
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch:any) => ({
   changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
-  updateItemThunk: (listId, itemId, newItem, success) => dispatch(updateItemThunk(listId, itemId, newItem, success)),
-  removeItemThunk: (listId, itemId, success) => dispatch(removeItemThunk(listId, itemId, success))
+  updateItemThunk: (listId:string, itemId:string, newItem:ItemType, success:any) => dispatch(updateItemThunk(listId, itemId, newItem, success)),
+  removeItemThunk: (listId:string, itemId:string, success:any) => dispatch(removeItemThunk(listId, itemId, success))
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Words)

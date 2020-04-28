@@ -2,7 +2,7 @@ import { notesAPI } from "../../../API/Api"
 import { setError } from "../lists/listsReducer"
 import { CREATE_NOTE, SET_NOTES, UPDATE_NOTE, REMOVE_NOTE } from "./notesReducerTypes"
 
-type NoteType = {
+export type NoteType = {
   _id?: string
   authorId: string,
   content: string
@@ -14,13 +14,7 @@ type NotesStateType = {
 }
 
 const notesState:NotesStateType = {
-  notes: [
-    {
-      _id: '',
-      authorId: '',
-      content: ''
-    }
-  ]
+  notes: []
 }
 
 export const notesReducer = (state = notesState, action:any) => {

@@ -1,13 +1,13 @@
 import { SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS, NEXT_QUESTION, SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES, SHUFLE_ITEMS, SET_MODAL } from "./modalReducerTypes"
 import { ItemType } from "../main/mainReducer"
 
-type QuestionType = {
+export type QuestionType = {
   value1: string
   rightAnswer: string
   variants: Array<{value: string, key: number}>
 }
 
-type TestType = {
+export type TestType = {
   type: string
   questionsCount: number
   questionId: 0
@@ -18,9 +18,10 @@ type TestType = {
   currentQuestion: QuestionType
 }
 
-type ModalStateType = {
+export type ModalStateType = {
   isActive: boolean
   type: string
+  errorMessage: string
   listId: string
   test: TestType
 }
@@ -29,6 +30,7 @@ const modalState:ModalStateType = {
   isActive: false,
   type: '',
   listId: '',
+  errorMessage: '',
   test: {
     type: '',
     questionsCount: 0,
@@ -181,9 +183,17 @@ const modalReducer = (state = modalState, action:any) => {
 
 type SetModalActionType = {
   type: typeof SET_MODAL
-  modalData: ModalStateType
+  modalData: ModalStateType | SetModalType
 }
-export const setModal = (modalData:ModalStateType):SetModalActionType => ({type: SET_MODAL, modalData})
+
+
+export type SetModalType = {
+  isActive: boolean
+  type: string
+  listId?: string
+}
+
+export const setModal = (modalData:ModalStateType|SetModalType):SetModalActionType => ({type: SET_MODAL, modalData})
 
 type ShufleItemsActionType = {
   type: typeof SHUFLE_ITEMS

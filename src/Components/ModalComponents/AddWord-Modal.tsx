@@ -1,34 +1,45 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import Spiner from '../Spiner'
 
-const AddWord = ({createNew, autoTranslates, closeModal, currentListId, getAutoTranslatesThunk, createItemThunk, disabledButtonStyle}) => {
+type AddWordType = {
+  autoTranslates: Array<{value: string}>
+  closeModal: () => void
+  currentListId: string
+  getAutoTranslatesThunk: (phrase: string, success: any) => void
+  createItemThunk: (item: {word: string, translate: string}, currentListId:string, success:any) => void
+  disabledButtonStyle: any
+}
+
+const AddWord:React.FC<AddWordType> = ({autoTranslates, closeModal, currentListId, getAutoTranslatesThunk, createItemThunk, disabledButtonStyle}) => {
   const [isTranslatesLoading, setTranslatesLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const wordRef = useRef()
-  const translateRef = useRef()
+  const [wordInputValue, setWordInputValue] = useState('')
+  const [translateInputValue, setTranslateInputValue] = useState('')
 
-  const getAutoTranslates = (phrase) => {
+  const getAutoTranslates = (phrase:any) => {
     setTranslatesLoading(true)
     getAutoTranslatesThunk(
       phrase,
-      (res) => {
+      () => {
         setTranslatesLoading(false)
       }
     )
   }
 
-  const chooseTranslate = (value) => {
-    translateRef.current.value = value
+  const chooseTranslate = (value: string) => {
+    setTranslateInputValue(value)
   }
 
   const addWord = () => {
+    setIsLoading(true)
     createItemThunk(
       {
-        word: wordRef.current.value,
-        translate: translateRef.current.value
+        word: wordInputValue,
+        translate: translateInputValue
       },
       currentListId,
       () => {
+        setIsLoading(false)
         closeModal()
       }
     )
@@ -38,11 +49,11 @@ const AddWord = ({createNew, autoTranslates, closeModal, currentListId, getAutoT
     <div className="main">
       <div className="item">
         <span>Word</span>
-        <input onBlur={(e) => getAutoTranslates(e.target.value)} autoFocus ref={wordRef} type="text" />
+        <input onBlur={(e) => getAutoTranslates(e.target.value)} autoFocus value={wordInputValue} onChange={e => setWordInputValue(e.currentTarget.value)} type="text" />
       </div>
       <div className="item">
         <span>Translate</span>
-        <input ref={translateRef} type="text" />
+        <input value={translateInputValue} onChange={e => setTranslateInputValue(e.currentTarget.value)} type="text" />
       </div>
       {
         isTranslatesLoading
