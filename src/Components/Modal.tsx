@@ -15,15 +15,15 @@ import { ItemType, ListType } from '../redux/reducers/main/mainReducer'
 
 type ModalType = {
   test: TestType
+  currentList: ListType
+  autoTranslates: Array<TranslateType>
+  modal: ModalStateType
+  user: UserStateType
   setTestModal: (data:{isActive: boolean, test: {type: string, initialItems: Array<ItemType>}, type: string}, variantsCount:number) => void
   createItemThunk: (item:ItemType, listId:string, success:any) => void
   createNote: (data:NoteType, success:any) => void
   setModal: (data:SetModalType) => void
-  currentList: ListType
-  autoTranslates: Array<TranslateType>
   getAutoTranslatesThunk: (phrase:string, success:any) => void
-  modal: ModalStateType
-  user: UserStateType
   addListToProfileThunk: (listId:string, userId:string, success:any) => void
   createNewList: (data:ListType, success:any) => void
   getNextQuestion: (answer:string) => void

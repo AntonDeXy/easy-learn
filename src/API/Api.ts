@@ -56,8 +56,8 @@ export const listsAPI = {
 } 
 
 export const itemsAPI = {
-  createItem(listId:string, translate:string, word:string) {
-    return instance.post(`items/new/`, {listId, translate, word})
+  createItem(data: any) {
+    return instance.post(`items/new/`, data)
       .then(res => res.data)
   },
   updateItem(data: {itemId:string, newItem:ItemType}) {
@@ -77,7 +77,7 @@ export const itemsAPI = {
       const url = `https://cors-anywhere.herokuapp.com/api.lingualeo.com/gettranslates?word=${phrase}`
       return axios
               .get(url)
-              .then(res => res.data.translate)
+              .then(res => res.data)
     } else {
       return ([])
     }

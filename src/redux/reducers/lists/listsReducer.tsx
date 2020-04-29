@@ -252,7 +252,7 @@ export const updateItemThunk = (listId:string, itemId:string, newItem:ItemType, 
 }
 
 export const createItemThunk = (item:ItemType, listId:string, success:any) => async (dispatch:any) => {
-  let res = await itemsAPI.createItem(listId, item.translate, item.word)
+  let res = await itemsAPI.createItem({listId, item})
   if (res.success) {
     dispatch(createItem(res.doc, listId))
     dispatch(clearAutoTranslates())
@@ -264,8 +264,13 @@ export const createItemThunk = (item:ItemType, listId:string, success:any) => as
 
 export const getAutoTranslatesThunk = (phrase:string, success:any) => async (dispatch:any) => {
   let data = await itemsAPI.getAutoTranslate(phrase)
-  dispatch(setAutoTranslates(data))
-  success()
+  dispatch(setAutoTranslates(data.translate))
+  success(data.sound_url)
+}
+
+export const getAudioUrl = (phrase:string) => async () => {
+  let data = await itemsAPI.getAutoTranslate(phrase)
+  return data.sound_url
 }
 
 export default listsReducer

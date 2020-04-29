@@ -361,6 +361,16 @@ export const ModalSt = styled.div `
           resize: none;
         }
       }
+      .playAudio {
+        height: 30px;
+        width: 35px;
+        :hover {
+          cursor: pointer
+        }
+        svg {
+          height: 100%;
+        }
+      }
       .spiner {
         justify-self: center;
         height: 35px;

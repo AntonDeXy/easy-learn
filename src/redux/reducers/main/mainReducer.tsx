@@ -4,6 +4,7 @@ export type ItemType = {
   _id?: string
   word: string
   translate: string
+  audioUrl?: string
 }
 
 export type pageType = 'words' | 'lists' | 'notes'
