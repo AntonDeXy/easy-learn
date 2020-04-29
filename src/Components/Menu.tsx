@@ -3,7 +3,11 @@ import { MenuSt } from './Styled'
 import { Link } from 'react-router-dom'
 import { useAuth0 } from '../react-auth0-spa'
 
-const Menu = ({menuStyle}) => {
+type MenuType = {
+  menuStyle: any
+}
+
+const Menu:React.FC<MenuType> = ({menuStyle}) => {
   const { logout } = useAuth0()
   
   return (
@@ -12,7 +16,7 @@ const Menu = ({menuStyle}) => {
         <Link to='/help' >
           Menu
         </Link>
-        <Link onClick={() => logout()}>Log out</Link>
+        <Link to='/' onClick={() => logout()}>Log out</Link>
       </div>
     </MenuSt>
   )

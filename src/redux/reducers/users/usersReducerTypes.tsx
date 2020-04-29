@@ -1,0 +1,5 @@
+export const SET_USER = 'SET_USER'
+export const REMOVE_ADDED_LIST = 'REMOVE_ADDED_LIST'
+export const SET_ERROR = 'SET_ERROR'
+export const CLEAR_ERROR = 'CLEAR_ERROR'
+export const ADD_LIST_TO_PROFILE = 'ADD_LIST_TO_PROFILE'

@@ -1,39 +1,51 @@
 import React from 'react'
 import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus'
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
 import { connect } from 'react-redux'
-import { removeAddedListThunk } from '../redux/reducers/users/usersReducer';
+import { removeAddedListThunk, UserStateType } from '../redux/reducers/users/usersReducer'
 import {
   removeListThunk,
   updateListThunk,
 } from '../redux/reducers/lists/listsReducer'
-import { changeCurrentPageType, setCurrentList } from '../redux/reducers/main/mainReducer'
-import { setModal } from '../redux/reducers/modal/modalReducer';
+import { changeCurrentPageType, setCurrentList, ListType } from '../redux/reducers/main/mainReducer'
+import { setModal, SetModalType } from '../redux/reducers/modal/modalReducer'
 
-const ListsContainer = (props) => {
+type ListsContainerType = {
+  loading: boolean
+  setModal: (data: SetModalType) => void
+  listsState: {lists: Array<ListType>}
+  changeCurrentPageToWords: () => void
+  user: UserStateType
+  setCurrentList: (list:ListType) => void
+  updateListThunk: (listId:string, newData:ListType, success:any) => void
+  removeAddedListThunk: (userId:string, listId:string) => void
+  removeListThunk: (listId:string) => void
+}
+
+const ListsContainer:React.FC<ListsContainerType> = ({loading, setModal, listsState, removeListThunk, changeCurrentPageToWords, user, setCurrentList, updateListThunk, removeAddedListThunk}) => {
   return (
     <ListsWrapper>
-      <Plus openModal={() => props.setModal({isActive: true, type: 'lists'})} type="lists" />
-      {props.loading ? (
+      <Plus openModal={() => setModal({isActive: true, type: 'lists'})} type="lists" />
+      {loading ? (
         <Spiner />
       ) : (
         <div className="lists">
-          {props.listsState.lists.map((list) => {
+          {listsState.lists.map(list => {
             return (
               <List
-                changeCurrentPageType={() => props.changeCurrentPageToWords()}
+                changeCurrentPageType={changeCurrentPageToWords}
                 key={list._id}
-                isOwner={props.user.userId === list.authorId ? true : false}
+                isOwner={user.userId === list.authorId ? true : false}
                 list={list}
-                userId={props.user.userId}
-                setCurrentList={props.setCurrentList}
-                openShareModal={() => props.setModal({isActive: true, type: 'share', listId: list._id})}
-                updateListThunk={props.updateListThunk}
-                removeListThunk={props.removeListThunk}
-                removeAddedListThunk={props.removeAddedListThunk}
+                userId={user.userId}
+                setCurrentList={setCurrentList}
+                openShareModal={() => setModal({isActive: true, type: 'share', listId: list._id})}
+                updateListThunk={updateListThunk}
+                removeListThunk={removeListThunk}
+                removeAddedListThunk={removeAddedListThunk}
               />
             )
           })}
@@ -43,7 +55,19 @@ const ListsContainer = (props) => {
   )
 }
 
-const List = ({
+type ListCompType = {
+  list: ListType
+  isOwner: boolean
+  userId: string
+  changeCurrentPageType: () => void
+  setCurrentList: (list:ListType) => void
+  openShareModal: () => void
+  updateListThunk: (listId:string, newData:ListType, success:any) => void
+  removeListThunk: (listId:string) => void
+  removeAddedListThunk: (userId:string, listId:string) => void
+}
+
+const List:React.FC<ListCompType> = ({
   changeCurrentPageType,
   setCurrentList,
   list,
@@ -56,7 +80,6 @@ const List = ({
 }) => {
   const [editMode, setEditMode] = useState(false)
   const [newName, setNewName] = useState(list.name)
-  const titleRef = useRef()
   const [isLoading, setIsLoading] = useState(false)
 
   const Click = () => {
@@ -67,17 +90,19 @@ const List = ({
   }
 
   const removeList = () => {
-    isOwner
-    ? removeListThunk(list._id)
-    : removeAddedListThunk(userId, list._id)
+    if (list?._id) {
+      isOwner
+      ? removeListThunk(list._id)
+      : removeAddedListThunk(userId, list._id)
+    }
   }
 
   const toggleEditMode = () => {
-    if (editMode) {
-      if (list.name !== titleRef.current.props.value) {
+    if (editMode && list._id) {
+      if (list.name !== newName) {
         setIsLoading(true)
         let newData = { ...list }
-        newData.name = titleRef.current.props.value
+        newData.name = newName
         updateListThunk(list._id, newData, () => {
           setEditMode(!editMode)
           setIsLoading(false)
@@ -99,7 +124,6 @@ const List = ({
           ) : (
             <AutosizeInput
               autoFocus
-              ref={titleRef}
               value={newName}
               type="text"
               onChange={(e) => {
@@ -161,21 +185,20 @@ const List = ({
   )
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state:any) => ({
   listsState: {...state.listsReducer, lists: [...state.listsReducer.lists, ...state.userReducer.addedLists]},
   currentList: state.listsReducer.currentList,
   errorMessage: state.listsReducer.errorMessage,
   user: state.userReducer
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  // getLists: dispatch((userId) => getListsThunk(userId)),
-  setCurrentList: (list) => dispatch(setCurrentList(list)),
+const mapDispatchToProps = (dispatch:any) => ({
+  setCurrentList: (list:ListType) => dispatch(setCurrentList(list)),
   changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
-  setModal: (data) => dispatch(setModal(data)),
-  updateListThunk: (listId, newData, success) => dispatch(updateListThunk(listId, newData, success)),
-  removeListThunk: (data) => dispatch(removeListThunk(data)),
-  removeAddedListThunk: (userId, listId) => dispatch(removeAddedListThunk(userId, listId))
+  setModal: (data:SetModalType) => dispatch(setModal(data)),
+  updateListThunk: (listId:string, newData:ListType, success:any) => dispatch(updateListThunk(listId, newData, success)),
+  removeListThunk: (listId:string) => dispatch(removeListThunk(listId)),
+  removeAddedListThunk: (userId:string, listId:string) => dispatch(removeAddedListThunk(userId, listId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListsContainer)

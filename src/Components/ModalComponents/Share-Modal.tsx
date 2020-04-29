@@ -1,11 +1,15 @@
 import React from 'react'
 
-const ShareModal = ({categoryId}) => {
+type ShareModalType = {
+  categoryId: string
+}
+
+const ShareModal:React.FC<ShareModalType> = ({categoryId}) => {
   return(
     <div className="main">
       <div className="item">
         <span>Share this ID</span>
-        <input type="text" contentEditable={false} value={categoryId} />
+        <input type="text" contentEditable={false} readOnly value={categoryId} />
       </div>
       <span>or</span>
       <div className="item">

@@ -1,29 +1,27 @@
 import React from 'react'
+import { QuestionType } from '../../redux/reducers/modal/modalReducer'
 
-const TestModal = ({currentQuestion, getNextQuestion, setModal}) => {
+type TestModalType = {
+  currentQuestion: QuestionType
+  getNextQuestion: (answer:string) => void
+}
+
+const TestModal:React.FC<TestModalType> = ({currentQuestion, getNextQuestion}) => {
   return (
     <div className="test">
       <div><span>Choose right meaning for <b>{currentQuestion && currentQuestion.value1}</b></span></div>
       <div className="answers">
         {
-          currentQuestion && currentQuestion.variants.map((variant, index) => {
-            let isClicked = false
+          currentQuestion && currentQuestion.variants.map((variant) => {
             return (
               <button
                 onClick={(e) => {
                   if (variant.value === currentQuestion.rightAnswer) {
-                    isClicked = true
-                    if (isClicked) {
-                      e.target.style.color = '#00b500'
-                      e.target.style.borderColor = '#00b500'
-                    }
+                    e.currentTarget.classList.add('rightAnswer')
                   } else {
-                    isClicked = true
-                    if (isClicked) {
-                      e.target.style.color = '#ff3547'
-                      e.target.style.borderColor = '#ff3547'
-                    }
+                    e.currentTarget.classList.add('wrongAnswer')
                   }
+
                   setTimeout(
                     () => {
                       getNextQuestion(variant.value)

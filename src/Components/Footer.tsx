@@ -1,10 +1,17 @@
 import React from 'react'
 import { FooterSt } from './Styled'
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { changeCurrentPageType } from '../redux/reducers/main/mainReducer';
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { changeCurrentPageType, pageType } from '../redux/reducers/main/mainReducer'
 
-const Footer = ({currentPage, setCurrentPage, setModal, listWordsCount}) => {
+type FooterType = {
+  currentPage: string
+  setCurrentPage: (page:pageType) => void
+  setModal: (data: {isActive: boolean, type: string, errorMessage?: string}) => void
+  listWordsCount: number
+}
+
+const Footer:React.FC<FooterType> = ({currentPage, setCurrentPage, setModal, listWordsCount}) => {
   const StartTest = () => {
     if (currentPage === 'words') {
       if (listWordsCount < 5) {
@@ -43,11 +50,12 @@ const Footer = ({currentPage, setCurrentPage, setModal, listWordsCount}) => {
   )
 }
 
-const mapStateToProps = state => ({
-  listWordsCount: state.mainReducer.currentList.items.length
+const mapStateToProps = (state:any) => ({
+  listWordsCount: state.mainReducer?.currentList?.items ? state.mainReducer?.currentList?.items.length : 0
 })
 
-const mapDispatchToProps = dispatch => ({
-  setCurrentPage: data => dispatch(changeCurrentPageType(data))
+const mapDispatchToProps = (dispatch:any) => ({
+  setCurrentPage: (page:pageType) => dispatch(changeCurrentPageType(page))
 })
+
 export default connect(mapStateToProps, mapDispatchToProps)(Footer)

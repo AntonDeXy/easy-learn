@@ -2,22 +2,30 @@ import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {AddListUrlStyled} from './Styled'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import { listCheckerThunk, addListWithoutCheckThunk } from '../redux/reducers/users/usersReducer'
+import { ListType, ItemType } from '../redux/reducers/main/mainReducer'
 
-const AddListUrl = ({listCheckerThunk, addListWithoutCheckThunk, userId, ...props}) => { 
+type AddListUrlProps = {
+  listCheckerThunk: (listId:string, userId:string, success:any) => void
+  addListWithoutCheckThunk: (list:ListType, userId:string, success:any) => void
+  userId: string
+  listIdFromUrl: string
+}
+
+const AddListUrl:React.FC<AddListUrlProps> = ({listCheckerThunk, addListWithoutCheckThunk, userId, listIdFromUrl}) => { 
   const [isConfirmed, setIsConformed] = useState(false)
-  const [listId, setListId] = useState(props.match.params.listId)
+  const [listId] = useState(listIdFromUrl)
   const [isListVisible, setIsListVisible] = useState(false)
-  const [error, setError] = useState(undefined)
-  const [listForAdd, setListForAdd] = useState({})
+  const [error, setError] = useState<string | undefined>(undefined)
+  const [listForAdd, setListForAdd] = useState<ListType | undefined>(undefined)
 
   useEffect(() => {
-    setError(null)
+    setError(undefined)
     listCheckerThunk(
       listId, 
       userId,  
-      (data) => {
+      (data: {error: string | undefined, data: ListType}) => {
         if (data.error) {
           setError(data.error)
         } else {
@@ -27,11 +35,12 @@ const AddListUrl = ({listCheckerThunk, addListWithoutCheckThunk, userId, ...prop
   }, [listCheckerThunk, listId, userId])
 
   const addList = () => {
-    setError(null)
+    setError(undefined)
+    listForAdd &&
     addListWithoutCheckThunk(
       listForAdd,
       userId,
-      (data) => {
+      (data: {error: string | undefined}) => {
         if (data.error) {
           setError(data.error)
         } else {
@@ -88,7 +97,7 @@ const AddListUrl = ({listCheckerThunk, addListWithoutCheckThunk, userId, ...prop
               </div>
               <div className="content">
                 {
-                  isListVisible && listForAdd.items.map(item => {
+                  isListVisible && listForAdd && listForAdd.items.map(item => {
                   return <ListItem item={item} />
                   })
                 }
@@ -104,7 +113,11 @@ const AddListUrl = ({listCheckerThunk, addListWithoutCheckThunk, userId, ...prop
   )
 }
 
-const ListItem = ({item}) => {
+type ListItemType = {
+  item: ItemType
+}
+
+const ListItem: React.FC<ListItemType> = ({item}) => {
   return (
     <div className="list-item">
       <div className="word">
@@ -122,15 +135,18 @@ const ListItem = ({item}) => {
 }
 
 
-const mapStateToProps = (state, ownProps) => ({
-  modal: state.modalReducer,
-  userId: state.userReducer.userId,
-  ...ownProps
-})
+const mapStateToProps = (state:any, ownProps:any) => {
+  return ({
+    modal: state.modalReducer,
+    userId: state.userReducer.userId,
+    listIdFromUrl: ownProps.match.params.listId
+  })
+}
 
-const mapDispatchToProps = (dispatch) => ({
-  listCheckerThunk: (listId, userId, success) => dispatch(listCheckerThunk(listId, userId, success)),
-  addListWithoutCheckThunk: (list, userId, success) => dispatch(addListWithoutCheckThunk(list, userId, success))
+
+const mapDispatchToProps = (dispatch:any) => ({
+  listCheckerThunk: (listId:string, userId:string, success:any) => dispatch(listCheckerThunk(listId, userId, success)),
+  addListWithoutCheckThunk: (list:ListType, userId:string, success:any) => dispatch(addListWithoutCheckThunk(list, userId, success))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddListUrl)

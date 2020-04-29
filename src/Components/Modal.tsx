@@ -1,30 +1,44 @@
 import React from 'react'
 import { ModalSt } from './Styled'
-import { useState } from 'react'
 import { connect } from 'react-redux'
-import { setModal, setTestModal, getNextQuestion } from '../redux/reducers/modal/modalReducer'
-import { createListThunk, createItemThunk, getAutoTranslatesThunk } from '../redux/reducers/lists/listsReducer'
-import { addListToProfileThunk } from '../redux/reducers/users/usersReducer'
-import { createNoteThunk } from '../redux/reducers/notes/notesReducer'
+import { setModal, setTestModal, getNextQuestion, ModalStateType, SetModalType, TestType } from '../redux/reducers/modal/modalReducer'
+import { createListThunk, createItemThunk, getAutoTranslatesThunk, TranslateType } from '../redux/reducers/lists/listsReducer'
+import { addListToProfileThunk, UserStateType } from '../redux/reducers/users/usersReducer'
+import { createNoteThunk, NoteType } from '../redux/reducers/notes/notesReducer'
 import AddList from './ModalComponents/AddList-Modal'
 import AddNote from './ModalComponents/AddNote-Modal'
 import ChooseTestTypeModal from './ModalComponents/ChooseTestType-Modal'
 import ShareModal from './ModalComponents/Share-Modal'
 import AddWord from './ModalComponents/AddWord-Modal'
 import TestModal from './ModalComponents/Test-Modal'
+import { ItemType, ListType } from '../redux/reducers/main/mainReducer'
 
-const Modal = (
+type ModalType = {
+  test: TestType
+  currentList: ListType
+  autoTranslates: Array<TranslateType>
+  modal: ModalStateType
+  user: UserStateType
+  setTestModal: (data:{isActive: boolean, test: {type: string, initialItems: Array<ItemType>}, type: string}, variantsCount:number) => void
+  createItemThunk: (item:ItemType, listId:string, success:any) => void
+  createNote: (data:NoteType, success:any) => void
+  setModal: (data:SetModalType) => void
+  getAutoTranslatesThunk: (phrase:string, success:any) => void
+  addListToProfileThunk: (listId:string, userId:string, success:any) => void
+  createNewList: (data:ListType, success:any) => void
+  getNextQuestion: (answer:string) => void
+}
+
+const Modal:React.FC<ModalType> = (
   {
     test, setTestModal, createItemThunk,
     createNote, setModal, currentList,
-    currentListId, autoTranslates, getAutoTranslatesThunk,
-    modal, items, user, addListToProfileThunk,
-    getCategories, setGeneralLoadingTrue, createNewList,
-    getNextQuestion
+    autoTranslates, getAutoTranslatesThunk,
+    modal, user, addListToProfileThunk,
+    createNewList, getNextQuestion
   }) => {
-  const [isLoading, setIsLoading] = useState(false)
 
-  const disabledButtonStyle = {
+    const disabledButtonStyle = {
     backgroundColor: 'grey'
   }
 
@@ -59,19 +73,16 @@ const Modal = (
         {modal.type === 'words' && <AddWord
           createItemThunk={createItemThunk} 
           autoTranslates={autoTranslates} 
-          closeModal={() => setModal({isActive: false})} 
-          currentListId={currentListId} 
+          closeModal={() => setModal({isActive: false, type: ''})} 
+          currentListId={currentList._id ? currentList._id : ''} 
           getAutoTranslatesThunk={getAutoTranslatesThunk} 
           disabledButtonStyle={disabledButtonStyle} 
-          setIsLoading={setIsLoading}
-          isLoading={isLoading} />
+          />
         }
 
         {modal.type === 'lists' && <AddList
-          closeModal={() => setModal({isActive: false})} 
+          closeModal={() => setModal({isActive: false, type: ''})} 
           disabledButtonStyle={disabledButtonStyle} 
-          setIsLoading={setIsLoading}
-          isLoading={isLoading} 
           userId={user.userId} 
           addListToProfileThunk={addListToProfileThunk}
           createNewList={createNewList} />
@@ -80,9 +91,8 @@ const Modal = (
         {modal.type === 'notes' && <AddNote 
           userId={user.userId} 
           createNote={createNote}
-          setIsLoading={setIsLoading}
           disabledButtonStyle={disabledButtonStyle} 
-          closeModal={() => setModal({isActive: false})} />
+          closeModal={() => setModal({isActive: false, type: ''})} />
         }
 
         {modal.type === 'error' && <Error modal={modal} /> }
@@ -90,29 +100,34 @@ const Modal = (
         {modal.type === 'test' && <TestModal
           getNextQuestion={getNextQuestion}
           currentQuestion={test.currentQuestion}
-          setIsLoading={setIsLoading}
-          setModal={setModal} />
+          />
         }
 
         {modal.type === 'chooseTestType' &&<ChooseTestTypeModal
           setTestType={
-            (testType) => {
+            (testType:string) => {
               setTestModal(
-              {
-                isActive: true, type: 'test',
-                test: {type: testType, initialItems: currentList.items}
-              })
+                {
+                  isActive: true, type: 'test',
+                  test: {type: testType, initialItems: currentList.items}
+                },
+                3
+              )
             }
             }/>
         }
         {modal.type === 'result' && <ResultModal test={test} /> }
-        {modal.type === 'share' && <ShareModal categoryId={modal.listId} modal={modal} /> }
+        {modal.type === 'share' && <ShareModal categoryId={modal.listId} /> }
       </div>
     </ModalSt>
   )
 }
 
-const ResultModal = ({test}) => {
+type ResultModalType = {
+  test: TestType
+}
+
+const ResultModal:React.FC<ResultModalType> = ({test}) => {
   return (
     <div className="main">
       <span className='resultText'>Your result {test.rightAnswersCount}/{test.questionsCount}</span>
@@ -120,7 +135,11 @@ const ResultModal = ({test}) => {
   )
 }
 
-const Error = ({modal}) => {
+type ErrorType = {
+  modal: ModalStateType
+}
+
+const Error:React.FC<ErrorType> = ({modal}) => {
   return (
     <div className="main">
       <span className='error'>
@@ -130,25 +149,24 @@ const Error = ({modal}) => {
   )
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state:any, ownProps:any) => ({
   modal: state.modalReducer,
   user: state.userReducer,
   autoTranslates: state.listsReducer.autoTranslates,
-  currentListId: state.mainReducer.currentList._id,
   currentList: state.mainReducer.currentList,
   test: state.modalReducer.test,
   ...ownProps
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  addListToProfileThunk: (listId, userId, success) => dispatch(addListToProfileThunk(listId, userId, success)),
-  setModal: (data) => dispatch(setModal(data)),
-  createNewList: (data, success) => dispatch(createListThunk(data, success)),
-  getAutoTranslatesThunk: (phrase, success) => dispatch(getAutoTranslatesThunk(phrase, success)),
-  createItemThunk: (item, listId, success) => dispatch(createItemThunk(item, listId, success)),
-  createNote: (data, success) => dispatch(createNoteThunk(data, success)),
-  setTestModal: (data) => dispatch(setTestModal(data)),
-  getNextQuestion: (answer) => dispatch(getNextQuestion(answer))
+const mapDispatchToProps = (dispatch:any) => ({
+  addListToProfileThunk: (listId:string, userId:string, success:any) => dispatch(addListToProfileThunk(listId, userId, success)),
+  setModal: (data:SetModalType) => dispatch(setModal(data)),
+  createNewList: (data:ListType, success:any) => dispatch(createListThunk(data, success)),
+  getAutoTranslatesThunk: (phrase:string, success:any) => dispatch(getAutoTranslatesThunk(phrase, success)),
+  createItemThunk: (item:ItemType, listId:string, success:any) => dispatch(createItemThunk(item, listId, success)),
+  createNote: (data:NoteType, success:any) => dispatch(createNoteThunk(data, success)),
+  setTestModal: (data:ModalStateType, variantsCount:number) => dispatch(setTestModal(data, variantsCount)),
+  getNextQuestion: (answer:string) => dispatch(getNextQuestion(answer))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)

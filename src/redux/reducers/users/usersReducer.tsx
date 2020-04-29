@@ -1,26 +1,35 @@
 import { userAPI, listsAPI } from '../../../API/Api'
+import { ADD_LIST_TO_PROFILE, CLEAR_ERROR, SET_ERROR, REMOVE_ADDED_LIST, SET_USER } from './usersReducerTypes'
+import { ListType } from '../main/mainReducer'
 
-const userState = {
-  _id: null,
+export type UserStateType = {
+  _id: string
+  userId: string
+  addedLists: Array<ListType>
+}
+
+const userState:UserStateType = {
+  _id: '',
+  userId: '',
   addedLists: []
 }
 
-const userReducer = (state = userState, action) => {
+const userReducer = (state = userState, action:any) => {
   switch (action.type) {
-    case 'SET_USER': {
+    case SET_USER: {
       return ({...state, ...action.user})
     }
-    case 'REMOVE_ADDED_LIST' : {
+    case REMOVE_ADDED_LIST : {
       let addedLists = state.addedLists.filter(list => list._id !== action.listId)
       return {...state, addedLists}
     }
-    case 'SET_ERROR': {
+    case SET_ERROR: {
       return ({...state, errorMessage: action.errorMessage})
     }
-    case 'CLEAR_ERROR': {
+    case CLEAR_ERROR: {
       return ({...state, errorMessage: ''})
     }
-    case 'ADD_LIST_TO_PROFILE': {
+    case ADD_LIST_TO_PROFILE: {
       let newState = {...state}
       newState.addedLists.push(action.list)
 
@@ -30,13 +39,36 @@ const userReducer = (state = userState, action) => {
   }
 }
 
-const setUser = (user) => ({type:'SET_USER', user})
-const clearErorr = () => ({type: 'CLEAR_ERROR'})
-const setError = (errorMessage) => ({type: 'SET_ERROR', errorMessage})
-const removeAddedList = (listId) => ({type: 'REMOVE_ADDED_LIST', listId}) 
-const addListToProfile = (list) => ({type: 'ADD_LIST_TO_PROFILE', list}) 
+type SetUserActionType = {
+  type: typeof SET_USER
+  user: UserStateType
+}
+const setUser = (user:UserStateType):SetUserActionType => ({type: SET_USER, user})
 
-export const setUserThunk = (userId) => async (dispatch) => {
+type ClearErorrActionType = {
+  type: typeof CLEAR_ERROR
+}
+const clearErorr = ():ClearErorrActionType => ({type: CLEAR_ERROR})
+
+type SetErrorActionType = {
+  type: typeof SET_ERROR
+  errorMessage: string
+}
+const setError = (errorMessage:string):SetErrorActionType => ({type: SET_ERROR, errorMessage})
+
+type RemoveAddedListActionType = {
+  type: typeof REMOVE_ADDED_LIST
+  listId: string
+}
+const removeAddedList = (listId:string):RemoveAddedListActionType => ({type: REMOVE_ADDED_LIST, listId}) 
+
+type AddListToProfileActionType = {
+  type: typeof ADD_LIST_TO_PROFILE
+  list: ListType
+}
+const addListToProfile = (list:ListType):AddListToProfileActionType => ({type: ADD_LIST_TO_PROFILE, list}) 
+
+export const setUserThunk = (userId:string) => async (dispatch:any) => {
   let data = await userAPI.getUser(userId)
   if (data.success) {
     if (data.user) {
@@ -48,7 +80,7 @@ export const setUserThunk = (userId) => async (dispatch) => {
   }
 } 
 
-export const listCheckerThunk = (listId, userId, success) => async (dispatch) => {
+export const listCheckerThunk = (listId:string, userId:string, success:any) => async () => {
   let listData = await listsAPI.isListExist(listId)
 
   if (listData.isExist) {
@@ -70,7 +102,10 @@ export const listCheckerThunk = (listId, userId, success) => async (dispatch) =>
   }
 }
 
-export const addListWithoutCheckThunk = (list, userId, success) => async (dispatch) => {
+export const addListWithoutCheckThunk = (list:ListType, userId:string, success:any) => async (dispatch:any) => {
+  if (!list._id) {
+    return success({error: 'Something went wrong! Try again!'})
+  }
   let data = await userAPI.addListToProfile({userId, listId: list._id})
 
   if (data.data.success) {
@@ -81,7 +116,7 @@ export const addListWithoutCheckThunk = (list, userId, success) => async (dispat
   }
 }
 
-export const addListToProfileThunk = (listId, userId, success) => async (dispatch) => {
+export const addListToProfileThunk = (listId:string, userId:string, success:any) => async (dispatch:any) => {
   let listData = await listsAPI.isListExist(listId)
 
   if (listData.isExist) {
@@ -111,7 +146,7 @@ export const addListToProfileThunk = (listId, userId, success) => async (dispatc
   }
 }
 
-export const removeAddedListThunk = (userId, listId) => async (dispatch) => {
+export const removeAddedListThunk = (userId:string, listId:string) => async (dispatch:any) => {
   dispatch(clearErorr())
   let data = await userAPI.removeAddedList({userId, listId})
   if (data.data.success) {

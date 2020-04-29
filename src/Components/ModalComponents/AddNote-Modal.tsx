@@ -1,15 +1,22 @@
 import React, { useRef, useState } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 
-const AddNote = ({createNote, userId, disabledButtonStyle, closeModal}) => {
+type AddNoteTypes = {
+  createNote: (data: {content: string, authorId: string}, success:any) => void
+  userId: string
+  disabledButtonStyle: any
+  closeModal: () => void
+}
+
+const AddNote:React.FC<AddNoteTypes> = ({createNote, userId, disabledButtonStyle, closeModal}) => {
   const [isLoading, setIsLoading] = useState(false)
-  const contentRef = useRef(null)
+  const contentRef = useRef<HTMLTextAreaElement>(null)
 
   const createNewNote = () => {
     setIsLoading(true)
     createNote(
       {
-        content: contentRef.current.value,
+        content: contentRef?.current ? contentRef.current.value : '',
         authorId: userId
       },
       () => {
@@ -25,7 +32,7 @@ const AddNote = ({createNote, userId, disabledButtonStyle, closeModal}) => {
         <span>Content</span>
         <TextareaAutosize autoFocus inputRef={contentRef} />
       </div>
-      <button onClick={() => createNewNote()} >Add</button>
+      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={() => createNewNote()} >Add</button>
     </div>
   )
 }
