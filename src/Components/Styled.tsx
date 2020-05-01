@@ -21,19 +21,20 @@ export const HeaderSt = styled.header `
     align-items: center;
     span {
       color: #F24405;
+      :hover {
+        cursor: default;
+      }
     }
     .logIn {
       display: grid;
       justify-items: right;
       text-align: right;
-      /* justify-self: right; */
       path {
         align-self: center;
         fill: #F3A184;
       }
     }
     .userImg {
-      /* display: grid; */
       a {
         display: grid;
       }
@@ -51,7 +52,6 @@ export const MainSt = styled.main `
   height: 80vh;
   width: 100vw;
   font-family: 'Roboto', sans-serif;
-  /* overflow: hidden; */
   overflow-y: auto;
   .spiner {
     height: 100px;
@@ -232,6 +232,12 @@ export const FooterSt = styled.footer `
     align-items: center;
     justify-self: center;
     justify-items: center;
+    a, svg {
+      color: #FFC5B0;
+    }
+    .activeTab {
+      color: #FF7B4C;
+    }
   }
 `
 
@@ -260,7 +266,6 @@ export const ModalSt = styled.div `
     .header {
       padding: 5px;
       display: grid;
-      /* grid-template-columns: 1fr auto; */
       grid-template-columns: 1fr auto auto;
       border-bottom: 2px solid #C7D1D9;
       svg {
@@ -273,7 +278,6 @@ export const ModalSt = styled.div `
     .testHeader {
       text-align: left;
       gap: 10px;
-      /* justify-items: right; */
     }
     .test {
       display: grid;
@@ -395,7 +399,6 @@ export const ModalSt = styled.div `
         }
       }
       button {
-        /* display: grid; */
         width: 60%;
         background-color: #0091CF;
         color: white;
@@ -511,6 +514,65 @@ export const AddListUrlStyled = styled.div `
       border: unset;
       padding: 10px;
       width: 90%;
+    }
+  }
+`
+
+export const ProfileSt = styled.div`
+  display: grid;
+  padding-top: 15px;
+  .wrapper {
+    @media screen and (max-width: 768px) {
+      width: 90% !important;
+      grid-template-columns: 100% !important;
+      img, .userImg {
+        width: 50% !important;
+        justify-self: center;
+      }
+    }
+    @media screen and (max-width: 440px) {
+      img, .userImg {
+        width: 80% !important;
+        justify-self: center;
+      }
+    }
+    @media screen and (max-width: 350px) {
+      img, .userImg {
+        width: 100% !important;
+        justify-self: center;
+      }
+    }
+    display: grid;
+    width: 80%;
+    align-content: baseline;
+    justify-self: center;
+    grid-template-columns: 20% auto;
+    gap: 10px;
+    img {
+      grid-column: 1;
+      width: 100%
+    }
+    .userImg {
+      width: 100%;
+      height: 150px;
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      background-color: gray;
+      span {
+        color: #eee;
+      }
+    }
+    .info {
+      display: grid;
+      grid-auto-flow: row;
+      div {
+        display: grid;
+        gap: 10px;
+        justify-content: left;
+        text-align: left;
+        grid-auto-flow: column;
+      }
     }
   }
 `

@@ -6,12 +6,18 @@ export type UserStateType = {
   _id: string
   userId: string
   addedLists: Array<ListType>
+  email: string
+  pictureUrl: string
+  testsCount: number
 }
 
 const userState:UserStateType = {
   _id: '',
   userId: '',
-  addedLists: []
+  addedLists: [],
+  email: '',
+  pictureUrl: '',
+  testsCount: 0
 }
 
 const userReducer = (state = userState, action:any) => {

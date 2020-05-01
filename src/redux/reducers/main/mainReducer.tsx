@@ -7,7 +7,7 @@ export type ItemType = {
   audioUrl?: string
 }
 
-export type pageType = 'words' | 'lists' | 'notes'
+export type pageType = 'words' | 'lists' | 'notes' | 'help' | 'profile'
 
 export type ListType = {
   _id?: string
