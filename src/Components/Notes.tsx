@@ -7,15 +7,23 @@ import { connect } from 'react-redux'
 import { setModal, SetModalType } from '../redux/reducers/modal/modalReducer'
 import TextareaAutosize from 'react-textarea-autosize'
 import Spiner from './Spiner'
+import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
+import { useEffect } from 'react';
 
 type NotesType = {
   setModal: (data:SetModalType) => void
   updateNoteThunk: (noteId:string, newContent:string, success:any) => void
   removeNoteThunk: (noteId:string) => void
+  changeCurrentPageToNotes: () => void
   notesReducer: {notes: Array<NoteType>}
 }
 
-const Notes:React.FC<NotesType> = ({setModal, updateNoteThunk, removeNoteThunk, notesReducer}) => {
+const Notes:React.FC<NotesType> = ({setModal, updateNoteThunk, changeCurrentPageToNotes, removeNoteThunk, notesReducer}) => {
+  
+  useEffect(() => {
+    changeCurrentPageToNotes()
+  }, [changeCurrentPageToNotes])
+  
   return (
     <ListsWrapper>
       <Plus openModal={() => setModal({isActive: true, type: 'notes'})} type="notes" />
@@ -113,6 +121,7 @@ const mapStateToProps = (state: any) => ({
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
+  changeCurrentPageToNotes: () => dispatch(changeCurrentPageType('notes')),
   setModal: (data:SetModalType) => dispatch(setModal(data)),
   updateNoteThunk: (noteId:string, newContent:string, success:any) => dispatch(updateNoteThunk(noteId, newContent, success)),
   removeNoteThunk: (noteId:string) => dispatch(removeNoteThunk(noteId))

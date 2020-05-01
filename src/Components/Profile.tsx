@@ -1,21 +1,53 @@
-import React, { Fragment } from "react"
-import { useAuth0 } from "../react-auth0-spa"
+import React, { useEffect } from "react"
+import { ProfileSt } from "./Styled"
+import { connect } from 'react-redux';
+import { changeCurrentPageType } from "../redux/reducers/main/mainReducer";
+import { UserStateType } from "../redux/reducers/users/usersReducer";
 
-const Profile = () => {
-  const { loading, userAuth0 } = useAuth0()
+type ProfileType = {
+  user: UserStateType
+  setCurrentPageToProfile: () => void
+}
 
-  if (loading || !userAuth0) {
-    return <div>Loading...</div>
-  }
+const Profile:React.FC<ProfileType> = ({setCurrentPageToProfile, user}) => {
+  
+  useEffect(() => {
+    setCurrentPageToProfile()
+  }, [setCurrentPageToProfile])
 
   return (
-    <Fragment>
-      <img src={userAuth0.picture} alt="Profile" />
-      <h2>{userAuth0.name}</h2>
-      <p>{userAuth0.email}</p>
-      <code>{JSON.stringify(userAuth0, null, 2)}</code>
-    </Fragment>
+    <ProfileSt>
+      <div className="wrapper">
+        {
+          user.pictureUrl
+          ? <img src={user.pictureUrl} alt="User" />
+          : <div className="userImg"><span>{'<photo />'}</span></div>
+        }
+        <div className="info">
+          {user.email && (
+            <div>
+              <span>email:</span>
+              <span>{user.email}</span>
+            </div>
+          )}
+          <div>
+            <span>Completed tests count:</span>
+            <span>{user.testsCount}</span>
+          </div>
+          <div>
+          </div>
+        </div>
+      </div>
+    </ProfileSt>
   )
 }
 
-export default Profile
+const mapStateToProps = (state:any) => ({
+  user: state.userReducer,
+})
+
+const mapDispatchToProps = (dispatch:any) => ({
+  setCurrentPageToProfile: () => dispatch(changeCurrentPageType('profile'))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)

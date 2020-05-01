@@ -22,8 +22,9 @@ import { setModal } from './redux/reducers/modal/modalReducer'
 import { setUserThunk } from './redux/reducers/users/usersReducer'
 import { getListsThunk } from './redux/reducers/lists/listsReducer'
 import { getNotesThunk } from './redux/reducers/notes/notesReducer'
+import HelpPage from './Components/Help'
 
-const App = ({modal, getNotes, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
+const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
   const { loading, userAuth0 } = useAuth0()
   const [menuStyle, setMenuStyle] = useState({animationName: 'menuAnimIn'})
@@ -69,7 +70,7 @@ const App = ({modal, getNotes, setModal, currentPage, user, setUserThunk, getLis
   return (
     <Router history={history}>
       <div className="App">
-        <Header togglerMenu={() => menuToggle()} />
+        <Header currentPage={currentPage} currentListName={currentList ? currentList?.name : ''} togglerMenu={() => menuToggle()} />
         {modal.isActive && (
           <Modal
             setModal={setModal}
@@ -103,9 +104,7 @@ const App = ({modal, getNotes, setModal, currentPage, user, setUserThunk, getLis
             </PrivateRoute>
 
             <Route exact path='/help'>
-              <div>
-                Help Page
-              </div>
+              <HelpPage />
             </Route>
 
             <Route exact path='/notes'>
@@ -123,6 +122,7 @@ const mapStateToProps = state => ({
   listsState: state.listsReducer,
   modal: state.modalReducer,
   currentPage: state.mainReducer.currentPage,
+  currentList: state.mainReducer.currentList,
   user: state.userReducer
 })
 
