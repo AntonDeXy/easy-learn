@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ModalSt } from './Styled'
 import { connect } from 'react-redux'
-import { setModal, setTestModal, getNextQuestion, ModalStateType, SetModalType, TestType } from '../redux/reducers/modal/modalReducer'
+import { setModal, setTestModal, getNextQuestion, ModalStateType, SetModalType, TestType, createNewTestThunk } from '../redux/reducers/modal/modalReducer'
 import { createListThunk, createItemThunk, getAutoTranslatesThunk, TranslateType } from '../redux/reducers/lists/listsReducer'
-import { addListToProfileThunk, UserStateType } from '../redux/reducers/users/usersReducer'
+import { addListToProfileThunk, UserStateType, UserQuestionType } from '../redux/reducers/users/usersReducer'
 import { createNoteThunk, NoteType } from '../redux/reducers/notes/notesReducer'
 import AddList from './ModalComponents/AddList-Modal'
 import AddNote from './ModalComponents/AddNote-Modal'
@@ -27,6 +27,7 @@ type ModalType = {
   addListToProfileThunk: (listId:string, userId:string, success:any) => void
   createNewList: (data:ListType, success:any) => void
   getNextQuestion: (answer:string) => void
+  createNewTestItem: (test:UserQuestionType, userId:string) => void
 }
 
 const Modal:React.FC<ModalType> = (
@@ -35,7 +36,7 @@ const Modal:React.FC<ModalType> = (
     createNote, setModal, currentList,
     autoTranslates, getAutoTranslatesThunk,
     modal, user, addListToProfileThunk,
-    createNewList, getNextQuestion
+    createNewList, getNextQuestion, createNewTestItem
   }) => {
 
     const disabledButtonStyle = {
@@ -116,7 +117,7 @@ const Modal:React.FC<ModalType> = (
             }
             }/>
         }
-        {modal.type === 'result' && <ResultModal test={test} /> }
+        {modal.type === 'result' && <ResultModal userId={user.userId} createNewTestItem={createNewTestItem} test={test} /> }
         {modal.type === 'share' && <ShareModal categoryId={modal.listId} /> }
       </div>
     </ModalSt>
@@ -125,9 +126,23 @@ const Modal:React.FC<ModalType> = (
 
 type ResultModalType = {
   test: TestType
+  userId: string
+  createNewTestItem: (test:UserQuestionType, userId:string) => void
 }
 
-const ResultModal:React.FC<ResultModalType> = ({test}) => {
+const ResultModal:React.FC<ResultModalType> = ({test, userId, createNewTestItem}) => {
+  useEffect(() => {
+    createNewTestItem(
+      {
+        type: test.type,
+        questionsCount: test.questionsCount,
+        rightAnswersCount: test.rightAnswersCount,
+        items: test.itemsForTest
+      },
+      userId
+    )
+  }, [createNewTestItem, test.itemsForTest, test.questionsCount, test.rightAnswersCount, test.type, userId])
+
   return (
     <div className="main">
       <span className='resultText'>Your result {test.rightAnswersCount}/{test.questionsCount}</span>
@@ -166,7 +181,8 @@ const mapDispatchToProps = (dispatch:any) => ({
   createItemThunk: (item:ItemType, listId:string, success:any) => dispatch(createItemThunk(item, listId, success)),
   createNote: (data:NoteType, success:any) => dispatch(createNoteThunk(data, success)),
   setTestModal: (data:ModalStateType, variantsCount:number) => dispatch(setTestModal(data, variantsCount)),
-  getNextQuestion: (answer:string) => dispatch(getNextQuestion(answer))
+  getNextQuestion: (answer:string) => dispatch(getNextQuestion(answer)),
+  createNewTestItem: (test:UserQuestionType, userId:string) => dispatch(createNewTestThunk(test, userId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal)

@@ -1,9 +1,12 @@
 import { SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS, NEXT_QUESTION, SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES, SHUFLE_ITEMS, SET_MODAL } from "./modalReducerTypes"
 import { ItemType } from "../main/mainReducer"
+import { testsAPI, userAPI } from '../../../API/Api';
+import { UserQuestionType, addCompletedTest } from "../users/usersReducer";
 
 export type QuestionType = {
   value1: string
   rightAnswer: string
+  usersAnswer: string
   variants: Array<{value: string, key: number}>
 }
 
@@ -42,6 +45,7 @@ const modalState:ModalStateType = {
     currentQuestion: {
       value1: '',
       rightAnswer: '',
+      usersAnswer: '',
       variants: []
     }
   }
@@ -72,7 +76,8 @@ const modalReducer = (state = modalState, action:any) => {
         let temporaryItem:QuestionType = {
           value1: '',
           rightAnswer: '',
-          variants: []
+          usersAnswer: '',
+          variants: [],
         }
 
         temporaryItem.value1 = newState.test.shufledItems[i].word
@@ -119,6 +124,7 @@ const modalReducer = (state = modalState, action:any) => {
         let temporaryItem:QuestionType = {
           value1: '',
           rightAnswer: '',
+          usersAnswer: '',
           variants: []
         }
 
@@ -167,6 +173,8 @@ const modalReducer = (state = modalState, action:any) => {
         newState.test.rightAnswersCount++
       }
       
+      newState.test.itemsForTest[newState.test.questionId].usersAnswer = action.answer
+
       newState.test.questionId += 1
 
       newState.test.currentQuestion = newState.test.itemsForTest[newState.test.questionId]
@@ -221,6 +229,19 @@ type getNextQuestion = {
   answer: string
 }
 export const getNextQuestion = (answer:string) => ({type: NEXT_QUESTION, answer})
+
+export const createNewTestThunk = (test:UserQuestionType, userId:string) => async (dispatch:any) => {
+  let data = await testsAPI.createTest({
+    test,
+    userId
+  })
+  if (data.success) {
+    let addToProfileRes = await userAPI.addTestToProfile({userId, testId: data.doc._id})
+    if (addToProfileRes.success) {
+      dispatch(addCompletedTest(test))
+    }
+  }
+}
 
 export const setTestModal = (modalData:ModalStateType, variantsCount:number) => async (dispatch:any) => {
   await dispatch(setModal(modalData))

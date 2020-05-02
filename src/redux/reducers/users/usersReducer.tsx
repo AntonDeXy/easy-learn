@@ -1,11 +1,34 @@
 import { userAPI, listsAPI } from '../../../API/Api'
-import { ADD_LIST_TO_PROFILE, CLEAR_ERROR, SET_ERROR, REMOVE_ADDED_LIST, SET_USER } from './usersReducerTypes'
+import { ADD_LIST_TO_PROFILE, CLEAR_ERROR, SET_ERROR, REMOVE_ADDED_LIST, SET_USER, ADD_COMPLETED_TEST_TO_PROFILE } from './usersReducerTypes'
 import { ListType } from '../main/mainReducer'
+
+export type UserQuestionType = {
+  _id?: string
+  type: string
+  questionsCount: number
+  rightAnswersCount: number
+  items: Array<{
+    value1: string
+    rightAnswer: string
+    usersAnswer: string
+    variants: Array<{
+      value: string
+      key: number
+    }>
+  }>
+}
+
+export type TestType = {
+  _id: string
+  userId: string
+  questions: Array<UserQuestionType>
+}
 
 export type UserStateType = {
   _id: string
   userId: string
   addedLists: Array<ListType>
+  tests: Array<UserQuestionType>
   email: string
   pictureUrl: string
   testsCount: number
@@ -15,6 +38,7 @@ const userState:UserStateType = {
   _id: '',
   userId: '',
   addedLists: [],
+  tests: [],
   email: '',
   pictureUrl: '',
   testsCount: 0
@@ -41,9 +65,21 @@ const userReducer = (state = userState, action:any) => {
 
       return newState
     }
+    case ADD_COMPLETED_TEST_TO_PROFILE: {
+      let newState = {...state}
+      newState.tests.push(action.test)
+      return newState
+    }
     default: return state
   }
 }
+
+type AddCompletedTestType = {
+  type: typeof ADD_COMPLETED_TEST_TO_PROFILE
+  test: UserQuestionType
+}
+
+export const addCompletedTest = (test:UserQuestionType):AddCompletedTestType => ({type: ADD_COMPLETED_TEST_TO_PROFILE, test})
 
 type SetUserActionType = {
   type: typeof SET_USER
@@ -75,7 +111,7 @@ type AddListToProfileActionType = {
 const addListToProfile = (list:ListType):AddListToProfileActionType => ({type: ADD_LIST_TO_PROFILE, list}) 
 
 export const setUserThunk = (userId:string) => async (dispatch:any) => {
-  let data = await userAPI.getUser(userId)
+  let data:any = await userAPI.getUser(userId)
   if (data.success) {
     if (data.user) {
       dispatch(setUser(data.user))

@@ -35,6 +35,8 @@ const Profile:React.FC<ProfileType> = ({setCurrentPageToProfile, user}) => {
             <span>{user.testsCount}</span>
           </div>
           <div>
+            <span>Completed tests:</span>
+            {user.tests.map(test => <div>{test._id}</div>)}
           </div>
         </div>
       </div>

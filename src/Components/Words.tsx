@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { WordsWrapper, WordItemSt } from './Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
@@ -162,7 +162,7 @@ const Word:React.FC<WordType> = ({ getWordAudioUrl, isTestStarted, item, updateI
           </svg>
         )}
         {
-          audio.src && (
+          (audio.src && item.audioUrl) && (
             <svg
               onClick={() => !isLoading && audio.play()}
               width="17"

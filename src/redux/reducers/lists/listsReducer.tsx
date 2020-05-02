@@ -23,45 +23,45 @@ type ListsStateType = {
 const listsState:ListsStateType = {
   lists: [
     // temp data for offline dev
-    // {
-    //   _id: '1',
-    //   name: "test",
-    //   authorId: '1',
-    //   items: [
-    //     {
-    //       _id: '1',
-    //       word: 'word1',
-    //       translate: "translate1"
-    //     },
-    //     {
-    //       _id: '2',
-    //       word: 'word2',
-    //       translate: "translate2"
-    //     },
-    //     {
-    //       _id: '3',
-    //       word: 'word3',
-    //       translate: "translate3"
-    //     },
-    //   ]
-    // },
-    // {
-    //   _id: '2',
-    //   name: "test2",
-    //   authorId: '1',
-    //   items: [
-    //     {
-    //       _id: '1',
-    //       word: '12',
-    //       translate: "212"
-    //     },
-    //     {
-    //       _id: '2',
-    //       word: '31',
-    //       translate: "213"
-    //     }
-    //   ]
-    // }
+    {
+      _id: '1',
+      name: "test",
+      authorId: '1',
+      items: [
+        {
+          _id: '1',
+          word: 'word1',
+          translate: "translate1"
+        },
+        {
+          _id: '2',
+          word: 'word2',
+          translate: "translate2"
+        },
+        {
+          _id: '3',
+          word: 'word3',
+          translate: "translate3"
+        },
+      ]
+    },
+    {
+      _id: '2',
+      name: "test2",
+      authorId: '1',
+      items: [
+        {
+          _id: '1',
+          word: '12',
+          translate: "212"
+        },
+        {
+          _id: '2',
+          word: '31',
+          translate: "213"
+        }
+      ]
+    }
   ],
   isLoading: false,
   errorMessage: '',

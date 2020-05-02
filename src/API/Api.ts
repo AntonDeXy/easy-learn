@@ -1,9 +1,11 @@
 import axios from 'axios'
 import { ListType, ItemType } from '../redux/reducers/main/mainReducer'
 import { NoteType } from '../redux/reducers/notes/notesReducer'
+import { UserQuestionType } from '../redux/reducers/users/usersReducer'
 
 const instance = axios.create({
-  baseURL: '/api/v1/'
+  baseURL: 'http://localhost:5001/api/v1/'
+  // baseURL: '/api/v1/'
 })
 
 export const listsAPI = {
@@ -84,10 +86,21 @@ export const itemsAPI = {
   }
 }
 
+export const testsAPI = {
+  createTest(data: {test: UserQuestionType, userId: string}) {
+    return instance.post('/tests/create-test/', data)
+      .then(res => res.data)
+  }
+}
+
 export const userAPI = {
   addListToProfile(data: { userId: string; listId: string }) {
     return instance.post('/lists/add-to-profile', data)
       .then(res => res)
+  },
+  addTestToProfile(data: { userId: string; testId: string }) {
+    return instance.put('users/add-test', data)
+      .then(res => res.data)
   },
   removeAddedList(data: { userId: string; listId: string }) {
     return instance.put(`users/remove-list/${data.userId}`, {listId: data.listId})
