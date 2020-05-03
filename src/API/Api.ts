@@ -110,8 +110,8 @@ export const userAPI = {
     return instance.get(`users/get-profile/${userId}`)
       .then(res => res.data)
   },
-  createNewUser(userId: string) {
-    return instance.post('users/new', {userIdFromAuth0: userId})
+  createNewUser(userId: string, email:string) {
+    return instance.post('users/new', {userIdFromAuth0: userId, email})
       .then(res => res.data)
   }
 }

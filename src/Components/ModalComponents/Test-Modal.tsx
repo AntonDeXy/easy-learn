@@ -13,21 +13,24 @@ const TestModal:React.FC<TestModalType> = ({currentQuestion, getNextQuestion}) =
       <div className="answers">
         {
           currentQuestion && currentQuestion.variants.map((variant) => {
+            let isClicked = false
             return (
               <button
                 onClick={(e) => {
-                  if (variant.value === currentQuestion.rightAnswer) {
-                    e.currentTarget.classList.add('rightAnswer')
-                  } else {
-                    e.currentTarget.classList.add('wrongAnswer')
+                  if (!isClicked) {
+                    isClicked = true
+                    if (variant.value === currentQuestion.rightAnswer) {
+                      e.currentTarget.classList.add('rightAnswer')
+                    } else {
+                      e.currentTarget.classList.add('wrongAnswer')
+                    }
+                    setTimeout(
+                      () => {
+                        getNextQuestion(variant.value)
+                      },
+                      500
+                    )
                   }
-
-                  setTimeout(
-                    () => {
-                      getNextQuestion(variant.value)
-                    },
-                    500
-                  )
                 }}
                 key={variant.key}
               >{variant.value}</button>

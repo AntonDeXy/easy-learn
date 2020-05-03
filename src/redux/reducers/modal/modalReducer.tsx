@@ -66,7 +66,7 @@ const modalReducer = (state = modalState, action:any) => {
         return a
       }
       const shufledItems = shuffle([...newState.test.initialItems])
-      newState.test.shufledItems = shufledItems
+      newState.test.shufledItems = shufledItems.slice(0, action.questionsCount)
       return newState
     }
     case SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES: {
@@ -77,7 +77,7 @@ const modalReducer = (state = modalState, action:any) => {
           value1: '',
           rightAnswer: '',
           usersAnswer: '',
-          variants: [],
+          variants: []
         }
 
         temporaryItem.value1 = newState.test.shufledItems[i].word
@@ -194,7 +194,6 @@ type SetModalActionType = {
   modalData: ModalStateType | SetModalType
 }
 
-
 export type SetModalType = {
   isActive: boolean
   type: string
@@ -205,8 +204,9 @@ export const setModal = (modalData:ModalStateType|SetModalType):SetModalActionTy
 
 type ShufleItemsActionType = {
   type: typeof SHUFLE_ITEMS
+  questionsCount: number
 }
-export const shufleItems = ():ShufleItemsActionType => ({type: SHUFLE_ITEMS})
+export const shufleItems = (questionsCount:number):ShufleItemsActionType => ({type: SHUFLE_ITEMS, questionsCount})
 
 type SetItemsForTestWordToTranslatesActionType = {
   type: typeof SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES
@@ -214,7 +214,7 @@ type SetItemsForTestWordToTranslatesActionType = {
     variantsCount: number
   }
 }
-export const setItemsForTestWordToTranslates = (variantsCount:number):SetItemsForTestWordToTranslatesActionType => ({type: SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES, data: {variantsCount: variantsCount ? variantsCount : 3}})
+export const setItemsForTestWordToTranslates = (variantsCount:number):SetItemsForTestWordToTranslatesActionType => ({type: SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES, data: {variantsCount}})
 
 type SetItemsForTestTranslateToWords = {
   type: typeof SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS
@@ -222,7 +222,7 @@ type SetItemsForTestTranslateToWords = {
     variantsCount: number
   }
 }
-export const setItemsForTestTranslateToWords = (variantsCount:number):SetItemsForTestTranslateToWords => ({type: SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS, data: {variantsCount: variantsCount ? variantsCount : 3}})
+export const setItemsForTestTranslateToWords = (variantsCount:number):SetItemsForTestTranslateToWords => ({type: SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS, data: {variantsCount}})
 
 type getNextQuestion = {
   type: typeof NEXT_QUESTION
@@ -238,14 +238,14 @@ export const createNewTestThunk = (test:UserQuestionType, userId:string) => asyn
   if (data.success) {
     let addToProfileRes = await userAPI.addTestToProfile({userId, testId: data.doc._id})
     if (addToProfileRes.success) {
-      dispatch(addCompletedTest(test))
+      dispatch(addCompletedTest(data.doc))
     }
   }
 }
 
-export const setTestModal = (modalData:ModalStateType, variantsCount:number) => async (dispatch:any) => {
+export const setTestModal = (modalData:ModalStateType, variantsCount:number, questionsCount:number) => async (dispatch:any) => {
   await dispatch(setModal(modalData))
-  await dispatch(shufleItems())
+  await dispatch(shufleItems(questionsCount))
   if (modalData.test.type === 'wordTranslates') {
     await dispatch(setItemsForTestWordToTranslates(variantsCount))
   } else if (modalData.test.type === 'translateWords') {

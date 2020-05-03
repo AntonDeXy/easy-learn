@@ -2,7 +2,8 @@ import React, { useEffect } from "react"
 import { ProfileSt } from "./Styled"
 import { connect } from 'react-redux';
 import { changeCurrentPageType } from "../redux/reducers/main/mainReducer";
-import { UserStateType } from "../redux/reducers/users/usersReducer";
+import { UserStateType, UserQuestionType } from "../redux/reducers/users/usersReducer";
+import TimeAgo from 'react-timeago'
 
 type ProfileType = {
   user: UserStateType
@@ -15,6 +16,8 @@ const Profile:React.FC<ProfileType> = ({setCurrentPageToProfile, user}) => {
     setCurrentPageToProfile()
   }, [setCurrentPageToProfile])
 
+  const completedTests = [...user.tests]
+  completedTests.reverse()
   return (
     <ProfileSt>
       <div className="wrapper">
@@ -32,15 +35,41 @@ const Profile:React.FC<ProfileType> = ({setCurrentPageToProfile, user}) => {
           )}
           <div>
             <span>Completed tests count:</span>
-            <span>{user.testsCount}</span>
+            <span>{user.tests.length}</span>
           </div>
-          <div>
-            <span>Completed tests:</span>
-            {user.tests.map(test => <div>{test._id}</div>)}
-          </div>
+          {completedTests.length > 0 && (
+            <div>
+              <span>Completed tests:</span>
+              <div className="tests">
+                {completedTests.map(test => <TestItem test={test} />)}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </ProfileSt>
+  )
+}
+
+type TestItemType = {
+  test: UserQuestionType
+}
+
+const TestItem:React.FC<TestItemType> = ({test}) => {
+  return (
+    <div className="test-item">
+      <div className="list-name">{test.listName}</div>
+      <div className="answers">
+        <span>{test.rightAnswersCount}/{test.questionsCount}</span>
+      </div>
+      <div className='date'>
+        {
+          test?.date && (
+            <TimeAgo date={test.date}  />
+          )
+        }
+      </div>
+    </div>
   )
 }
 

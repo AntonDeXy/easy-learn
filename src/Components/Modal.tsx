@@ -19,7 +19,10 @@ type ModalType = {
   autoTranslates: Array<TranslateType>
   modal: ModalStateType
   user: UserStateType
-  setTestModal: (data:{isActive: boolean, test: {type: string, initialItems: Array<ItemType>}, type: string}, variantsCount:number) => void
+  setTestModal: (
+    data:{isActive: boolean, test: {type: string, initialItems: Array<ItemType>},
+    type: string}, variantsCount:number, questionsCount:number
+    ) => void
   createItemThunk: (item:ItemType, listId:string, success:any) => void
   createNote: (data:NoteType, success:any) => void
   setModal: (data:SetModalType) => void
@@ -58,7 +61,7 @@ const Modal:React.FC<ModalType> = (
           </div>
           <div>
             {
-              modal.type === 'test' && <span>{test.questionId}/{test.questionsCount}</span>
+              modal.type === 'test' && <span>{test.questionId + 1}/{test.questionsCount}</span>
             }
           </div>
           <svg
@@ -106,18 +109,20 @@ const Modal:React.FC<ModalType> = (
 
         {modal.type === 'chooseTestType' &&<ChooseTestTypeModal
           setTestType={
-            (testType:string) => {
+            (testType:string, questionsCount:number) => {
               setTestModal(
                 {
                   isActive: true, type: 'test',
                   test: {type: testType, initialItems: currentList.items}
                 },
-                3
+                3,
+                questionsCount
               )
-            }
-            }/>
+            }}
+            itemsCount={currentList.items.length}
+          />
         }
-        {modal.type === 'result' && <ResultModal userId={user.userId} createNewTestItem={createNewTestItem} test={test} /> }
+        {modal.type === 'result' && <ResultModal userId={user.userId} listName={currentList.name} createNewTestItem={createNewTestItem} test={test} /> }
         {modal.type === 'share' && <ShareModal categoryId={modal.listId} /> }
       </div>
     </ModalSt>
@@ -127,21 +132,23 @@ const Modal:React.FC<ModalType> = (
 type ResultModalType = {
   test: TestType
   userId: string
+  listName: string
   createNewTestItem: (test:UserQuestionType, userId:string) => void
 }
 
-const ResultModal:React.FC<ResultModalType> = ({test, userId, createNewTestItem}) => {
+const ResultModal:React.FC<ResultModalType> = ({test, listName, userId, createNewTestItem}) => {
   useEffect(() => {
     createNewTestItem(
       {
         type: test.type,
         questionsCount: test.questionsCount,
         rightAnswersCount: test.rightAnswersCount,
-        items: test.itemsForTest
+        items: test.itemsForTest,
+        listName
       },
       userId
     )
-  }, [createNewTestItem, test.itemsForTest, test.questionsCount, test.rightAnswersCount, test.type, userId])
+  }, [createNewTestItem, listName, test.itemsForTest, test.questionsCount, test.rightAnswersCount, test.type, userId])
 
   return (
     <div className="main">
@@ -180,7 +187,7 @@ const mapDispatchToProps = (dispatch:any) => ({
   getAutoTranslatesThunk: (phrase:string, success:any) => dispatch(getAutoTranslatesThunk(phrase, success)),
   createItemThunk: (item:ItemType, listId:string, success:any) => dispatch(createItemThunk(item, listId, success)),
   createNote: (data:NoteType, success:any) => dispatch(createNoteThunk(data, success)),
-  setTestModal: (data:ModalStateType, variantsCount:number) => dispatch(setTestModal(data, variantsCount)),
+  setTestModal: (data:ModalStateType, variantsCount:number, questionsCount:number) => dispatch(setTestModal(data, variantsCount, questionsCount)),
   getNextQuestion: (answer:string) => dispatch(getNextQuestion(answer)),
   createNewTestItem: (test:UserQuestionType, userId:string) => dispatch(createNewTestThunk(test, userId))
 })

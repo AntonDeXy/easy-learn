@@ -4,14 +4,19 @@ import { ListType } from '../main/mainReducer'
 
 export type UserQuestionType = {
   _id?: string
+  userId?: string
   type: string
   questionsCount: number
-  rightAnswersCount: number
+  listName: string
+  rightAnswersCount: Number
+  date?: string
   items: Array<{
+    _id?: string
     value1: string
     rightAnswer: string
     usersAnswer: string
     variants: Array<{
+      _id?: string
       value: string
       key: number
     }>
@@ -31,7 +36,6 @@ export type UserStateType = {
   tests: Array<UserQuestionType>
   email: string
   pictureUrl: string
-  testsCount: number
 }
 
 const userState:UserStateType = {
@@ -41,13 +45,12 @@ const userState:UserStateType = {
   tests: [],
   email: '',
   pictureUrl: '',
-  testsCount: 0
 }
 
 const userReducer = (state = userState, action:any) => {
   switch (action.type) {
     case SET_USER: {
-      return ({...state, ...action.user})
+      return ({...state, ...action.user, pictureUrl :action.userImg})
     }
     case REMOVE_ADDED_LIST : {
       let addedLists = state.addedLists.filter(list => list._id !== action.listId)
@@ -84,8 +87,9 @@ export const addCompletedTest = (test:UserQuestionType):AddCompletedTestType => 
 type SetUserActionType = {
   type: typeof SET_USER
   user: UserStateType
+  userImg: string
 }
-const setUser = (user:UserStateType):SetUserActionType => ({type: SET_USER, user})
+const setUser = (user:UserStateType, userImg:string):SetUserActionType => ({type: SET_USER, user, userImg})
 
 type ClearErorrActionType = {
   type: typeof CLEAR_ERROR
@@ -110,14 +114,14 @@ type AddListToProfileActionType = {
 }
 const addListToProfile = (list:ListType):AddListToProfileActionType => ({type: ADD_LIST_TO_PROFILE, list}) 
 
-export const setUserThunk = (userId:string) => async (dispatch:any) => {
+export const setUserThunk = (userId:string, email:string, userImg:string) => async (dispatch:any) => {
   let data:any = await userAPI.getUser(userId)
   if (data.success) {
     if (data.user) {
-      dispatch(setUser(data.user))
+      dispatch(setUser(data.user, userImg))
     } else {
-      let data = await userAPI.createNewUser(userId)
-      if (data.success) dispatch(setUser(data.user))
+      let data = await userAPI.createNewUser(userId, email)
+      if (data.success) dispatch(setUser(data.user, userImg))
     }
   }
 } 
@@ -195,7 +199,6 @@ export const removeAddedListThunk = (userId:string, listId:string) => async (dis
     dispatch(removeAddedList(listId))
   } else {
     dispatch(setError('Something went wrong'))
-    // dispatch(setError(data.errorMessage))
   }
 }
 
