@@ -4,8 +4,8 @@ import { NoteType } from '../redux/reducers/notes/notesReducer'
 import { UserQuestionType } from '../redux/reducers/users/usersReducer'
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5001/api/v1/'
-  // baseURL: '/api/v1/'
+  // baseURL: 'http://localhost:5001/api/v1/'
+  baseURL: '/api/v1/'
 })
 
 export const listsAPI = {
