@@ -50,7 +50,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
 
   useEffect(() => {
     if (!loading && userAuth0) {
-      setUserThunk(userAuth0.sub)
+      setUserThunk(userAuth0.sub, userAuth0.email, userAuth0.picture)
     }
   }, [loading, setUserThunk, userAuth0])
 
@@ -129,7 +129,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getNotes: (userId) => dispatch(getNotesThunk(userId)),
   getLists: (userId) => dispatch(getListsThunk(userId)),
-  setUserThunk: (data) => dispatch(setUserThunk(data)),
+  setUserThunk: (id, email, userImg) => dispatch(setUserThunk(id, email, userImg)),
   setModal: (data) => dispatch(setModal(data))
 })
 

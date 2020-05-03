@@ -321,6 +321,14 @@ export const ModalSt = styled.div `
       .title {
         grid-column: 1/4;
       }
+      .questionsCount {
+        display: grid;
+        gap: 5px;
+        grid-auto-flow: column;
+        justify-content: left;
+        align-items: center;
+        grid-column: 1/4;
+      }
       button {
         height: 30px;
         border-radius: 10em;
@@ -566,12 +574,62 @@ export const ProfileSt = styled.div`
     .info {
       display: grid;
       grid-auto-flow: row;
+      gap: 15px;
+      align-content: baseline;
       div {
         display: grid;
         gap: 10px;
         justify-content: left;
         text-align: left;
+        grid-template-columns: auto 1fr;
         grid-auto-flow: column;
+        align-content: baseline;
+      }
+      .tests {
+        display: grid;
+        max-height: 40vh;
+        border: 2px solid gray;
+        width: 100%;
+        grid-auto-flow: row;
+        grid-template-columns: 100%;
+        grid-auto-rows: 60px;
+        background-color: #c1c1c1;
+        gap: 5px;
+        overflow-y: scroll;
+        border-radius: 10px;
+        .test-item {
+          align-content: center;
+          background-color: white;
+          display: grid;
+          width: 100%;
+          grid-template-columns: 1fr auto auto;
+          padding: 0 10px;
+          align-items: center;
+          .list-name {
+            grid-column: 1;
+          }
+          .date {
+            grid-column: 3;
+          }
+          .info {
+            display: grid;
+            border-top: 1px solid grey;
+            grid-column: 1/4;
+            grid-row: 2;
+            gap: 10px;
+            grid-template-columns: 100%;
+            grid-auto-flow: row;
+            .questions {
+              display: grid;
+              grid-auto-flow: row;
+              border: 1px solid gray;
+              grid-template-columns: 100%;
+              .question {
+                
+              }
+            }
+          }
+        }
       }
     }
   }

@@ -162,7 +162,7 @@ const Word:React.FC<WordType> = ({ getWordAudioUrl, isTestStarted, item, updateI
           </svg>
         )}
         {
-          audio.src && (
+          (audio.src && item.audioUrl) && (
             <svg
               onClick={() => !isLoading && audio.play()}
               width="17"
