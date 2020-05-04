@@ -16,7 +16,7 @@ const Menu:React.FC<MenuType> = ({menuStyle, changeCurrentPage}) => {
   return (
     <MenuSt style={menuStyle} >
       <div className="wrapper">
-        <Link to='/' onClick={() => changeCurrentPage('lists')}>
+        <Link to='/lists' onClick={() => changeCurrentPage('lists')}>
           Lists
         </Link>
         <Link to='/notes'>
@@ -24,6 +24,7 @@ const Menu:React.FC<MenuType> = ({menuStyle, changeCurrentPage}) => {
         </Link>
         <Link to='/help'>
           Help
+
         </Link>
         <Link to='/' onClick={() => logout()}>Log out</Link>
       </div>

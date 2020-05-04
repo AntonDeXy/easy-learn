@@ -53,6 +53,11 @@ export const MainSt = styled.main `
   width: 100vw;
   font-family: 'Roboto', sans-serif;
   overflow-y: auto;
+  .pleaseLogin {
+    width: 100vw;
+    text-align: center;
+    padding-top: 15px;
+  }
   .spiner {
     height: 100px;
     justify-self: center;
