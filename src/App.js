@@ -95,7 +95,6 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
 
             <PrivateRoute path="/profile" component={Profile} />
 
-
             <PrivateRoute path="/lists">
               {currentPage === 'lists' && (
                 <ListsContainer />
