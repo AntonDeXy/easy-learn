@@ -7,7 +7,7 @@ export type ItemType = {
   audioUrl?: string
 }
 
-export type pageType = 'words' | 'lists' | 'notes' | 'help' | 'profile'
+export type pageType = 'words' | 'lists' | 'notes' | 'help' | 'profile' | 'unregistred'
 
 export type ListType = {
   _id?: string
@@ -22,7 +22,7 @@ type MainStateType = {
 }
 
 const mainState: MainStateType = {
-  currentPage: 'lists'
+  currentPage: 'unregistred'
 }
 
 export const mainReducer = (state = mainState, action: any):MainStateType => {

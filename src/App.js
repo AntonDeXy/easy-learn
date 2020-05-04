@@ -13,7 +13,6 @@ import { useAuth0 } from "./react-auth0-spa"
 import Profile from "./Components/Profile"
 import history from "./utils/history"
 import PrivateRoute from './Components/PrivateRoute'
-import ExternalApi from "./views/ExternalApi"
 import { useEffect } from 'react'
 import AddListUrl from './Components/AddListUrl'
 import Spiner from './Components/Spiner'
@@ -23,6 +22,8 @@ import { setUserThunk } from './redux/reducers/users/usersReducer'
 import { getListsThunk } from './redux/reducers/lists/listsReducer'
 import { getNotesThunk } from './redux/reducers/notes/notesReducer'
 import HelpPage from './Components/Help'
+import Head from './Components/Head'
+import LoginForUse from './Components/LoginForUse';
 
 const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
@@ -58,6 +59,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
   if (loading) {
     return (
       <Router>
+        <Head title={'Loading...'} />
         <Header />
         <MainSt>
           <Spiner />
@@ -82,15 +84,19 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
         <MainSt>
           <Switch>
 
+            <Route exact path='/' >
+              <LoginForUse />
+            </Route>
+
             <PrivateRoute
               path='/lists/add/:listId'
               render={(props) =>  <AddListUrl {...props} user={user} />}
             />
+
             <PrivateRoute path="/profile" component={Profile} />
 
-            <PrivateRoute path="/external-api" component={ExternalApi} />
 
-            <PrivateRoute exact path="/">
+            <PrivateRoute path="/lists">
               {currentPage === 'lists' && (
                 <ListsContainer />
               )}
@@ -107,9 +113,9 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
               <HelpPage />
             </Route>
 
-            <Route exact path='/notes'>
+            <PrivateRoute exact path='/notes'>
               <Notes />
-            </Route>
+            </PrivateRoute>
           </Switch>
         </MainSt>
         <Footer currentPage={currentPage} setModal={(data) => setModal(data)} />

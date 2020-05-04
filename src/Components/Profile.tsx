@@ -4,14 +4,15 @@ import { connect } from 'react-redux';
 import { changeCurrentPageType } from "../redux/reducers/main/mainReducer";
 import { UserStateType, UserQuestionType } from "../redux/reducers/users/usersReducer";
 import TimeAgo from 'react-timeago'
+import Head from "./Head";
 
 type ProfileType = {
   user: UserStateType
   setCurrentPageToProfile: () => void
 }
 
-const Profile:React.FC<ProfileType> = ({setCurrentPageToProfile, user}) => {
-  
+const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
+
   useEffect(() => {
     setCurrentPageToProfile()
   }, [setCurrentPageToProfile])
@@ -19,35 +20,38 @@ const Profile:React.FC<ProfileType> = ({setCurrentPageToProfile, user}) => {
   const completedTests = [...user.tests]
   completedTests.reverse()
   return (
-    <ProfileSt>
-      <div className="wrapper">
-        {
-          user.pictureUrl
-          ? <img src={user.pictureUrl} alt="User" />
-          : <div className="userImg"><span>{'<photo />'}</span></div>
-        }
-        <div className="info">
-          {user.email && (
-            <div>
-              <span>email:</span>
-              <span>{user.email}</span>
-            </div>
-          )}
-          <div>
-            <span>Completed tests count:</span>
-            <span>{user.tests.length}</span>
-          </div>
-          {completedTests.length > 0 && (
-            <div>
-              <span>Completed tests:</span>
-              <div className="tests">
-                {completedTests.map(test => <TestItem test={test} />)}
+    <>
+      <Head title={'Profile'} />
+      <ProfileSt>
+        <div className="wrapper">
+          {
+            user.pictureUrl
+              ? <img src={user.pictureUrl} alt="User" />
+              : <div className="userImg"><span>{'<photo />'}</span></div>
+          }
+          <div className="info">
+            {user.email && (
+              <div>
+                <span>email:</span>
+                <span>{user.email}</span>
               </div>
+            )}
+            <div>
+              <span>Completed tests count:</span>
+              <span>{user.tests.length}</span>
             </div>
-          )}
+            {completedTests.length > 0 && (
+              <div>
+                <span>Completed tests:</span>
+                <div className="tests">
+                  {completedTests.map(test => <TestItem test={test} />)}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </ProfileSt>
+      </ProfileSt>
+    </>
   )
 }
 
@@ -55,7 +59,7 @@ type TestItemType = {
   test: UserQuestionType
 }
 
-const TestItem:React.FC<TestItemType> = ({test}) => {
+const TestItem: React.FC<TestItemType> = ({ test }) => {
   return (
     <div className="test-item">
       <div className="list-name">{test.listName}</div>
@@ -65,7 +69,7 @@ const TestItem:React.FC<TestItemType> = ({test}) => {
       <div className='date'>
         {
           test?.date && (
-            <TimeAgo date={test.date}  />
+            <TimeAgo date={test.date} />
           )
         }
       </div>
@@ -73,11 +77,11 @@ const TestItem:React.FC<TestItemType> = ({test}) => {
   )
 }
 
-const mapStateToProps = (state:any) => ({
+const mapStateToProps = (state: any) => ({
   user: state.userReducer,
 })
 
-const mapDispatchToProps = (dispatch:any) => ({
+const mapDispatchToProps = (dispatch: any) => ({
   setCurrentPageToProfile: () => dispatch(changeCurrentPageType('profile'))
 })
 
