@@ -41,7 +41,7 @@ const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
               <span>{user.tests.length}</span>
             </div>
             {completedTests.length > 0 && (
-              <div>
+              <div className='tests-wrapper'>
                 <span>Completed tests:</span>
                 <div className="tests">
                   {completedTests.map(test => <TestItem test={test} />)}
