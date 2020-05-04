@@ -439,11 +439,18 @@ export const MenuSt = styled.div`
   position: absolute;
   top: 10vh;
   animation-duration: 0.5s;
+  font-size: 20px;
   .wrapper {
     display: grid;
     justify-self: center;
     width: 90%;
     align-content: baseline;
+    a {
+      color: #424242 !important;
+      :hover {
+        color: #6f6f6f !important;
+      }
+    }
   }
 `
 

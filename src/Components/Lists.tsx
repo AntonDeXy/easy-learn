@@ -12,46 +12,50 @@ import {
 } from '../redux/reducers/lists/listsReducer'
 import { changeCurrentPageType, setCurrentList, ListType } from '../redux/reducers/main/mainReducer'
 import { setModal, SetModalType } from '../redux/reducers/modal/modalReducer'
+import Head from './Head'
 
 type ListsContainerType = {
   loading: boolean
   setModal: (data: SetModalType) => void
-  listsState: {lists: Array<ListType>}
+  listsState: { lists: Array<ListType> }
   changeCurrentPageToWords: () => void
   user: UserStateType
-  setCurrentList: (list:ListType) => void
-  updateListThunk: (listId:string, newData:ListType, success:any) => void
-  removeAddedListThunk: (userId:string, listId:string) => void
-  removeListThunk: (listId:string) => void
+  setCurrentList: (list: ListType) => void
+  updateListThunk: (listId: string, newData: ListType, success: any) => void
+  removeAddedListThunk: (userId: string, listId: string) => void
+  removeListThunk: (listId: string) => void
 }
 
-const ListsContainer:React.FC<ListsContainerType> = ({loading, setModal, listsState, removeListThunk, changeCurrentPageToWords, user, setCurrentList, updateListThunk, removeAddedListThunk}) => {
+const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, listsState, removeListThunk, changeCurrentPageToWords, user, setCurrentList, updateListThunk, removeAddedListThunk }) => {
   return (
-    <ListsWrapper>
-      <Plus openModal={() => setModal({isActive: true, type: 'lists'})} type="lists" />
-      {loading ? (
-        <Spiner />
-      ) : (
-        <div className="lists">
-          {listsState.lists.map(list => {
-            return (
-              <List
-                changeCurrentPageType={changeCurrentPageToWords}
-                key={list._id}
-                isOwner={user.userId === list.authorId ? true : false}
-                list={list}
-                userId={user.userId}
-                setCurrentList={setCurrentList}
-                openShareModal={() => setModal({isActive: true, type: 'share', listId: list._id})}
-                updateListThunk={updateListThunk}
-                removeListThunk={removeListThunk}
-                removeAddedListThunk={removeAddedListThunk}
-              />
-            )
-          })}
-        </div>
-      )}
-    </ListsWrapper>
+    <>
+      <Head title={'Lists'} />
+      <ListsWrapper>
+        <Plus openModal={() => setModal({ isActive: true, type: 'lists' })} type="lists" />
+        {loading ? (
+          <Spiner />
+        ) : (
+            <div className="lists">
+              {listsState.lists.map(list => {
+                return (
+                  <List
+                    changeCurrentPageType={changeCurrentPageToWords}
+                    key={list._id}
+                    isOwner={user.userId === list.authorId ? true : false}
+                    list={list}
+                    userId={user.userId}
+                    setCurrentList={setCurrentList}
+                    openShareModal={() => setModal({ isActive: true, type: 'share', listId: list._id })}
+                    updateListThunk={updateListThunk}
+                    removeListThunk={removeListThunk}
+                    removeAddedListThunk={removeAddedListThunk}
+                  />
+                )
+              })}
+            </div>
+          )}
+      </ListsWrapper>
+    </>
   )
 }
 
@@ -60,14 +64,14 @@ type ListCompType = {
   isOwner: boolean
   userId: string
   changeCurrentPageType: () => void
-  setCurrentList: (list:ListType) => void
+  setCurrentList: (list: ListType) => void
   openShareModal: () => void
-  updateListThunk: (listId:string, newData:ListType, success:any) => void
-  removeListThunk: (listId:string) => void
-  removeAddedListThunk: (userId:string, listId:string) => void
+  updateListThunk: (listId: string, newData: ListType, success: any) => void
+  removeListThunk: (listId: string) => void
+  removeAddedListThunk: (userId: string, listId: string) => void
 }
 
-const List:React.FC<ListCompType> = ({
+const List: React.FC<ListCompType> = ({
   changeCurrentPageType,
   setCurrentList,
   list,
@@ -92,8 +96,8 @@ const List:React.FC<ListCompType> = ({
   const removeList = () => {
     if (list?._id) {
       isOwner
-      ? removeListThunk(list._id)
-      : removeAddedListThunk(userId, list._id)
+        ? removeListThunk(list._id)
+        : removeAddedListThunk(userId, list._id)
     }
   }
 
@@ -122,18 +126,18 @@ const List:React.FC<ListCompType> = ({
           isLoading ? (
             <Spiner />
           ) : (
-            <AutosizeInput
-              autoFocus
-              value={newName}
-              type="text"
-              onChange={(e) => {
-                setNewName(e.target.value)
-              }}
-            />
-          )
+              <AutosizeInput
+                autoFocus
+                value={newName}
+                type="text"
+                onChange={(e) => {
+                  setNewName(e.target.value)
+                }}
+              />
+            )
         ) : (
-          <span>{list.name}</span>
-        )}
+            <span>{list.name}</span>
+          )}
       </div>
       <div className="functions">
         {/* share */}
@@ -185,20 +189,20 @@ const List:React.FC<ListCompType> = ({
   )
 }
 
-const mapStateToProps = (state:any) => ({
-  listsState: {...state.listsReducer, lists: [...state.listsReducer.lists, ...state.userReducer.addedLists]},
+const mapStateToProps = (state: any) => ({
+  listsState: { ...state.listsReducer, lists: [...state.listsReducer.lists, ...state.userReducer.addedLists] },
   currentList: state.listsReducer.currentList,
   errorMessage: state.listsReducer.errorMessage,
   user: state.userReducer
 })
 
-const mapDispatchToProps = (dispatch:any) => ({
-  setCurrentList: (list:ListType) => dispatch(setCurrentList(list)),
+const mapDispatchToProps = (dispatch: any) => ({
+  setCurrentList: (list: ListType) => dispatch(setCurrentList(list)),
   changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
-  setModal: (data:SetModalType) => dispatch(setModal(data)),
-  updateListThunk: (listId:string, newData:ListType, success:any) => dispatch(updateListThunk(listId, newData, success)),
-  removeListThunk: (listId:string) => dispatch(removeListThunk(listId)),
-  removeAddedListThunk: (userId:string, listId:string) => dispatch(removeAddedListThunk(userId, listId))
+  setModal: (data: SetModalType) => dispatch(setModal(data)),
+  updateListThunk: (listId: string, newData: ListType, success: any) => dispatch(updateListThunk(listId, newData, success)),
+  removeListThunk: (listId: string) => dispatch(removeListThunk(listId)),
+  removeAddedListThunk: (userId: string, listId: string) => dispatch(removeAddedListThunk(userId, listId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListsContainer)
