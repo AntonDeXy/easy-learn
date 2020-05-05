@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Header from './Components/Header'
 import { MainSt } from './Components/Styled'
 import Footer from './Components/Footer'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import ListsContainer from './Components/Lists'
 import Words from './Components/Words'
 import Modal from './Components/Modal'
@@ -96,18 +96,22 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
             <PrivateRoute path="/profile" component={Profile} />
 
             <PrivateRoute path="/lists">
-              {currentPage === 'lists' && (
-                <ListsContainer />
-              )}
-              {currentPage === 'words' && (
-                <Words
-                  isLoading={loading}
-                  user={user}
-                  setModal={data => setModal(data)}
-                />
-              )}
+              <ListsContainer />
             </PrivateRoute>
 
+            <PrivateRoute path="/words">
+              {currentList
+               ? (
+                  <Words
+                    isLoading={loading}
+                    user={user}
+                    setModal={data => setModal(data)}
+                  />
+                )
+                : <Redirect to='lists' /> 
+              }
+            </PrivateRoute>
+            
             <Route exact path='/help'>
               <HelpPage />
             </Route>

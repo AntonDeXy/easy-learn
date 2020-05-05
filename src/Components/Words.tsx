@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { WordsWrapper, WordItemSt } from './Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
@@ -19,11 +19,16 @@ type WordsType = {
   updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => any
   removeItemThunk: (listId: string, itemId: string, success: any) => any
   changeCurrentPageToLists: () => void
+  changeCurrentPageToWords: () => void
   getWordAudioUrl: (phrase: string) => string
 }
 
-const Words: React.FC<WordsType> = ({ user, getWordAudioUrl, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal }) => {
+const Words: React.FC<WordsType> = ({ user, getWordAudioUrl, changeCurrentPageToWords, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal }) => {
   const isOwner = user.userId === currentList.authorId ? true : false
+  
+  useEffect(() => {
+    changeCurrentPageToWords()
+  }, [changeCurrentPageToWords])
 
   return (
     <>
@@ -205,6 +210,7 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 const mapDispatchToProps = (dispatch: any) => ({
   getWordAudioUrl: (phrase: string) => dispatch(getAudioUrl(phrase)),
   changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
+  changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
   updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => dispatch(updateItemThunk(listId, itemId, newItem, success)),
   removeItemThunk: (listId: string, itemId: string, success: any) => dispatch(removeItemThunk(listId, itemId, success))
 })
