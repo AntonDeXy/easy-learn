@@ -5,6 +5,7 @@ import { changeCurrentPageType } from "../redux/reducers/main/mainReducer";
 import { UserStateType, UserQuestionType } from "../redux/reducers/users/usersReducer";
 import TimeAgo from 'react-timeago'
 import Head from "./Head";
+import { Link } from 'react-router-dom';
 
 type ProfileType = {
   user: UserStateType
@@ -30,6 +31,9 @@ const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
               : <div className="userImg"><span>{'<photo />'}</span></div>
           }
           <div className="info">
+            {
+              user.role === 'admin' && <Link to='/admin-panel' >Admin Panel</Link>
+            }
             {user.email && (
               <div>
                 <span>email:</span>

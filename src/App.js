@@ -24,6 +24,7 @@ import { getNotesThunk } from './redux/reducers/notes/notesReducer'
 import HelpPage from './Components/Help'
 import Head from './Components/Head'
 import LoginForUse from './Components/LoginForUse';
+import AdminPanel from './Components/AdminPanel'
 
 const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
@@ -118,6 +119,14 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
 
             <PrivateRoute exact path='/notes'>
               <Notes />
+            </PrivateRoute>
+
+            <PrivateRoute exact path='/admin-panel'>
+              {
+                user.role === 'admin'
+                ? <AdminPanel />
+                : <Redirect to='/' />
+              }
             </PrivateRoute>
           </Switch>
         </MainSt>

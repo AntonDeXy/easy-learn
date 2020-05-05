@@ -5,8 +5,8 @@ import { UserQuestionType } from '../redux/reducers/users/usersReducer'
 
 const instance = axios.create({
   // baseURL: 'http://localhost:5001/api/v1/'
-  // baseURL: 'https://cors-anywhere.herokuapp.com/https://dexy.site/api/v1/'
-  baseURL: '/api/v1/'
+  baseURL: 'https://cors-anywhere.herokuapp.com/https://dexy.site/api/v1/'
+  // baseURL: '/api/v1/'
 })
 
 export const listsAPI = {

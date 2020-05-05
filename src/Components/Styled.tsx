@@ -658,3 +658,46 @@ export const ProfileSt = styled.div`
     }
   }
 `
+
+export const HelpPageSt = styled.div `
+  display: grid;
+  padding: 15px 0;
+  .wrapper {
+    display: grid;
+    width: 80%;
+    justify-self: center;
+    align-content: baseline;
+  }
+`
+
+export const AdminPanelSt = styled.div `
+  display: grid;
+  padding: 15px 0;
+  .wrapper {
+    display: grid;
+    width: 80%;
+    justify-self: center;
+    align-content: baseline;
+    .helpItemsWrapper {
+      display: grid;
+      grid-auto-flow: row;
+      gap: 5px;
+      .helpItem {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        padding: 10px 10px;
+        border: 1px solid black;
+        border-radius: 5px;
+        font-weight: 500;
+        .name {
+          display: grid;
+          align-items: center;
+        }
+        .icons {
+          display: grid;
+          align-items: center;
+        }
+      }
+    }
+  }
+`
