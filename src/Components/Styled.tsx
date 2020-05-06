@@ -678,6 +678,13 @@ export const AdminPanelSt = styled.div `
     width: 80%;
     justify-self: center;
     align-content: baseline;
+    .textEditor {
+      min-height: 80vh;
+    }
+    /* temporary remove img uploading */
+    /* .ck-file-dialog-button {
+      display: none
+    } */
     .helpItemsWrapper {
       display: grid;
       grid-auto-flow: row;

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { AdminPanelSt } from './Styled'
-import { Tabs } from 'antd'
+import { Tabs, Button } from 'antd'
 import { removeHelpItem, HelpStateType, HelpItemType } from '../redux/reducers/help/helpReducer'
 import { connect } from 'react-redux'
 import CKEditor from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import JoditEditor from "jodit-react"
+import { baseURL } from '../API/Api'
 
 const { TabPane } = Tabs
 
@@ -39,7 +40,9 @@ type HelpTabType = {
 }
 
 const HelpTab:React.FC<HelpTabType> = ({helpState, removeHelpItem}) => {
-  const [newArticleContent, setNewArticleContent] = useState<String>('')
+  console.log(CKEditor)
+
+  const [newArticleContent, setNewArticleContent] = useState<string>('')
   return (
     <div className='helpItemsWrapper' >
       {
@@ -47,15 +50,11 @@ const HelpTab:React.FC<HelpTabType> = ({helpState, removeHelpItem}) => {
           return <HelpTabItem item={item} remove={(itemId) => removeHelpItem(itemId)} />
         })
       }
-      <CKEditor
-          editor={ ClassicEditor }
-          data=""
-          onChange={ ( event:any, editor:any ) => {
-              const data = editor.getData();
-              setNewArticleContent(data)
-          } }
-          value={newArticleContent}
-      />
+      <JoditEditor  
+        value={newArticleContent}
+        onBlur={newValue => setNewArticleContent(newValue)}
+        config={{readOnly: false}} />
+      <Button /*loading */>Add</Button>
     </div>
   )
 }

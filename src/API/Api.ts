@@ -3,10 +3,13 @@ import { ListType, ItemType } from '../redux/reducers/main/mainReducer'
 import { NoteType } from '../redux/reducers/notes/notesReducer'
 import { UserQuestionType } from '../redux/reducers/users/usersReducer'
 
+export const baseURL = 'http://localhost:5001/api/v1/'
+  // export const baseURL = 'https://cors-anywhere.herokuapp.com/https://dexy.site/api/v1/'
+  // export const baseURL = '/api/v1/'
+
+
 const instance = axios.create({
-  // baseURL: 'http://localhost:5001/api/v1/'
-  baseURL: 'https://cors-anywhere.herokuapp.com/https://dexy.site/api/v1/'
-  // baseURL: '/api/v1/'
+  baseURL
 })
 
 export const listsAPI = {
