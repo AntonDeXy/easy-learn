@@ -269,7 +269,7 @@ export const ModalSt = styled.div `
     background-color: #ffffff;
     grid-template-rows: auto 1fr;
     width: auto;
-    /* width: 320px; */
+    min-width: 320px;
     height: auto;
     color: #010440;
     .header {
