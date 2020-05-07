@@ -24,7 +24,7 @@ import { getNotesThunk } from './redux/reducers/notes/notesReducer'
 import HelpPage from './Components/Help'
 import Head from './Components/Head'
 import LoginForUse from './Components/LoginForUse';
-import AdminPanel from './Components/AdminPanel'
+import AdminPanel from './Components/AdminPanel/AdminPanel'
 
 const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)

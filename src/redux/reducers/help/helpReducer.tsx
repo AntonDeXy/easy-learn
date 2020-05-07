@@ -1,5 +1,4 @@
-import { SET_HELP } from "./helpReducerTypes"
-import { REMOVE_ITEM } from "../lists/listsReducerTypes"
+import { SET_HELP, REMOVE_ITEM, ADD_ITEM } from "./helpReducerTypes"
 
 export type HelpItemType = {
   _id?: string
@@ -31,6 +30,11 @@ const helpReducer = (state = helpState, action: any) => {
     case SET_HELP: {
       return {...state, item: action.helpItems}
     }
+    case ADD_ITEM : {
+      let newState = {...state}
+      newState.items.push(action.newItem)
+      return newState
+    }
     case REMOVE_ITEM: {
       let newState = {...state}
       newState.items = state.items.filter(item => item._id !== action.itemId)
@@ -41,5 +45,6 @@ const helpReducer = (state = helpState, action: any) => {
 }
 
 export const removeHelpItem = (itemId: string) => ({type: REMOVE_ITEM, itemId})
+export const addNewItem = (newItem:HelpItemType) => ({type: ADD_ITEM, newItem})
 
 export default helpReducer
