@@ -20,6 +20,9 @@ export const HeaderSt = styled.header `
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     span {
+      padding: 0 10px;
+      overflow-y: scroll;
+      max-height: 9vh;
       color: #F24405;
       :hover {
         cursor: default;
@@ -299,7 +302,7 @@ export const ModalSt = styled.div `
         grid-auto-flow: row;
         gap: 10px;
         button {
-          height: 30px;
+          min-height: 30px;
           border-radius: 10em;
           color: #4285f4;
           border: 2px solid #4285f4;
