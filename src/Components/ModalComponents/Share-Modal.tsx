@@ -14,7 +14,7 @@ const ShareModal:React.FC<ShareModalType> = ({categoryId}) => {
       <span>or</span>
       <div className="item">
         <span>Share this url</span>
-        <input type="text" contentEditable={false} value={`http://localhost:3000/lists/add/${categoryId}`} />
+        <input type="text" contentEditable={false} value={`https://dexy.site/lists/add/${categoryId}`} />
       </div>
     </div>
   )
