@@ -173,6 +173,9 @@ export const ListItemSt = styled.div `
   grid-template-columns: 1fr auto;
   border-radius: 5px;
   border: 1px solid #C7D1D9;
+  a {
+    color: black;
+  }
   svg {
     height: 16px;
   }
@@ -265,7 +268,8 @@ export const ModalSt = styled.div `
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
     background-color: #ffffff;
     grid-template-rows: auto 1fr;
-    width: 320px;
+    width: auto;
+    /* width: 320px; */
     height: auto;
     color: #010440;
     .header {
@@ -540,7 +544,7 @@ export const AddListUrlStyled = styled.div `
 
 export const ProfileSt = styled.div`
   display: grid;
-  padding-top: 15px;
+  padding: 15px 0;
   .wrapper {
     @media screen and (max-width: 768px) {
       width: 90% !important;
@@ -649,6 +653,59 @@ export const ProfileSt = styled.div`
               }
             }
           }
+        }
+      }
+    }
+  }
+`
+
+export const HelpPageSt = styled.div `
+  display: grid;
+  padding: 15px 0;
+  .wrapper {
+    display: grid;
+    width: 80%;
+    justify-self: center;
+    align-content: baseline;
+  }
+`
+
+export const AdminPanelSt = styled.div `
+  display: grid;
+  padding: 15px 0;
+  .wrapper {
+    display: grid;
+    width: 80%;
+    justify-self: center;
+    align-content: baseline;
+    .textEditor {
+      min-height: 80vh;
+    }
+    /* temporary remove img uploading */
+    /* .ck-file-dialog-button {
+      display: none
+    } */
+    .helpItemsWrapper {
+      display: grid;
+      grid-auto-flow: row;
+      gap: 5px;
+      .helpItem {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        padding: 10px 10px;
+        border: 1px solid black;
+        border-radius: 5px;
+        font-weight: 500;
+        .name {
+          display: grid;
+          align-items: center;
+        }
+        .icons {
+          display: grid;
+          align-items: center;
+          grid-auto-flow: column;
+          gap: 10px;
+          justify-content: right;
         }
       }
     }

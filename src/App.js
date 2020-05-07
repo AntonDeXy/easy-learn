@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Header from './Components/Header'
 import { MainSt } from './Components/Styled'
 import Footer from './Components/Footer'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import ListsContainer from './Components/Lists'
 import Words from './Components/Words'
 import Modal from './Components/Modal'
@@ -24,6 +24,7 @@ import { getNotesThunk } from './redux/reducers/notes/notesReducer'
 import HelpPage from './Components/Help'
 import Head from './Components/Head'
 import LoginForUse from './Components/LoginForUse';
+import AdminPanel from './Components/AdminPanel/AdminPanel'
 
 const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
@@ -96,24 +97,36 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
             <PrivateRoute path="/profile" component={Profile} />
 
             <PrivateRoute path="/lists">
-              {currentPage === 'lists' && (
-                <ListsContainer />
-              )}
-              {currentPage === 'words' && (
-                <Words
-                  isLoading={loading}
-                  user={user}
-                  setModal={data => setModal(data)}
-                />
-              )}
+              <ListsContainer />
             </PrivateRoute>
 
+            <PrivateRoute path="/words">
+              {currentList
+               ? (
+                  <Words
+                    isLoading={loading}
+                    user={user}
+                    setModal={data => setModal(data)}
+                  />
+                )
+                : <Redirect to='lists' /> 
+              }
+            </PrivateRoute>
+            
             <Route exact path='/help'>
               <HelpPage />
             </Route>
 
             <PrivateRoute exact path='/notes'>
               <Notes />
+            </PrivateRoute>
+
+            <PrivateRoute exact path='/admin-panel'>
+              {
+                user.role === 'admin'
+                ? <AdminPanel />
+                : <Redirect to='/' />
+              }
             </PrivateRoute>
           </Switch>
         </MainSt>

@@ -2,11 +2,15 @@ import axios from 'axios'
 import { ListType, ItemType } from '../redux/reducers/main/mainReducer'
 import { NoteType } from '../redux/reducers/notes/notesReducer'
 import { UserQuestionType } from '../redux/reducers/users/usersReducer'
+import { HelpItemType } from '../redux/reducers/help/helpPageReducer'
+
+export const baseURL = 'http://localhost:5001/api/v1/'
+  // export const baseURL = 'https://cors-anywhere.herokuapp.com/https://dexy.site/api/v1/'
+  // export const baseURL = '/api/v1/'
+
 
 const instance = axios.create({
-  // baseURL: 'http://localhost:5001/api/v1/'
-  // baseURL: 'http://64.227.4.228:5001/api/v1/'
-  baseURL: '/api/v1/'
+  baseURL
 })
 
 export const listsAPI = {
@@ -132,6 +136,25 @@ export const notesAPI = {
   },
   removeNote (noteId:string) {
     return instance.delete(`notes/remove/${noteId}`)
+      .then(res => res.data)
+  }
+}
+
+export const helpPageApi = {
+  getHelpPageItems () {
+    return instance.get('help-page/get-all')
+      .then(res => res.data)
+  },
+  createHelpPageItem (item: HelpItemType) {
+    return instance.post('help-page/new', {item})
+      .then(res => res.data)
+  },
+  removeHelpPageItem (itemId: string) {
+    return instance.delete(`help-page/remove/${itemId}`)
+      .then(res => res.data)
+  },
+  editHelpPageItem (itemId: string, newData: HelpItemType) {
+    return instance.put(`help-page/edit/${itemId}`, newData)
       .then(res => res.data)
   }
 }

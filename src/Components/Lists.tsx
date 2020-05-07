@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ListsWrapper, ListItemSt } from './Styled'
 import Plus from './Plus'
 import { useState } from 'react'
@@ -13,12 +13,14 @@ import {
 import { changeCurrentPageType, setCurrentList, ListType } from '../redux/reducers/main/mainReducer'
 import { setModal, SetModalType } from '../redux/reducers/modal/modalReducer'
 import Head from './Head'
+import { Link } from 'react-router-dom';
 
 type ListsContainerType = {
   loading: boolean
   setModal: (data: SetModalType) => void
   listsState: { lists: Array<ListType> }
   changeCurrentPageToWords: () => void
+  changeCurrentPageToLists: () => void
   user: UserStateType
   setCurrentList: (list: ListType) => void
   updateListThunk: (listId: string, newData: ListType, success: any) => void
@@ -26,7 +28,11 @@ type ListsContainerType = {
   removeListThunk: (listId: string) => void
 }
 
-const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, listsState, removeListThunk, changeCurrentPageToWords, user, setCurrentList, updateListThunk, removeAddedListThunk }) => {
+const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, changeCurrentPageToLists, listsState, removeListThunk, changeCurrentPageToWords, user, setCurrentList, updateListThunk, removeAddedListThunk }) => {
+  useEffect(() => {
+    changeCurrentPageToLists()
+  },[changeCurrentPageToLists])
+
   return (
     <>
       <Head title={'Lists'} />
@@ -121,24 +127,26 @@ const List: React.FC<ListCompType> = ({
 
   return (
     <ListItemSt>
-      <div onClick={() => Click()} className="name">
-        {editMode ? (
-          isLoading ? (
-            <Spiner />
+      <Link to='/words'>
+        <div onClick={() => Click()} className="name">
+          {editMode ? (
+            isLoading ? (
+              <Spiner />
+            ) : (
+                <AutosizeInput
+                  autoFocus
+                  value={newName}
+                  type="text"
+                  onChange={(e) => {
+                    setNewName(e.target.value)
+                  }}
+                />
+              )
           ) : (
-              <AutosizeInput
-                autoFocus
-                value={newName}
-                type="text"
-                onChange={(e) => {
-                  setNewName(e.target.value)
-                }}
-              />
-            )
-        ) : (
-            <span>{list.name}</span>
-          )}
-      </div>
+              <span>{list.name}</span>
+            )}
+        </div>
+      </Link>
       <div className="functions">
         {/* share */}
         <svg
@@ -199,6 +207,7 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => ({
   setCurrentList: (list: ListType) => dispatch(setCurrentList(list)),
   changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
+  changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
   setModal: (data: SetModalType) => dispatch(setModal(data)),
   updateListThunk: (listId: string, newData: ListType, success: any) => dispatch(updateListThunk(listId, newData, success)),
   removeListThunk: (listId: string) => dispatch(removeListThunk(listId)),

@@ -35,6 +35,7 @@ export type UserStateType = {
   addedLists: Array<ListType>
   tests: Array<UserQuestionType>
   email: string
+  role: string
   pictureUrl: string
 }
 
@@ -44,7 +45,8 @@ const userState:UserStateType = {
   addedLists: [],
   tests: [],
   email: '',
-  pictureUrl: '',
+  role: 'user',
+  pictureUrl: ''
 }
 
 const userReducer = (state = userState, action:any) => {
