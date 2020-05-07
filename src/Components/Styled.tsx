@@ -703,6 +703,9 @@ export const AdminPanelSt = styled.div `
         .icons {
           display: grid;
           align-items: center;
+          grid-auto-flow: column;
+          gap: 10px;
+          justify-content: right;
         }
       }
     }
