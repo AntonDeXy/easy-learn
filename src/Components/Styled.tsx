@@ -139,6 +139,7 @@ export const WordItemSt = styled.div `
     cursor: default;
   }
   input {
+    min-width: 50px;
     font-size: 16px;
     border-top: unset;
     border-left: unset;
@@ -146,7 +147,8 @@ export const WordItemSt = styled.div `
   }
   .spiner {
     margin-left: 10px;
-    height: 42px;
+    height: 38px;
+    padding: 5px;
     justify-self: left;
     grid-row: 1/3;
     align-self: center;
@@ -196,6 +198,7 @@ export const ListItemSt = styled.div `
       width: 100%;
     }
     input {
+      min-width: 50px;
       font-size: 16px;
       border-top: unset;
       border-left: unset;

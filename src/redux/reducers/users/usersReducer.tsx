@@ -194,7 +194,7 @@ export const addListToProfileThunk = (listId:string, userId:string, success:any)
   }
 }
 
-export const removeAddedListThunk = (userId:string, listId:string) => async (dispatch:any) => {
+export const removeAddedListThunk = (userId:string, listId:string, success: any) => async (dispatch:any) => {
   dispatch(clearErorr())
   let data = await userAPI.removeAddedList({userId, listId})
   if (data.data.success) {
@@ -202,6 +202,7 @@ export const removeAddedListThunk = (userId:string, listId:string) => async (dis
   } else {
     dispatch(setError('Something went wrong'))
   }
+  success()
 }
 
 export default userReducer

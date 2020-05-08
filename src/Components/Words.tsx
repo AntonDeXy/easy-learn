@@ -72,7 +72,8 @@ const Word: React.FC<WordType> = ({ getWordAudioUrl, isTestStarted, item, update
   const [audio, setAudio] = useState(new Audio(item.audioUrl))
 
   const toggleEditMode = async () => {
-    if (editMode && currentListId && item?._id) {
+    const isDataEqualWithOld = newWord === item.word && newTranslate === item.translate
+    if (editMode && currentListId && item?._id && !isDataEqualWithOld) {
       setIsLoading(true)
       const newAudioUrl = await getWordAudioUrl(newWord)
       setAudio(new Audio(newAudioUrl))
