@@ -455,6 +455,7 @@ export const MenuSt = styled.div`
   top: 10vh;
   animation-duration: 0.5s;
   font-size: 20px;
+  z-index: 10;
   .wrapper {
     display: grid;
     justify-self: center;
