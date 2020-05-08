@@ -31,7 +31,7 @@ type ListsContainerType = {
 const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, changeCurrentPageToLists, listsState, removeListThunk, changeCurrentPageToWords, user, setCurrentList, updateListThunk, removeAddedListThunk }) => {
   useEffect(() => {
     changeCurrentPageToLists()
-  },[changeCurrentPageToLists])
+  }, [changeCurrentPageToLists])
 
   return (
     <>
@@ -127,27 +127,31 @@ const List: React.FC<ListCompType> = ({
 
   return (
     <ListItemSt>
-      <Link to='/words'>
-        <div onClick={() => Click()} className="name">
-          {editMode ? (
-            isLoading ? (
-              <Spiner />
-            ) : (
-                <AutosizeInput
-                  autoFocus
-                  value={newName}
-                  type="text"
-                  onChange={(e) => {
-                    setNewName(e.target.value)
-                  }}
-                />
-              )
-          ) : (
+      {editMode ? (
+        isLoading ? (
+          <div className="name">
+            <Spiner />
+          </div>
+        ) : (
+            <div className="name">
+              <AutosizeInput
+                autoFocus
+                value={newName}
+                type="text"
+                onChange={(e) => {
+                  setNewName(e.target.value)
+                }}
+              />
+            </div>
+          )) : (
+          <Link to='/words'>
+            <div onClick={Click} className="name">
               <span>{list.name}</span>
-            )}
-        </div>
-      </Link>
-      <div className="functions">
+            </div>
+          </Link>
+        )
+      }
+      < div className="functions">
         {/* share */}
         <svg
           onClick={() => openShareModal()}
@@ -193,7 +197,7 @@ const List: React.FC<ListCompType> = ({
           />
         </svg>
       </div>
-    </ListItemSt>
+    </ListItemSt >
   )
 }
 
