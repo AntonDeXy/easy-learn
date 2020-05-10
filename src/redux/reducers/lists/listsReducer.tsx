@@ -216,7 +216,7 @@ export const updateListThunk = (listId:string, newData:ListType, success:any) =>
   }
 }
 
-export const removeListThunk = (listId:string) => async (dispatch:any) => {
+export const removeListThunk = (listId:string, success: any) => async (dispatch:any) => {
   let res = await listsAPI.removeList(listId)
 
   if (res.success) {
@@ -224,6 +224,7 @@ export const removeListThunk = (listId:string) => async (dispatch:any) => {
   } else {
     dispatch(setError(res.errorMessage))
   }
+  success()
 }
 
 export const removeItemThunk = (listId:string, itemId:string, success:any) => async (dispatch:any) => {
@@ -271,6 +272,14 @@ export const getAutoTranslatesThunk = (phrase:string, success:any) => async (dis
 export const getAudioUrl = (phrase:string) => async () => {
   let data = await itemsAPI.getAutoTranslate(phrase)
   return data.sound_url
+}
+
+export const duplicateList = (data:{userId: string, listForDuplicate: string}, success: any) => async (dispatch: any) => {
+  let res = await listsAPI.duplicateListToOwns(data)
+  if (res.success) {
+    dispatch(createList(res.doc))
+  }
+  success()
 }
 
 export default listsReducer

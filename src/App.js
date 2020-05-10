@@ -73,7 +73,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
   return (
     <Router history={history}>
       <div className="App">
-        <Header currentPage={currentPage} currentListName={currentList ? currentList?.name : ''} togglerMenu={() => menuToggle()} />
+        <Header user={user} currentPage={currentPage} currentListName={currentList ? currentList?.name : ''} togglerMenu={() => menuToggle()} />
         {modal.isActive && (
           <Modal
             setModal={setModal}
@@ -122,11 +122,11 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
             </PrivateRoute>
 
             <PrivateRoute exact path='/admin-panel'>
-              {
-                user.role === 'admin'
-                ? <AdminPanel />
-                : <Redirect to='/' />
-              }
+              {/* {
+                user?._id && user?.role === 'admin' */}
+                <AdminPanel user={user} />
+                {/* : <Redirect to='/' /> */}
+              {/* } */}
             </PrivateRoute>
           </Switch>
         </MainSt>

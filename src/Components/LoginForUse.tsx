@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { MainSt } from './Styled'
 import { Redirect } from 'react-router-dom'
 import { UserStateType } from '../redux/reducers/users/usersReducer'
@@ -11,16 +11,18 @@ type LoginForUse = {
 }
 
 const LoginForUse: React.FC<LoginForUse> = ({ user, changeCurrentPage }) => {
-  // useEffect(() => {
+  const [isUserAuthenticated, setUserAuthenticated] = useState<boolean>(false)
+  
+  useEffect(() => {
     if (user._id) {
-      changeCurrentPage()
-      return <Redirect to='/lists' />
-    // redirect()
-      // window.location.href = '/lists'
+      setUserAuthenticated(true)
     }
-  // }, [user._id, user])
+  }, [user._id])
 
-  // const redirect = () => (<Redirect to='/lists' />)
+  if (isUserAuthenticated) {
+    changeCurrentPage()
+    return <Redirect to='/lists' />
+  }
 
   return (
     <MainSt>
