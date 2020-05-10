@@ -274,4 +274,12 @@ export const getAudioUrl = (phrase:string) => async () => {
   return data.sound_url
 }
 
+export const duplicateList = (data:{userId: string, listForDuplicate: string}, success: any) => async (dispatch: any) => {
+  let res = await listsAPI.duplicateListToOwns(data)
+  if (res.success) {
+    dispatch(createList(res.doc))
+  }
+  success()
+}
+
 export default listsReducer

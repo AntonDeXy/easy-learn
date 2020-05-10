@@ -9,26 +9,28 @@ import { removeAddedListThunk, UserStateType } from '../redux/reducers/users/use
 import {
   removeListThunk,
   updateListThunk,
+  duplicateList,
 } from '../redux/reducers/lists/listsReducer'
 import { changeCurrentPageType, setCurrentList, ListType } from '../redux/reducers/main/mainReducer'
 import { setModal, SetModalType } from '../redux/reducers/modal/modalReducer'
 import Head from './Head'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 type ListsContainerType = {
   loading: boolean
-  setModal: (data: SetModalType) => void
+  user: UserStateType
   listsState: { lists: Array<ListType> }
+  duplicateList: (data:{userId: string, listForDuplicate: string}, success: any) => void
+  setModal: (data: SetModalType) => void
   changeCurrentPageToWords: () => void
   changeCurrentPageToLists: () => void
-  user: UserStateType
   setCurrentList: (list: ListType) => void
   updateListThunk: (listId: string, newData: ListType, success: any) => void
   removeAddedListThunk: (userId: string, listId: string, success: any) => void
   removeListThunk: (listId: string, success: any) => void
 }
 
-const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, changeCurrentPageToLists, listsState, removeListThunk, changeCurrentPageToWords, user, setCurrentList, updateListThunk, removeAddedListThunk }) => {
+const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, duplicateList, changeCurrentPageToLists, listsState, removeListThunk, changeCurrentPageToWords, user, setCurrentList, updateListThunk, removeAddedListThunk }) => {
   useEffect(() => {
     changeCurrentPageToLists()
   }, [changeCurrentPageToLists])
@@ -45,6 +47,7 @@ const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, chang
               {listsState.lists.map(list => {
                 return (
                   <List
+                    duplicateList={duplicateList}
                     changeCurrentPageType={changeCurrentPageToWords}
                     key={list._id}
                     isOwner={user.userId === list.authorId ? true : false}
@@ -69,6 +72,7 @@ type ListCompType = {
   list: ListType
   isOwner: boolean
   userId: string
+  duplicateList: (data:{userId: string, listForDuplicate: string}, success: any) => void
   changeCurrentPageType: () => void
   setCurrentList: (list: ListType) => void
   openShareModal: () => void
@@ -83,6 +87,7 @@ const List: React.FC<ListCompType> = ({
   list,
   openShareModal,
   isOwner,
+  duplicateList,
   userId,
   updateListThunk,
   removeListThunk,
@@ -92,6 +97,19 @@ const List: React.FC<ListCompType> = ({
   const [newName, setNewName] = useState(list.name)
   const [isLoading, setIsLoading] = useState(false)
   const [isRemovingInprocess, setRemovingInprocess] = useState(false)
+
+  const addListToOwns = () => { 
+    setRemovingInprocess(true)
+    duplicateList(
+      {
+        userId,
+        listForDuplicate: list?._id ? list._id : '' 
+      },
+      () => {
+        setRemovingInprocess(false)
+      }
+    )
+  }
 
   const Click = () => {
     if (!editMode) {
@@ -154,6 +172,21 @@ const List: React.FC<ListCompType> = ({
         )
       }
       < div className="functions">
+        {/* duplicateToOwns */}
+        {
+          !isOwner && (
+            <svg
+              onClick={() => addListToOwns()}
+              fill={isRemovingInprocess ? 'grey' : '#5B659A'}
+              width="18"
+              height="20"
+              aria-hidden="true" 
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 512 512">
+              <path d="M464 0c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48H176c-26.51 0-48-21.49-48-48V48c0-26.51 21.49-48 48-48h288M176 416c-44.112 0-80-35.888-80-80V128H48c-26.51 0-48 21.49-48 48v288c0 26.51 21.49 48 48 48h288c26.51 0 48-21.49 48-48v-48H176z"></path>
+            </svg>
+          )
+        }
         {/* share */}
         <svg
           onClick={() => openShareModal()}
@@ -209,7 +242,9 @@ const mapStateToProps = (state: any) => ({
   user: state.userReducer
 })
 
+
 const mapDispatchToProps = (dispatch: any) => ({
+  duplicateList: (data:{userId: string, listForDuplicate: string}, success: any) => dispatch(duplicateList(data, success)),
   setCurrentList: (list: ListType) => dispatch(setCurrentList(list)),
   changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
   changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
