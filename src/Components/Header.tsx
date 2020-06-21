@@ -11,10 +11,11 @@ type HeaderType = {
   currentPage: pageType
   currentListName: string
   user: UserStateType
+  isMenuOpened: boolean
   togglerMenu: () => void
 }
 
-const Header:React.FC<HeaderType> = ({togglerMenu, user, currentListName, currentPage}) => {
+const Header:React.FC<HeaderType> = ({isMenuOpened, togglerMenu, user, currentListName, currentPage}) => {
   const { loginWithRedirect } = useAuth0()
 
   const [currentPageLabel, setCurrentPageLabel] = useState<string>('')
@@ -45,8 +46,8 @@ const Header:React.FC<HeaderType> = ({togglerMenu, user, currentListName, curren
   return (
     <HeaderSt>
       <div className="wrapper">
-        <svg onClick={() => togglerMenu && togglerMenu()} className='menu' width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0.75 6.1875H20.25C20.6642 6.1875 21 5.85173 21 5.4375V3.5625C21 3.14827 20.6642 2.8125 20.25 2.8125H0.75C0.335766 2.8125 0 3.14827 0 3.5625V5.4375C0 5.85173 0.335766 6.1875 0.75 6.1875ZM0.75 13.6875H20.25C20.6642 13.6875 21 13.3517 21 12.9375V11.0625C21 10.6483 20.6642 10.3125 20.25 10.3125H0.75C0.335766 10.3125 0 10.6483 0 11.0625V12.9375C0 13.3517 0.335766 13.6875 0.75 13.6875ZM0.75 21.1875H20.25C20.6642 21.1875 21 20.8517 21 20.4375V18.5625C21 18.1483 20.6642 17.8125 20.25 17.8125H0.75C0.335766 17.8125 0 18.1483 0 18.5625V20.4375C0 20.8517 0.335766 21.1875 0.75 21.1875Z" fill="#F3A184"/>
+        <svg onClick={() => togglerMenu && togglerMenu()} className={`menu ${isMenuOpened && 'menu-active'}`} width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#F3A184" d="M0.75 6.1875H20.25C20.6642 6.1875 21 5.85173 21 5.4375V3.5625C21 3.14827 20.6642 2.8125 20.25 2.8125H0.75C0.335766 2.8125 0 3.14827 0 3.5625V5.4375C0 5.85173 0.335766 6.1875 0.75 6.1875ZM0.75 13.6875H20.25C20.6642 13.6875 21 13.3517 21 12.9375V11.0625C21 10.6483 20.6642 10.3125 20.25 10.3125H0.75C0.335766 10.3125 0 10.6483 0 11.0625V12.9375C0 13.3517 0.335766 13.6875 0.75 13.6875ZM0.75 21.1875H20.25C20.6642 21.1875 21 20.8517 21 20.4375V18.5625C21 18.1483 20.6642 17.8125 20.25 17.8125H0.75C0.335766 17.8125 0 18.1483 0 18.5625V20.4375C0 20.8517 0.335766 21.1875 0.75 21.1875Z"/>
         </svg>
         <span>{currentPageLabel}</span>
         {!user?._id && (

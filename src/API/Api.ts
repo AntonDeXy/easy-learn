@@ -123,6 +123,10 @@ export const userAPI = {
   createNewUser(userId: string, email:string) {
     return instance.post('users/new', {userIdFromAuth0: userId, email})
       .then(res => res.data)
+  },
+  changeTheme(userId: string, theme: string) {
+    return instance.put('users/change-theme', {userId, theme})
+      .then(res => res.data)
   }
 }
 

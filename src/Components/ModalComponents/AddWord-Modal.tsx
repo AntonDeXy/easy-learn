@@ -18,15 +18,17 @@ const AddWord:React.FC<AddWordType> = ({autoTranslates, closeModal, currentListI
   const [audio, setAudio] = useState<HTMLAudioElement | undefined>(undefined)
 
   const getAutoTranslates = (phrase:any) => {
-    setAudio(undefined)
-    setTranslatesLoading(true)
-    getAutoTranslatesThunk(
-      phrase,
-      (audioUrl:string) => {
-        setAudio(new Audio(audioUrl))
-        setTranslatesLoading(false)
-      }
-    )
+    if (phrase.length > 0) {
+      setAudio(undefined)
+      setTranslatesLoading(true)
+      getAutoTranslatesThunk(
+        phrase,
+        (audioUrl:string) => {
+          setAudio(new Audio(audioUrl))
+          setTranslatesLoading(false)
+        }
+      )
+    }
   }
 
   const playAudio = () => {
