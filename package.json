@@ -17,6 +17,10 @@
     "@types/react-html-parser": "^2.0.1",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-timeago": "^4.1.1",
+    "@types/react-input-autosize": "^2.0.2",
+    "@types/react-redux": "^7.1.7",
+    "@types/react-textarea-autosize": "^4.3.5",
+    "@types/styled-components": "^5.1.0",
     "antd": "^4.0.3",
     "axios": "^0.19.2",
     "jodit-react": "^1.0.42",
@@ -57,9 +61,5 @@
     ]
   },
   "devDependencies": {
-    "@types/react-input-autosize": "^2.0.2",
-    "@types/react-redux": "^7.1.7",
-    "@types/react-textarea-autosize": "^4.3.5",
-    "@types/styled-components": "^5.1.0"
   }
 }
