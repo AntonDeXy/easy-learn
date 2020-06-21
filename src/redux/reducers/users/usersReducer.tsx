@@ -174,7 +174,7 @@ export const addListWithoutCheckThunk = (list:ListType, userId:string, success:a
 
   let data = await userAPI.addListToProfile({userId, listId: list._id})
 
-  if (data.data.success) {
+  if (data.success) {
     dispatch(addListToProfile(list))
     success({})
   } else {
@@ -195,7 +195,7 @@ export const addListToProfileThunk = (listId:string, userId:string, success:any)
 
         let data = await userAPI.addListToProfile({userId, listId})
 
-        if (data.data.success) {
+        if (data.success) {
           dispatch(addListToProfile(listData.list[0]))
           success({})
         } else {
@@ -215,7 +215,7 @@ export const addListToProfileThunk = (listId:string, userId:string, success:any)
 export const removeAddedListThunk = (userId:string, listId:string, success: any) => async (dispatch: any) => {
   dispatch(clearErorr())
   let data = await userAPI.removeAddedList({userId, listId})
-  if (data.data.success) {
+  if (data.success) {
     dispatch(removeAddedList(listId))
   } else {
     dispatch(setError('Something went wrong'))
@@ -223,7 +223,7 @@ export const removeAddedListThunk = (userId:string, listId:string, success: any)
   success()
 }
 
-export const changeThemeThunk = (userId: string, theme: string, success: any) => async (dispatch: any) => {
+export const changeThemeThunk = (userId: string, theme: string) => async (dispatch: any) => {
   dispatch(clearErorr())
 
   let data = await userAPI.changeTheme(userId, theme)
@@ -233,7 +233,6 @@ export const changeThemeThunk = (userId: string, theme: string, success: any) =>
   } else {
     dispatch(setError('Something went wrong'))
   }
-  success()
 }
 
 export default userReducer

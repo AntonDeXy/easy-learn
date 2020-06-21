@@ -106,7 +106,7 @@ export const testsAPI = {
 export const userAPI = {
   addListToProfile(data: { userId: string; listId: string }) {
     return instance.post('/lists/add-to-profile', data)
-      .then(res => res)
+      .then(res => res.data)
   },
   addTestToProfile(data: { userId: string; testId: string }) {
     return instance.put('users/add-test', data)
@@ -114,7 +114,7 @@ export const userAPI = {
   },
   removeAddedList(data: { userId: string; listId: string }) {
     return instance.put(`users/remove-list/${data.userId}`, {listId: data.listId})
-      .then(res => res)
+      .then(res => res.data)
   },
   getUser(userId: string) {
     return instance.get(`users/get-profile/${userId}`)

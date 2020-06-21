@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { updateItemThunk, removeItemThunk, getAudioUrl } from '../redux/reducers/lists/listsReducer'
 import { UserStateType } from '../redux/reducers/users/usersReducer'
 import { SetModalType } from '../redux/reducers/modal/modalReducer'
-import Head from './Head'
 
 type WordsType = {
   user: UserStateType
@@ -30,9 +29,13 @@ const Words: React.FC<WordsType> = ({ user, getWordAudioUrl, changeCurrentPageTo
     changeCurrentPageToWords()
   }, [changeCurrentPageToWords])
 
+  
+  useEffect(() => {
+    document.title=currentList.name
+  }, [currentList])
+
   return (
     <>
-      <Head title={currentList.name} />
       <WordsWrapper>
         <Plus toGeneralPage={() => changeCurrentPageToLists()} openModal={() => setModal({ isActive: true, type: 'words' })} isOwner={isOwner} type="words" />
         <div className="lists">

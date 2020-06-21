@@ -155,6 +155,8 @@ export const WordItemSt = styled.div `
     border-top: unset;
     border-left: unset;
     border-right: unset;
+    color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+    background-color: ${({theme} : {theme: ThemeType}) => theme.MainBg};
   }
   .spiner {
     margin-left: 10px;
@@ -216,11 +218,14 @@ export const ListItemSt = styled.div `
       width: 100%;
     }
     input {
+      ${() => FontsStyles.cardText}
       min-width: 50px;
       font-size: 16px;
       border-top: unset;
       border-left: unset;
       border-right: unset;
+      color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+      background-color: ${({theme} : {theme: ThemeType}) => theme.MainBg};
     }
     :hover {
       cursor: pointer;
@@ -503,7 +508,7 @@ export const MenuSt = styled.div`
     }
     a {
       ${() => FontsStyles.menuItem}
-      color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor} !important;
+      color: ${({theme} : {theme: ThemeType}) => theme.MainOrangeActiveTab};
       :hover {
         color: #6f6f6f !important;
       }

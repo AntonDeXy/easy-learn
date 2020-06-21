@@ -2,7 +2,6 @@ import React from 'react'
 import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
 import { connect } from 'react-redux'
 import { useEffect } from 'react'
-import Head from './Head'
 import { Collapse } from 'antd'
 import { HelpPageSt } from './Styled/Styled'
 import { HelpStateType, getHelpPageItemsThunk } from '../redux/reducers/help/helpPageReducer'
@@ -20,13 +19,16 @@ type HelpPageType = {
 const HelpPage: React.FC<HelpPageType> = ({ changeCurrentPageToHelp, getHelpPageItems, helpState }) => {
 
   useEffect(() => {
+    document.title='Help'
+  }, [])
+
+  useEffect(() => {
     changeCurrentPageToHelp()
     getHelpPageItems()
   }, [changeCurrentPageToHelp, getHelpPageItems])
 
   return (
     <>
-      <Head title={'Help'} />
       <HelpPageSt>
         {
           helpState.isLoading 

@@ -11,7 +11,6 @@ import "antd/dist/antd.css"
 import Notes from './Components/Notes'
 import { useAuth0 } from "./react-auth0-spa"
 import Profile from "./Components/Profile"
-import history from "./utils/history"
 import PrivateRoute from './Components/PrivateRoute'
 import { useEffect } from 'react'
 import AddListUrl from './Components/AddListUrl'
@@ -22,8 +21,7 @@ import { setUserThunk } from './redux/reducers/users/usersReducer'
 import { getListsThunk } from './redux/reducers/lists/listsReducer'
 import { getNotesThunk } from './redux/reducers/notes/notesReducer'
 import HelpPage from './Components/Help'
-import Head from './Components/Head'
-import LoginForUse from './Components/LoginForUse';
+import LoginForUse from './Components/LoginForUse'
 import AdminPanel from './Components/AdminPanel/AdminPanel'
 import { ThemeProvider } from 'styled-components'
 import { LightTheme, DarkTheme } from './Components/Styled/Themes'
@@ -50,8 +48,14 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
   useEffect(() => {
     let tempCurrentTheme = {}
     switch (currentThemeName) {
-      case 'light': tempCurrentTheme = LightTheme; break
-      case 'dark': tempCurrentTheme = DarkTheme; break
+      case 'light': {
+        tempCurrentTheme = LightTheme
+        break
+      }
+      case 'dark': {
+        tempCurrentTheme = DarkTheme 
+        break
+      }
       default: tempCurrentTheme = LightTheme
     }
     setCurrentTheme(tempCurrentTheme)
@@ -61,8 +65,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
     if (user.userId) {
       getLists(user.userId)
       getNotes(user.userId)
-      // setCurrentThemeName(user.theme ? user.theme : 'light')
-      setCurrentThemeName(user.theme ? user.theme : 'dark')
+      setCurrentThemeName(user.theme ? user.theme : 'light')
     }
   }, [getLists, getNotes, user])
 
@@ -74,9 +77,9 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
 
 
   if (loading) {
+    document.title = 'Loading...'
     return (
       <Router>
-        <Head title={'Loading...'} />
         <Header />
         <MainSt>
           <Spiner />
@@ -88,7 +91,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
 
   return (
     <ThemeProvider theme={currentTheme} >
-      <Router history={history}>
+      <Router >
         <div className="App">
           <Header isMenuOpened={menuIsOpen} user={user} currentPage={currentPage} currentListName={currentList ? currentList?.name : ''} togglerMenu={() => menuToggle()} />
           {modal.isActive && (
