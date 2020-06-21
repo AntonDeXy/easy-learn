@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { ListsWrapper, ListItemSt } from './Styled'
+import { ListsWrapper, ListItemSt } from './Styled/Styled'
 import Plus from './Plus'
 import { useState } from 'react'
 import AutosizeInput from 'react-input-autosize'

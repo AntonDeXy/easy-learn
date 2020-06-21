@@ -6,7 +6,8 @@ import { HelpItemType } from '../redux/reducers/help/helpPageReducer'
 
 // export const baseURL = 'http://localhost:5001/api/v1/'
 // export const baseURL = 'https://cors-anywhere.herokuapp.com/https://dexy.site/api/v1/'
-export const baseURL = '/api/v1/'
+// export const baseURL = '/api/v1/'
+export const baseURL = 'https://easy-lern-backend.herokuapp.com/api/v1/'
 
 
 const instance = axios.create({

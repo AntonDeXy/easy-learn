@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { ListsWrapper, ListItemSt } from './Styled'
+import { ListsWrapper, ListItemSt } from './Styled/Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
 import { updateNoteThunk, removeNoteThunk, NoteType } from '../redux/reducers/notes/notesReducer'

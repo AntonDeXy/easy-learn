@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Header from './Components/Header'
-import { MainSt } from './Components/Styled'
+import { MainSt } from './Components/Styled/Styled'
 import Footer from './Components/Footer'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import ListsContainer from './Components/Lists'

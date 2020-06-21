@@ -12,7 +12,7 @@ const ChooseTestTypeModal:React.FC<ChooseTestTypeModalType> = ({setTestType, ite
 
   return (
     <div className="choose-test-type">
-      <div className='title' ><span>Choose test type</span></div>
+      {/* <div className='title' ><span>Choose test type</span></div> */}
       <button onClick={() => setTestType('wordTranslates', +questionsCount)} >
         <span>Word → tranlates</span>
       </button>

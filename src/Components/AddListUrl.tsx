@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { AddListUrlStyled } from './Styled'
+import { AddListUrlStyled } from './Styled/Styled'
 import { connect } from 'react-redux'
 import { listCheckerThunk, addListWithoutCheckThunk } from '../redux/reducers/users/usersReducer'
 import { ListType, ItemType } from '../redux/reducers/main/mainReducer'

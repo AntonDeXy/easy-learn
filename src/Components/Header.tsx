@@ -1,5 +1,5 @@
 import React from 'react'
-import { HeaderSt } from './Styled'
+import { HeaderSt } from './Styled/Styled'
 import { useAuth0 } from "../react-auth0-spa"
 import { Link } from "react-router-dom"
 import DefUserIcon from '../static/user-solid.svg'

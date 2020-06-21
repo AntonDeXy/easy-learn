@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { AdminPanelSt } from '../Styled'
+import { AdminPanelSt } from '../Styled/Styled'
 import { Tabs } from 'antd'
 import {
   HelpStateType,

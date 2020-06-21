@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { WordsWrapper, WordItemSt } from './Styled'
+import { WordsWrapper, WordItemSt } from './Styled/Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
 import AutosizeInput from 'react-input-autosize'

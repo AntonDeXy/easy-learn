@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { ProfileSt } from "./Styled"
+import { ProfileSt } from "./Styled/Styled"
 import { connect } from 'react-redux';
 import { changeCurrentPageType } from "../redux/reducers/main/mainReducer";
 import { UserStateType, UserQuestionType } from "../redux/reducers/users/usersReducer";

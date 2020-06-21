@@ -1,5 +1,5 @@
 import React from 'react'
-import { PlusSt } from './Styled'
+import { PlusSt } from './Styled/Styled'
 import { pageType } from '../redux/reducers/main/mainReducer'
 import { Link } from 'react-router-dom'
 

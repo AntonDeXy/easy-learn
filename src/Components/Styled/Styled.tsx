@@ -1,11 +1,13 @@
 import styled from 'styled-components'
-
+import { FontsStyles } from './Fonts'
 // main-orange-text #F24405
 // main-orange-items #F3A184
 // items
 // text #020F59
 // border #C7D1D9
 // icons #5B659A
+
+
 
 export const HeaderSt = styled.header `
   display: grid;
@@ -20,6 +22,7 @@ export const HeaderSt = styled.header `
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     span {
+      ${() => FontsStyles.h1}
       padding: 0 10px;
       overflow-y: scroll;
       max-height: 9vh;
@@ -135,12 +138,13 @@ export const WordItemSt = styled.div `
   grid-template-rows: 1fr 1fr;
   border-radius: 5px;
   border: 1px solid #C7D1D9;
+  color: black;
   span:hover {
     cursor: default;
   }
   input {
+    ${() => FontsStyles.cardText}
     min-width: 50px;
-    font-size: 16px;
     border-top: unset;
     border-left: unset;
     border-right: unset;
@@ -154,10 +158,12 @@ export const WordItemSt = styled.div `
     align-self: center;
   }
   .word {
+    ${() => FontsStyles.cardText}
     padding: 10px;
     border-bottom: 1px solid #C7D1D9;
   }
   .translate {
+    ${() => FontsStyles.cardText}
     padding: 10px;
     grid-row: 2;
   }
@@ -190,6 +196,7 @@ export const ListItemSt = styled.div `
       height: 16px;
     }
     span {
+      ${() => FontsStyles.cardText}
       word-break: break-word;
     }
     textarea {
@@ -283,16 +290,17 @@ export const ModalSt = styled.div `
       display: grid;
       grid-template-columns: 1fr auto auto;
       border-bottom: 2px solid #C7D1D9;
+      text-align: left;
+      gap: 10px;
+      .modal-title {
+        ${() => FontsStyles.h1}
+      }
       svg {
         align-self: center;
         :hover {
           cursor: pointer;
         }
       }
-    }
-    .testHeader {
-      text-align: left;
-      gap: 10px;
     }
     .test {
       display: grid;
@@ -374,7 +382,7 @@ export const ModalSt = styled.div `
         display: grid;
         grid-auto-flow: row;
         span {
-          font-weight: 500;
+          ${() => FontsStyles.modalInputLabel}
           color: #010440;
         }
         input {
@@ -462,6 +470,7 @@ export const MenuSt = styled.div`
     width: 90%;
     align-content: baseline;
     a {
+      ${() => FontsStyles.menuItem}
       color: #424242 !important;
       :hover {
         color: #6f6f6f !important;
@@ -599,6 +608,9 @@ export const ProfileSt = styled.div`
       grid-auto-flow: row;
       gap: 15px;
       align-content: baseline;
+      span, a {
+        ${() => FontsStyles.cardText}
+      }
       div {
         display: grid;
         gap: 10px;
@@ -635,6 +647,7 @@ export const ProfileSt = styled.div`
             grid-template-columns: 1fr auto auto;
             padding: 0 10px;
             align-items: center;
+            ${() => FontsStyles.menuItem}
             .list-name {
               grid-column: 1;
             }
@@ -674,6 +687,12 @@ export const HelpPageSt = styled.div `
     width: 80%;
     justify-self: center;
     align-content: baseline;
+    .ant-collapse-header {
+      ${() => FontsStyles.cardText}
+    }
+    .ant-collapse-content-box img {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
   }
 `
 
