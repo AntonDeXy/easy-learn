@@ -38,7 +38,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
       setMenuStyle({animationName: 'menuAnimOut'})
       setTimeout(() => {
         setMenuIsOpen(!menuIsOpen)
-      }, 500)
+      }, 450)
     } else {
       setMenuStyle({animationName: 'menuAnimIn'})
       setMenuIsOpen(!menuIsOpen)
