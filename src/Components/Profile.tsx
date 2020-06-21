@@ -1,11 +1,10 @@
 import React, { useEffect } from "react"
-import { ProfileSt } from "./Styled"
-import { connect } from 'react-redux';
-import { changeCurrentPageType } from "../redux/reducers/main/mainReducer";
-import { UserStateType, UserQuestionType } from "../redux/reducers/users/usersReducer";
+import { ProfileSt } from "./Styled/Styled"
+import { connect } from 'react-redux'
+import { changeCurrentPageType } from "../redux/reducers/main/mainReducer"
+import { UserStateType, UserQuestionType } from "../redux/reducers/users/usersReducer"
 import TimeAgo from 'react-timeago'
-import Head from "./Head";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 type ProfileType = {
   user: UserStateType
@@ -18,11 +17,15 @@ const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
     setCurrentPageToProfile()
   }, [setCurrentPageToProfile])
 
+
+  useEffect(() => {
+    document.title='Profile'
+  }, [])
+
   const completedTests = [...user.tests]
   completedTests.reverse()
   return (
     <>
-      <Head title={'Profile'} />
       <ProfileSt>
         <div className="wrapper">
           {
@@ -48,7 +51,7 @@ const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
               <div className='tests-wrapper'>
                 <span>Completed tests:</span>
                 <div className="tests">
-                  {completedTests.map(test => <TestItem test={test} />)}
+                  {completedTests.map(test => <TestItem key={test._id} test={test} />)}
                 </div>
               </div>
             )}

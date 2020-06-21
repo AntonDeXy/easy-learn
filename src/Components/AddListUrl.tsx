@@ -1,11 +1,10 @@
 import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { AddListUrlStyled } from './Styled'
+import { AddListUrlStyled } from './Styled/Styled'
 import { connect } from 'react-redux'
 import { listCheckerThunk, addListWithoutCheckThunk } from '../redux/reducers/users/usersReducer'
 import { ListType, ItemType } from '../redux/reducers/main/mainReducer'
-import Head from './Head'
 
 type AddListUrlProps = {
   listCheckerThunk: (listId: string, userId: string, success: any) => void
@@ -20,6 +19,10 @@ const AddListUrl: React.FC<AddListUrlProps> = ({ listCheckerThunk, addListWithou
   const [isListVisible, setIsListVisible] = useState(false)
   const [error, setError] = useState<string | undefined>(undefined)
   const [listForAdd, setListForAdd] = useState<ListType | undefined>(undefined)
+
+  useEffect(() => {
+    document.title=listForAdd?.name ? listForAdd.name : 'Add list'
+  }, [listForAdd])
 
   useEffect(() => {
     setError(undefined)
@@ -53,7 +56,6 @@ const AddListUrl: React.FC<AddListUrlProps> = ({ listCheckerThunk, addListWithou
 
   return (
     <>
-      <Head title={listForAdd?.name ? listForAdd.name : 'Add list'} />
       <AddListUrlStyled>
         {
           isConfirmed && <Redirect to='/' />

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { AdminPanelSt } from '../Styled'
+import { AdminPanelSt } from '../Styled/Styled'
 import { Tabs } from 'antd'
 import {
   HelpStateType,
@@ -10,10 +10,10 @@ import {
   getHelpPageItemsThunk} from '../../redux/reducers/help/helpPageReducer'
 import { connect } from 'react-redux'
 import HelpTab from './HelpTab/HelpTab'
-import { useState } from 'react';
+import { useState } from 'react'
 import { UserStateType } from '../../redux/reducers/users/usersReducer'
 import { Redirect } from 'react-router-dom'
-import Spiner from '../Spiner';
+import Spiner from '../Spiner'
 
 const { TabPane } = Tabs
 

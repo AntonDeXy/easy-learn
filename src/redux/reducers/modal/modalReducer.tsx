@@ -1,7 +1,7 @@
 import { SET_ITEMS_FOR_TEST_TRANSLATE_TO_WORDS, NEXT_QUESTION, SET_ITEMS_FOR_TEST_WORD_TO_TRANSLATES, SHUFLE_ITEMS, SET_MODAL } from "./modalReducerTypes"
 import { ItemType } from "../main/mainReducer"
-import { testsAPI, userAPI } from '../../../API/Api';
-import { UserQuestionType, addCompletedTest } from "../users/usersReducer";
+import { testsAPI, userAPI } from '../../../API/Api'
+import { UserQuestionType, addCompletedTest } from "../users/usersReducer"
 
 export type QuestionType = {
   value1: string

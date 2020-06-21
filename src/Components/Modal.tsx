@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { ModalSt } from './Styled'
+import { ModalSt } from './Styled/Styled'
 import { connect } from 'react-redux'
 import { setModal, setTestModal, getNextQuestion, ModalStateType, SetModalType, TestType, createNewTestThunk } from '../redux/reducers/modal/modalReducer'
 import { createListThunk, createItemThunk, getAutoTranslatesThunk, TranslateType } from '../redux/reducers/lists/listsReducer'
@@ -49,8 +49,8 @@ const Modal:React.FC<ModalType> = (
   return (
     <ModalSt>
       <div className="modal">
-        <div className="header testHeader">
-          <div>
+        <div className="header">
+          <div className='modal-title' >
             {modal.type === 'words' && <span>Create new word</span>}
             {modal.type === 'lists' && <span>Create new list</span>}
             {modal.type === 'notes' && <span>Create new note</span>}
@@ -58,6 +58,7 @@ const Modal:React.FC<ModalType> = (
             {modal.type === 'test' && <span>Test</span>}
             {modal.type === 'result' && <span>Result</span>}
             {modal.type === 'share' && <span>Share</span>}
+            {modal.type === 'chooseTestType' && <span>Choose test type</span>}
           </div>
           <div>
             {

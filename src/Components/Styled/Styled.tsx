@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-
+import { FontsStyles } from './Fonts'
+import { ThemeType } from './Themes'
 // main-orange-text #F24405
 // main-orange-items #F3A184
 // items
@@ -12,18 +13,25 @@ export const HeaderSt = styled.header `
   font-family: 'Roboto', sans-serif;
   height: 10vh;
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.25);
-  background-color: #ffffff;
+  background-color: ${({theme} : {theme: ThemeType}) => theme.FooterHeaderBg};
   .wrapper {
     display: grid;
     width: 90%;
     justify-self: center;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
+    .menu path {
+      fill: ${({theme} : {theme: ThemeType}) => theme.SecondaryOrangeInactiveTab};
+    }
+    .menu-active path {
+      fill: ${({theme} : {theme: ThemeType}) => theme.MainOrangeActiveTab};
+    }
     span {
+      ${() => FontsStyles.h1}
       padding: 0 10px;
       overflow-y: scroll;
       max-height: 9vh;
-      color: #F24405;
+      color: ${({theme} : {theme: ThemeType}) => theme.MainOrangeActiveTab};
       :hover {
         cursor: default;
       }
@@ -56,6 +64,7 @@ export const MainSt = styled.main `
   width: 100vw;
   font-family: 'Roboto', sans-serif;
   overflow-y: auto;
+  background-color: ${({theme} : {theme: ThemeType}) => theme.MainBg};
   .pleaseLogin {
     width: 100vw;
     text-align: center;
@@ -134,16 +143,20 @@ export const WordItemSt = styled.div `
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr 1fr;
   border-radius: 5px;
-  border: 1px solid #C7D1D9;
+  border: 1px solid ${({theme} : {theme: ThemeType}) => theme.CardBorderColor};
+  background-color: ${({theme} : {theme: ThemeType}) => theme.CardsBg};
+  color: ${({theme} : {theme: ThemeType}) => theme.SecondaryTextColor};
   span:hover {
     cursor: default;
   }
   input {
+    ${() => FontsStyles.cardText}
     min-width: 50px;
-    font-size: 16px;
     border-top: unset;
     border-left: unset;
     border-right: unset;
+    color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+    background-color: ${({theme} : {theme: ThemeType}) => theme.MainBg};
   }
   .spiner {
     margin-left: 10px;
@@ -154,10 +167,12 @@ export const WordItemSt = styled.div `
     align-self: center;
   }
   .word {
+    ${() => FontsStyles.cardText}
     padding: 10px;
-    border-bottom: 1px solid #C7D1D9;
+    border-bottom: 1px solid ${({theme} : {theme: ThemeType}) => theme.CardBorderColor};
   }
   .translate {
+    ${() => FontsStyles.cardText}
     padding: 10px;
     grid-row: 2;
   }
@@ -166,10 +181,13 @@ export const WordItemSt = styled.div `
     grid-row: 1/3;
     padding: 10px;
     display: grid;
-    border-left: 1px solid #C7D1D9;
+    border-left: 1px solid ${({theme} : {theme: ThemeType}) => theme.CardBorderColor};
     gap: 10px;
     grid-auto-flow: column;
     align-content: center;
+    svg path {
+      fill: ${({theme} : {theme: ThemeType}) => theme.ListItemButtonsColor}
+    }
   }
 `
 
@@ -177,9 +195,10 @@ export const ListItemSt = styled.div `
   display: grid;
   grid-template-columns: 1fr auto;
   border-radius: 5px;
-  border: 1px solid #C7D1D9;
+  border: 1px solid ${({theme} : {theme: ThemeType}) => theme.CardBorderColor};
+  background-color: ${({theme} : {theme: ThemeType}) => theme.CardsBg};
   a {
-    color: black;
+    color: ${({theme} : {theme: ThemeType}) => theme.SecondaryTextColor};
   }
   svg {
     height: 16px;
@@ -190,6 +209,7 @@ export const ListItemSt = styled.div `
       height: 16px;
     }
     span {
+      ${() => FontsStyles.cardText}
       word-break: break-word;
     }
     textarea {
@@ -198,11 +218,14 @@ export const ListItemSt = styled.div `
       width: 100%;
     }
     input {
+      ${() => FontsStyles.cardText}
       min-width: 50px;
       font-size: 16px;
       border-top: unset;
       border-left: unset;
       border-right: unset;
+      color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+      background-color: ${({theme} : {theme: ThemeType}) => theme.MainBg};
     }
     :hover {
       cursor: pointer;
@@ -212,11 +235,16 @@ export const ListItemSt = styled.div `
     padding: 10px;
     display: grid;
     align-content: center;
-    border-left: 1px solid #C7D1D9;
+    border-left: 1px solid ${({theme} : {theme: ThemeType}) => theme.CardBorderColor};
     gap: 10px;
     grid-auto-flow: column;
-    svg:hover {
-      cursor: pointer;
+    svg {
+      path {
+        fill: ${({theme} : {theme: ThemeType}) => theme.ListItemButtonsColor};
+      }
+      :hover {
+        cursor: pointer;
+      }
     }
   }
 `
@@ -232,13 +260,17 @@ export const SpinerStyled = styled.svg `
   }
   display: grid;
   animation: rotating 2s linear infinite;
+  path {
+    fill: ${({theme} : {theme: ThemeType}) => theme.MainTextColor}
+  }
+
 `
 
 export const FooterSt = styled.footer `
   display: grid;
   height: 10vh;
   box-shadow: 0px -4px 30px rgba(0, 0, 0, 0.25);
-  background-color: #ffffff;
+  background-color: ${({theme} : {theme: ThemeType}) => theme.FooterHeaderBg};
   .wrapper {
     display: grid;
     width: 90%;
@@ -247,10 +279,10 @@ export const FooterSt = styled.footer `
     justify-self: center;
     justify-items: center;
     a, svg {
-      color: #FFC5B0;
+      color: ${({theme} : {theme: ThemeType}) => theme.SecondaryOrangeInactiveTab};
     }
     .activeTab {
-      color: #FF7B4C;
+      color: ${({theme} : {theme: ThemeType}) => theme.MainOrangeActiveTab};
     }
   }
 `
@@ -258,7 +290,7 @@ export const FooterSt = styled.footer `
 export const ModalSt = styled.div `
   display: grid;
   height: 80vh;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.3);
   height: 80vh;
   width: 100vw;
   font-family: 'Roboto', sans-serif;
@@ -271,28 +303,29 @@ export const ModalSt = styled.div `
     z-index: 1;
     align-self: center;
     border-radius: 5px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
-    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(256, 256, 256, 0.4);
+    background-color: ${({theme} : {theme: ThemeType}) => theme.CardsBg};
     grid-template-rows: auto 1fr;
     width: auto;
     min-width: 320px;
     height: auto;
-    color: #010440;
+    color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
     .header {
       padding: 5px;
       display: grid;
       grid-template-columns: 1fr auto auto;
       border-bottom: 2px solid #C7D1D9;
+      text-align: left;
+      gap: 10px;
+      .modal-title {
+        ${() => FontsStyles.h1}
+      }
       svg {
         align-self: center;
         :hover {
           cursor: pointer;
         }
       }
-    }
-    .testHeader {
-      text-align: left;
-      gap: 10px;
     }
     .test {
       display: grid;
@@ -347,9 +380,9 @@ export const ModalSt = styled.div `
       button {
         height: 30px;
         border-radius: 10em;
-        color: #4285f4;
+        color: #fff;
         border: 2px solid #4285f4;
-        background-color: #ffffff;
+        background-color: ${({theme} : {theme: ThemeType}) => theme.DefButtonColor};
         box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
         transition: all.5s;
         :active {
@@ -374,13 +407,15 @@ export const ModalSt = styled.div `
         display: grid;
         grid-auto-flow: row;
         span {
-          font-weight: 500;
-          color: #010440;
+          ${() => FontsStyles.modalInputLabel}
+          color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
         }
         input {
           border-radius: 5px;
           height: 30px;
-          border: 1px solid #C7D1D9;
+          border: 1px solid ${({theme} : {theme: ThemeType}) => theme.CardBorderColor};
+          background-color: ${({theme} : {theme: ThemeType}) => theme.CardsBg};
+          color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor}
         }
         textarea {
           border-radius: 5px;
@@ -406,6 +441,7 @@ export const ModalSt = styled.div `
         display: grid;
         grid-auto-flow: row;
         h2 {
+          color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
           font-size: 16px;
           margin: 0;
         }
@@ -423,8 +459,8 @@ export const ModalSt = styled.div `
       }
       button {
         width: 60%;
-        background-color: #0091CF;
-        color: white;
+        background-color: ${({theme} : {theme: ThemeType}) => theme.DefButtonColor};
+        color: #fff;
         height: 35px;
         border: unset;
         justify-self: center;
@@ -448,7 +484,7 @@ export const MenuSt = styled.div`
   }
   display: grid;
   height: 80vh;
-  background-color: #ffffff;
+  background-color: ${({theme} : {theme: ThemeType}) => theme.FooterHeaderBg};
   width: 100vw;
   font-family: 'Roboto', sans-serif;
   position: absolute;
@@ -461,8 +497,18 @@ export const MenuSt = styled.div`
     justify-self: center;
     width: 90%;
     align-content: baseline;
+    gap: 10px;
+    .theme-switcher {
+      button {
+        border-radius: 5px;
+        border: 2px solid ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+        color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+        background-color: unset;
+      }
+    }
     a {
-      color: #424242 !important;
+      ${() => FontsStyles.menuItem}
+      color: ${({theme} : {theme: ThemeType}) => theme.MainOrangeActiveTab};
       :hover {
         color: #6f6f6f !important;
       }
@@ -538,9 +584,9 @@ export const AddListUrlStyled = styled.div `
       }
     }
     button {
-      background-color: #1c1;
+      background-color: ${({theme} : {theme: ThemeType}) => theme.GreenButton} ;
       justify-self: center;
-      color: white;
+      color: #fff;
       border-radius: 10px;
       border: unset;
       padding: 10px;
@@ -599,6 +645,10 @@ export const ProfileSt = styled.div`
       grid-auto-flow: row;
       gap: 15px;
       align-content: baseline;
+      color: ${({theme} : {theme: ThemeType}) => theme.SecondaryTextColor};
+      span, a {
+        ${() => FontsStyles.cardText}
+      }
       div {
         display: grid;
         gap: 10px;
@@ -629,12 +679,13 @@ export const ProfileSt = styled.div`
           border-radius: 10px;
           .test-item {
             align-content: center;
-            background-color: white;
+            background-color: ${({theme} : {theme: ThemeType}) => theme.CardsBg};
             display: grid;
             width: 100%;
             grid-template-columns: 1fr auto auto;
             padding: 0 10px;
             align-items: center;
+            ${() => FontsStyles.menuItem}
             .list-name {
               grid-column: 1;
             }
@@ -674,6 +725,24 @@ export const HelpPageSt = styled.div `
     width: 80%;
     justify-self: center;
     align-content: baseline;
+    .ant-collapse {
+      max-width: 100%;
+      overflow: scroll;
+      border: unset;
+      box-shadow: 0 0 10px ${({theme}: {theme: ThemeType}) => theme.helpTabsShadowColor};
+    }
+    .ant-collapse-header {
+      ${() => FontsStyles.cardText}
+      color: ${({theme}: {theme: ThemeType}) => theme.SecondaryTextColor};
+      background-color: ${({theme}: {theme: ThemeType}) => theme.CardsBg};
+    }
+    .ant-collapse-content-box {
+      background-color: ${({theme}: {theme: ThemeType}) => theme.MainBg};
+      color: ${({theme}: {theme: ThemeType}) => theme.SecondaryTextColor};
+      img {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+    }
   }
 `
 
@@ -685,6 +754,9 @@ export const AdminPanelSt = styled.div `
     width: 80%;
     justify-self: center;
     align-content: baseline;
+    .ant-tabs-nav {
+      color: ${({theme}: {theme: ThemeType}) => theme.SecondaryTextColor};
+    }
     .textEditor {
       min-height: 80vh;
     }
@@ -696,11 +768,13 @@ export const AdminPanelSt = styled.div `
       display: grid;
       grid-auto-flow: row;
       gap: 5px;
+      color: ${({theme}: {theme: ThemeType}) => theme.SecondaryTextColor};
       .helpItem {
         display: grid;
         grid-template-columns: 1fr auto;
         padding: 10px 10px;
-        border: 1px solid black;
+        border: 1px solid ${({theme}: {theme: ThemeType}) => theme.CardBorderColor};
+        background-color: ${({theme}: {theme: ThemeType}) => theme.CardsBg};
         border-radius: 5px;
         font-weight: 500;
         .name {
@@ -715,6 +789,19 @@ export const AdminPanelSt = styled.div `
           justify-content: right;
         }
       }
+      h2 {
+        color: ${({theme}: {theme: ThemeType}) => theme.SecondaryTextColor};
+      }
     }
+    .jodit_container {
+      color: black;
+    }
+    button {
+      border: unset;
+      color: #fff;
+      background-color: ${({theme}: {theme: ThemeType}) => theme.GreenButton};
+      ${() => FontsStyles.modalButtonText}
+    }
+
   }
 `

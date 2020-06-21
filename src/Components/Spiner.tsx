@@ -1,5 +1,5 @@
 import React from 'react'
-import { SpinerStyled } from './Styled'
+import { SpinerStyled } from './Styled/Styled'
 
 const Spiner = () => {
   return (

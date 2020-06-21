@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { ListsWrapper, ListItemSt } from './Styled'
+import { ListsWrapper, ListItemSt } from './Styled/Styled'
 import Plus from './Plus'
 import { useState } from 'react'
 import AutosizeInput from 'react-input-autosize'
@@ -13,7 +13,6 @@ import {
 } from '../redux/reducers/lists/listsReducer'
 import { changeCurrentPageType, setCurrentList, ListType } from '../redux/reducers/main/mainReducer'
 import { setModal, SetModalType } from '../redux/reducers/modal/modalReducer'
-import Head from './Head'
 import { Link } from 'react-router-dom'
 
 type ListsContainerType = {
@@ -35,9 +34,13 @@ const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, dupli
     changeCurrentPageToLists()
   }, [changeCurrentPageToLists])
 
+
+  useEffect(() => {
+    document.title='Lists'
+  }, [])
+
   return (
     <>
-      <Head title={'Lists'} />
       <ListsWrapper>
         <Plus openModal={() => setModal({ isActive: true, type: 'lists' })} type="lists" />
         {loading ? (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MainSt } from './Styled'
+import { MainSt } from './Styled/Styled'
 import { Redirect } from 'react-router-dom'
 import { UserStateType } from '../redux/reducers/users/usersReducer'
 import { connect } from 'react-redux'

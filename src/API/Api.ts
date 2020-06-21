@@ -6,7 +6,8 @@ import { HelpItemType } from '../redux/reducers/help/helpPageReducer'
 
 // export const baseURL = 'http://localhost:5001/api/v1/'
 // export const baseURL = 'https://cors-anywhere.herokuapp.com/https://dexy.site/api/v1/'
-export const baseURL = '/api/v1/'
+// export const baseURL = '/api/v1/'
+export const baseURL = 'https://easy-lern-backend.herokuapp.com/api/v1/'
 
 
 const instance = axios.create({
@@ -105,7 +106,7 @@ export const testsAPI = {
 export const userAPI = {
   addListToProfile(data: { userId: string; listId: string }) {
     return instance.post('/lists/add-to-profile', data)
-      .then(res => res)
+      .then(res => res.data)
   },
   addTestToProfile(data: { userId: string; testId: string }) {
     return instance.put('users/add-test', data)
@@ -113,7 +114,7 @@ export const userAPI = {
   },
   removeAddedList(data: { userId: string; listId: string }) {
     return instance.put(`users/remove-list/${data.userId}`, {listId: data.listId})
-      .then(res => res)
+      .then(res => res.data)
   },
   getUser(userId: string) {
     return instance.get(`users/get-profile/${userId}`)
@@ -121,6 +122,10 @@ export const userAPI = {
   },
   createNewUser(userId: string, email:string) {
     return instance.post('users/new', {userIdFromAuth0: userId, email})
+      .then(res => res.data)
+  },
+  changeTheme(userId: string, theme: string) {
+    return instance.put('users/change-theme', {userId, theme})
       .then(res => res.data)
   }
 }

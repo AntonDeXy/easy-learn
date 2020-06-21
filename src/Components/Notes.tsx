@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { ListsWrapper, ListItemSt } from './Styled'
+import { ListsWrapper, ListItemSt } from './Styled/Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
 import { updateNoteThunk, removeNoteThunk, NoteType } from '../redux/reducers/notes/notesReducer'
@@ -8,8 +8,7 @@ import { setModal, SetModalType } from '../redux/reducers/modal/modalReducer'
 import TextareaAutosize from 'react-textarea-autosize'
 import Spiner from './Spiner'
 import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
-import { useEffect } from 'react';
-import Head from './Head'
+import { useEffect } from 'react'
 
 type NotesType = {
   setModal: (data: SetModalType) => void
@@ -25,9 +24,13 @@ const Notes: React.FC<NotesType> = ({ setModal, updateNoteThunk, changeCurrentPa
     changeCurrentPageToNotes()
   }, [changeCurrentPageToNotes])
 
+
+  useEffect(() => {
+    document.title='Notes'
+  }, [])
+
   return (
     <>
-      <Head title={'Notes'} />
       <ListsWrapper>
         <Plus openModal={() => setModal({ isActive: true, type: 'notes' })} type="notes" />
         <div className="lists">

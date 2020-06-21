@@ -1,5 +1,5 @@
 import React from 'react'
-import { FooterSt } from './Styled'
+import { FooterSt } from './Styled/Styled'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { changeCurrentPageType, pageType } from '../redux/reducers/main/mainReducer'
