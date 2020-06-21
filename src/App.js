@@ -31,7 +31,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
   const { loading, userAuth0 } = useAuth0()
   const [menuStyle, setMenuStyle] = useState({animationName: 'menuAnimIn'})
   const [currentThemeName, setCurrentThemeName] = useState('light')
-  const [currentTheme, setCurrentTheme] = useState()
+  const [currentTheme, setCurrentTheme] = useState(LightTheme)
 
   const menuToggle = () => {
     if (menuIsOpen) {
@@ -100,7 +100,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
             />
           )}
           {
-            menuIsOpen && <Menu menuStyle={menuStyle} />
+            menuIsOpen && <Menu closeMenu={menuToggle} menuStyle={menuStyle} />
           }
           <MainSt>
             <Switch>

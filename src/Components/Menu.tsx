@@ -10,35 +10,48 @@ type MenuType = {
   menuStyle: any
   currentTheme: string
   userId: string
+  closeMenu: () => void
   changeTheme: (userId: string, theme: string) => void
   changeCurrentPage: (page:pageType) => void
 }
 
-const Menu:React.FC<MenuType> = ({menuStyle, changeCurrentPage, changeTheme, currentTheme, userId}) => {
+const Menu:React.FC<MenuType> = ({menuStyle, closeMenu, changeCurrentPage, changeTheme, currentTheme, userId}) => {
   const { logout } = useAuth0()
   
   return (
     <MenuSt style={menuStyle} >
       <div className="wrapper">
-        <Link to='/lists' onClick={() => changeCurrentPage('lists')}>
+        <Link to='/lists' onClick={() => {
+          changeCurrentPage('lists')
+          closeMenu()
+        }}>
           Lists
         </Link>
-        <Link to='/notes'>
+        <Link onClick={closeMenu} to='/notes'>
           Notes
         </Link>
-        <Link to='/help'>
+        <Link onClick={closeMenu} to='/help'>
           Help
         </Link>
-        <Link to='/' onClick={() => logout()}>Log out</Link>
+        <Link to='/' onClick={() => {
+          logout()
+          closeMenu()
+        }}>Log out</Link>
         <div className="theme-switcher">
           {
             currentTheme === 'light' 
             ? (
-              <button onClick={() => changeTheme(userId, 'dark')}>
+              <button onClick={() => {
+                changeTheme(userId, 'dark')
+                closeMenu()
+              }}>
                 Dark Theme
               </button>
             ) : (
-              <button onClick={() => changeTheme(userId, 'light')}>
+              <button onClick={() => {
+                changeTheme(userId, 'light')
+                closeMenu()
+              }}>
                 Light Theme
               </button>
             )
