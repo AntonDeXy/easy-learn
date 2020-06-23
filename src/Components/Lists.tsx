@@ -54,9 +54,9 @@ const ListsContainer: React.FC<ListsContainerType> = ({ loading, setModal, dupli
                     duplicateList={duplicateList}
                     changeCurrentPageType={changeCurrentPageToWords}
                     key={list._id}
-                    isOwner={user.userId === list.authorId ? true : false}
+                    isOwner={user._id === list.authorId ? true : false}
                     list={list}
-                    userId={user.userId}
+                    userId={user._id}
                     setCurrentList={setCurrentList}
                     openShareModal={() => setModal({ isActive: true, type: 'share', listId: list._id })}
                     updateListThunk={updateListThunk}

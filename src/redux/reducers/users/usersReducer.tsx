@@ -1,5 +1,5 @@
 import { userAPI, listsAPI } from '../../../API/Api'
-import { ADD_LIST_TO_PROFILE, CLEAR_ERROR, SET_ERROR, REMOVE_ADDED_LIST, SET_USER, ADD_COMPLETED_TEST_TO_PROFILE, CHANGE_THEME } from './usersReducerTypes'
+import { ADD_LIST_TO_PROFILE, RESET_PASSWORD, CLEAR_ERROR, SET_ERROR, REMOVE_ADDED_LIST, SET_USER, ADD_COMPLETED_TEST_TO_PROFILE, CHANGE_THEME, ACCESS_TOKEN, REFRESH_TOKEN, LOGOUT } from './usersReducerTypes'
 import { ListType } from '../main/mainReducer'
 
 export type UserQuestionType = {
@@ -31,30 +31,41 @@ export type TestType = {
 
 export type UserStateType = {
   _id: string
-  userId: string
+  username: string
+  email: string
+  isEmailConfirmed: boolean
+  theme: string
+  role: string
+  registerDate: string
   addedLists: Array<ListType>
   tests: Array<UserQuestionType>
-  email: string
-  role: string
-  pictureUrl: string
-  theme: string
+
+  accessToken: string
+  refreshToken: string
+  
+  // userId: string
+  // pictureUrl: string
+  // password?: string
 }
 
 const userState:UserStateType = {
   _id: '',
-  userId: '',
+  username: '',
   addedLists: [],
   tests: [],
   email: '',
   role: 'user',
-  pictureUrl: '',
-  theme: ''
+  theme: '',
+  isEmailConfirmed: false,
+  registerDate: '',
+  accessToken: '',
+  refreshToken: ''
 }
 
 const userReducer = (state = userState, action:any) => {
   switch (action.type) {
     case SET_USER: {
-      return ({...state, ...action.user, pictureUrl :action.userImg})
+      return ({...state, ...action.user})
     }
     case REMOVE_ADDED_LIST : {
       let addedLists = state.addedLists.filter(list => list._id !== action.listId)
@@ -80,6 +91,12 @@ const userReducer = (state = userState, action:any) => {
     case CHANGE_THEME: {
       return {...state, theme: action.theme}
     }
+    case RESET_PASSWORD: {
+      return {...state, password: action.newPass}
+    }
+    case LOGOUT: {
+      return {}
+    }
     default: return state
   }
 }
@@ -94,10 +111,9 @@ export const addCompletedTest = (test:UserQuestionType):AddCompletedTestType => 
 type SetUserActionType = {
   type: typeof SET_USER
   user: UserStateType
-  userImg: string
 }
 
-const setUser = (user:UserStateType, userImg:string):SetUserActionType => ({type: SET_USER, user, userImg})
+const setUser = (user:UserStateType):SetUserActionType => ({type: SET_USER, user})
 
 type ClearErorrActionType = {
   type: typeof CLEAR_ERROR
@@ -133,17 +149,99 @@ type ChangeThemeActionType = {
 
 const changeTheme = (theme: string):ChangeThemeActionType => ({type: CHANGE_THEME, theme})
 
-export const setUserThunk = (userId:string, email:string, userImg:string) => async (dispatch:any) => {
-  let data:any = await userAPI.getUser(userId)
-  if (data.success) {
-    if (data.user) {
-      dispatch(setUser(data.user, userImg))
-    } else {
-      let data = await userAPI.createNewUser(userId, email)
-      if (data.success) dispatch(setUser(data.user, userImg))
-    }
+type resetPassword = {
+  type: typeof RESET_PASSWORD
+  newPass: string
+}
+
+const resetPassword = (newPass: string):resetPassword => ({type: RESET_PASSWORD, newPass})
+
+type setAccessToken = {
+  type: typeof ACCESS_TOKEN
+  accessToken: string
+}
+
+const setAccessToken = (accessToken: string):setAccessToken => ({type: ACCESS_TOKEN, accessToken})
+
+type setRefreshToken = {
+  type: typeof REFRESH_TOKEN
+  refreshToken: string
+}
+
+const setRefreshToken = (refreshToken: string):setRefreshToken => ({type: REFRESH_TOKEN, refreshToken})
+
+type Logout = {
+  type: typeof LOGOUT
+}
+
+const logout = ():Logout => ({type: LOGOUT})
+
+export const loginThunk = (username: string, password: string, success: any) => async (dispatch:any) => {
+  let data: any = await userAPI.login(username, password)
+
+  if(data.success) {
+    dispatch(setAccessToken(data.accessToken))
+    dispatch(setRefreshToken(data.refreshToken))
+    localStorage.setItem('refresh-token', data.refreshToken)
+    dispatch(setUser(data.user))
+    success('')
+  } else {
+    success(data.msg)
   }
-} 
+}
+
+export const registerThunk = (username: string, password: string, success: any) => async (dispatch:any) => {
+  let data: any = await userAPI.register(username, password)
+
+  if(data.success) {
+    dispatch(setUser(data.user))
+    success('Registered success')
+  } else {
+    success(data.msg)
+  }
+}
+
+export const getNewToken = (refreshToken: string) => async (dispatch: any) => {
+  let data: any = await userAPI.getNewToken(refreshToken)
+  
+  if (data.success) {
+    dispatch(setAccessToken(data.accessToken))
+    dispatch(setUser(data.user))
+  } else {
+    localStorage.removeItem('refresh-token')
+    dispatch(logout())
+  }
+}
+
+export const logoutThunk = (refreshToken: string) => async (dispatch:any) => {
+  console.log(refreshToken)
+  let data: any = await userAPI.logout(refreshToken)
+
+  if(data.success) {
+    localStorage.removeItem('refresh-token')
+    dispatch(logout())
+  }
+
+}
+
+export const requestPasswordResetThunk = (email: string, success: any) => async (dispatch:any) => {
+  let data: any = await userAPI.requestPasswordReset(email)
+
+  if (data.success) {
+    success({success: true, msg: 'Email was sent'})
+  } else {
+    success(data.msg)
+  }
+
+}
+
+export const resetPasswordThunk = (email: string) => async (dispatch: any) => {
+  let data: any = await userAPI.resetPassword(email)
+
+  if(data.success) {
+    dispatch(resetPassword(data.newPass))
+  }
+}
 
 export const listCheckerThunk = (listId:string, userId:string, success:any) => async () => {
   let listData = await listsAPI.isListExist(listId)

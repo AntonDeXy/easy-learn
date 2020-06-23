@@ -23,7 +23,7 @@ type WordsType = {
 }
 
 const Words: React.FC<WordsType> = ({ user, getWordAudioUrl, changeCurrentPageToWords, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal }) => {
-  const isOwner = user.userId === currentList.authorId ? true : false
+  const isOwner = user._id === currentList.authorId ? true : false
   
   useEffect(() => {
     changeCurrentPageToWords()
