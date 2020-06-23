@@ -88,13 +88,13 @@ const Modal:React.FC<ModalType> = (
         {modal.type === 'lists' && <AddList
           closeModal={() => setModal({isActive: false, type: ''})} 
           disabledButtonStyle={disabledButtonStyle} 
-          userId={user.userId} 
+          userId={user._id} 
           addListToProfileThunk={addListToProfileThunk}
           createNewList={createNewList} />
         }
 
         {modal.type === 'notes' && <AddNote 
-          userId={user.userId} 
+          userId={user._id} 
           createNote={createNote}
           disabledButtonStyle={disabledButtonStyle} 
           closeModal={() => setModal({isActive: false, type: ''})} />
@@ -123,7 +123,7 @@ const Modal:React.FC<ModalType> = (
             itemsCount={currentList.items.length}
           />
         }
-        {modal.type === 'result' && <ResultModal userId={user.userId} listName={currentList.name} createNewTestItem={createNewTestItem} test={test} /> }
+        {modal.type === 'result' && <ResultModal userId={user._id} listName={currentList.name} createNewTestItem={createNewTestItem} test={test} /> }
         {modal.type === 'share' && <ShareModal categoryId={modal.listId} /> }
       </div>
     </ModalSt>

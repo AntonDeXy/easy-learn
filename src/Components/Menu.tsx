@@ -1,22 +1,22 @@
 import React from 'react'
 import { MenuSt } from './Styled/Styled'
 import { Link } from 'react-router-dom'
-import { useAuth0 } from '../react-auth0-spa'
 import { connect } from 'react-redux'
 import { changeCurrentPageType, pageType } from '../redux/reducers/main/mainReducer'
-import { changeThemeThunk } from '../redux/reducers/users/usersReducer'
+import { changeThemeThunk, logoutThunk } from '../redux/reducers/users/usersReducer'
 
 type MenuType = {
   menuStyle: any
   currentTheme: string
   userId: string
+  refreshToken: string
   closeMenu: () => void
   changeTheme: (userId: string, theme: string) => void
   changeCurrentPage: (page:pageType) => void
+  logout: (refreshToken: string) => void
 }
 
-const Menu:React.FC<MenuType> = ({menuStyle, closeMenu, changeCurrentPage, changeTheme, currentTheme, userId}) => {
-  const { logout } = useAuth0()
+const Menu:React.FC<MenuType> = ({menuStyle, closeMenu, refreshToken, changeCurrentPage, changeTheme, currentTheme, userId, logout}) => {
   
   return (
     <MenuSt style={menuStyle} >
@@ -34,7 +34,7 @@ const Menu:React.FC<MenuType> = ({menuStyle, closeMenu, changeCurrentPage, chang
           Help
         </Link>
         <Link to='/' onClick={() => {
-          logout()
+          logout(refreshToken)
           closeMenu()
         }}>Log out</Link>
         <div className="theme-switcher">
@@ -65,10 +65,12 @@ const Menu:React.FC<MenuType> = ({menuStyle, closeMenu, changeCurrentPage, chang
 
 const mapStateToProps = (state:any) => ({
   currentTheme: state.userReducer.theme,
-  userId: state.userReducer.userId
+  userId: state.userReducer.userId,
+  refreshToken: state.userReducer.refreshToken
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
+  logout: (refreshToken: string) => dispatch(logoutThunk(refreshToken)),
   changeCurrentPage: (page:pageType) => dispatch(changeCurrentPageType(page)),
   changeTheme: (userId: string, theme: string) => dispatch(changeThemeThunk(userId, theme))
 })

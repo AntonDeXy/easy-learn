@@ -104,6 +104,30 @@ export const testsAPI = {
 }
 
 export const userAPI = {
+  getNewToken(refreshToken: string) {
+    return instance.post('/users/get-new-token', {refreshToken})
+      .then(res => res.data)
+  },
+  login(username: string, password: string) {
+    return instance.post('/users/login', {username, password})
+      .then(res => res.data)
+  },
+  logout(refreshToken: string) {
+    return instance.post('/users/logout', {refreshToken})
+      .then(res => res.data)
+  },
+  register(username: string, password: string) {
+    return instance.post('/users/register', {username, password})
+      .then(res => res.data)
+  },
+  requestPasswordReset(email: string) {
+    return instance.post('/users/request-reset-password', {email})
+      .then(res => res.data)
+  },
+  resetPassword(newPass: string) {
+    return instance.post('/users/reset-password', {newPass})
+      .then(res => res.data)
+  },
   addListToProfile(data: { userId: string; listId: string }) {
     return instance.post('/lists/add-to-profile', data)
       .then(res => res.data)

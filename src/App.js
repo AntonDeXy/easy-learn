@@ -9,7 +9,6 @@ import Modal from './Components/Modal'
 import Menu from './Components/Menu'
 import "antd/dist/antd.css"
 import Notes from './Components/Notes'
-import { useAuth0 } from "./react-auth0-spa"
 import Profile from "./Components/Profile"
 import PrivateRoute from './Components/PrivateRoute'
 import { useEffect } from 'react'
@@ -17,7 +16,6 @@ import AddListUrl from './Components/AddListUrl'
 import Spiner from './Components/Spiner'
 import { connect } from 'react-redux'
 import { setModal } from './redux/reducers/modal/modalReducer'
-import { setUserThunk } from './redux/reducers/users/usersReducer'
 import { getListsThunk } from './redux/reducers/lists/listsReducer'
 import { getNotesThunk } from './redux/reducers/notes/notesReducer'
 import HelpPage from './Components/Help'
@@ -25,20 +23,28 @@ import LoginForUse from './Components/LoginForUse'
 import AdminPanel from './Components/AdminPanel/AdminPanel'
 import { ThemeProvider } from 'styled-components'
 import { LightTheme, DarkTheme } from './Components/Styled/Themes'
+import AuthPanel from './Components/Auth/AuthPanel'
+import { getNewToken } from './redux/reducers/users/usersReducer'
 
-const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUserThunk, getLists, ...props}) => {
+const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, user, setUserThunk, getLists, ...props}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
-  const { loading, userAuth0 } = useAuth0()
   const [menuStyle, setMenuStyle] = useState({animationName: 'menuAnimIn'})
   const [currentThemeName, setCurrentThemeName] = useState('light')
   const [currentTheme, setCurrentTheme] = useState(LightTheme)
+
+  useEffect(() => {
+    const refreshToken = localStorage.getItem('refresh-token')
+    if (refreshToken) {
+      getNewToken(refreshToken)
+    }
+  }, [getNewToken])
 
   const menuToggle = () => {
     if (menuIsOpen) {
       setMenuStyle({animationName: 'menuAnimOut'})
       setTimeout(() => {
         setMenuIsOpen(!menuIsOpen)
-      }, 500)
+      }, 450)
     } else {
       setMenuStyle({animationName: 'menuAnimIn'})
       setMenuIsOpen(!menuIsOpen)
@@ -62,32 +68,26 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
   }, [currentThemeName])
 
   useEffect(() => {
-    if (user.userId) {
-      getLists(user.userId)
-      getNotes(user.userId)
+    if (user._id) {
+      getLists(user._id)
+      getNotes(user._id)
       setCurrentThemeName(user.theme ? user.theme : 'light')
     }
   }, [getLists, getNotes, user])
 
-  useEffect(() => {
-    if (!loading && userAuth0) {
-      setUserThunk(userAuth0.sub, userAuth0.email, userAuth0.picture)
-    }
-  }, [loading, setUserThunk, userAuth0])
 
-
-  if (loading) {
-    document.title = 'Loading...'
-    return (
-      <Router>
-        <Header />
-        <MainSt>
-          <Spiner />
-        </MainSt>
-        <Footer />
-      </Router>
-    )
-  }
+  // if (loading) {
+  //   document.title = 'Loading...'
+  //   return (
+  //     <Router>
+  //       <Header />
+  //       <MainSt>
+  //         <Spiner />
+  //       </MainSt>
+  //       <Footer />
+  //     </Router>
+  //   )
+  // }
 
   return (
     <ThemeProvider theme={currentTheme} >
@@ -124,7 +124,7 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
                 {currentList
                 ? (
                     <Words
-                      isLoading={loading}
+                      // isLoading={loading}
                       user={user}
                       setModal={data => setModal(data)}
                     />
@@ -148,6 +148,10 @@ const App = ({modal, getNotes, currentList, setModal, currentPage, user, setUser
                   {/* : <Redirect to='/' /> */}
                 {/* } */}
               </PrivateRoute>
+
+              <Route exact path={'/login' || '/register'}>
+                <AuthPanel />
+              </Route>
             </Switch>
           </MainSt>
           <Footer currentPage={currentPage} setModal={(data) => setModal(data)} />
@@ -168,7 +172,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getNotes: (userId) => dispatch(getNotesThunk(userId)),
   getLists: (userId) => dispatch(getListsThunk(userId)),
-  setUserThunk: (id, email, userImg) => dispatch(setUserThunk(id, email, userImg)),
+  getNewToken: (refreshToken) => dispatch(getNewToken(refreshToken)),
   setModal: (data) => dispatch(setModal(data))
 })
 

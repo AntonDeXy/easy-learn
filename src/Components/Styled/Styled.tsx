@@ -1,12 +1,6 @@
 import styled from 'styled-components'
 import { FontsStyles } from './Fonts'
 import { ThemeType } from './Themes'
-// main-orange-text #F24405
-// main-orange-items #F3A184
-// items
-// text #020F59
-// border #C7D1D9
-// icons #5B659A
 
 export const HeaderSt = styled.header `
   display: grid;
@@ -646,7 +640,7 @@ export const ProfileSt = styled.div`
       gap: 15px;
       align-content: baseline;
       color: ${({theme} : {theme: ThemeType}) => theme.SecondaryTextColor};
-      span, a {
+      span, a, time {
         ${() => FontsStyles.cardText}
       }
       div {
@@ -804,4 +798,66 @@ export const AdminPanelSt = styled.div `
     }
 
   }
+`
+
+export const LoginPanelSt = styled.div `
+  display: grid;
+  grid-auto-flow: row;
+  align-content: baseline;
+  /* background-color: ${({theme}: {theme: ThemeType}) => theme.CardsBg }; */
+  border-radius: 10px;
+  height: auto;
+  width: auto;
+  min-width: 30vw;
+  justify-self: center;
+  align-self: center; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  .header {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid ${({theme}: {theme: ThemeType}) => theme.MainOrangeActiveTab };
+    h2 {
+      ${() => FontsStyles.h1}
+      margin: 0;
+      color: ${({theme}: {theme: ThemeType}) => theme.MainTextColor };
+    }
+  }
+  .body {
+    display: grid;
+    grid-auto-flow: row;
+    padding: 10px;
+    gap: 10px;
+    .msg {
+      color: #ff3c00;
+    }
+    button {
+      color: #fff;
+      border: unset;
+      background-color: ${({theme} : {theme: ThemeType}) => theme.DefButtonColor};
+    }
+  }
+`
+
+export const PanelItemSt = styled.div `
+  grid-auto-flow: row;
+  display: grid;
+  span {
+    color: ${({theme}: {theme: ThemeType}) => theme.MainTextColor };
+    text-transform: capitalize;
+  }
+  input {
+    ${() => FontsStyles.modalInputLabel}
+    border-top: unset;
+    border-left: unset;
+    border-right: unset;
+    padding: 5px;
+    color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+    background-color: ${({theme} : {theme: ThemeType}) => theme.MainBg};
+  }
+`
+
+export const AdditionalPanelLinksSt = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
 `

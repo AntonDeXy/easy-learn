@@ -5,6 +5,7 @@ import { changeCurrentPageType } from "../redux/reducers/main/mainReducer"
 import { UserStateType, UserQuestionType } from "../redux/reducers/users/usersReducer"
 import TimeAgo from 'react-timeago'
 import { Link } from 'react-router-dom'
+import Moment from 'react-moment'
 
 type ProfileType = {
   user: UserStateType
@@ -28,11 +29,8 @@ const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
     <>
       <ProfileSt>
         <div className="wrapper">
-          {
-            user.pictureUrl
-              ? <img src={user.pictureUrl} alt="User" />
-              : <div className="userImg"><span>{'<photo />'}</span></div>
-          }
+            {/* <img src={user.pictureUrl} alt="User" /> */}
+            <div className="userImg"><span>{'<photo />'}</span></div>
           <div className="info">
             {
               user.role === 'admin' && <Link to='/admin-panel' >Admin Panel</Link>
@@ -41,6 +39,18 @@ const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
               <div>
                 <span>email:</span>
                 <span>{user.email}</span>
+              </div>
+            )}
+            {user.username && (
+              <div>
+                <span>username:</span>
+                <span>{user.username}</span>
+              </div>
+            )}
+            {user.registerDate && (
+              <div>
+                <span>Registration date:</span>
+                <Moment format={'DD.MM.YYYY'} >{user.registerDate}</Moment>
               </div>
             )}
             <div>

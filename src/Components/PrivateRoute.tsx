@@ -1,31 +1,44 @@
-import React, { useEffect } from "react"
-import { Route } from "react-router-dom"
-import { useAuth0 } from "../react-auth0-spa"
+import React from "react"
+import { Route, Redirect } from "react-router-dom"
+import { connect } from 'react-redux'
+import { UserStateType } from "../redux/reducers/users/usersReducer"
 
 type PrivateRoute = {
+  user: UserStateType
   component: any
   path: string
 }
 
-const PrivateRoute:React.FC<PrivateRoute> = ({ component: Component, path, ...rest }) => {
-  const { loading, isAuthenticated, loginWithRedirect } = useAuth0()
+const PrivateRoute:React.FC<PrivateRoute> = ({ component: Component, user, path, ...rest }) => {
+  // const [isAuthenticated, setAuthenticated] = useState(false)
 
-  useEffect(() => {
-    if (loading || isAuthenticated) {
-      return
-    }
-    const fn = async () => {
-      await loginWithRedirect({
-        appState: {targetUrl: window.location.pathname}
-      })
-    }
-    fn()
-  }, [loading, isAuthenticated, loginWithRedirect])
+  // useEffect(() => {
+  //   setAuthenticated(user?.username ? true : false)
+  // }, [user])
+
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     return
+  //   }
+  //   const fn = async () => {
+  //     return <Redirect to='/login' />
+  //   }
+  //   fn()
+  // }, [isAuthenticated])
 
   const render = (props:any) =>
-    isAuthenticated === true ? <Component {...props} /> : null
+    <Component {...props} />
 
-  return <Route path={path} render={render} {...rest} />
+  if (user && user.username) {
+    return <Route path={path} render={render} {...rest} />
+  } else {
+    return <Redirect to='/login' />
+  }
+
 }
 
-export default PrivateRoute
+const mapStateToProps = (state: any) => ({
+  user: state.userReducer
+})
+
+export default connect(mapStateToProps)(PrivateRoute)
