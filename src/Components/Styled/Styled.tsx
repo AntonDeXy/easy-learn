@@ -40,13 +40,15 @@ export const HeaderSt = styled.header `
       }
     }
     .userImg {
+      display: grid;
+      justify-content: right;
       a {
         display: grid;
       }
-      img {
-        height: 5vh;
-        border-radius: 100%;
-        justify-self: right;
+      svg {
+        path {
+          fill: ${({theme} : {theme: ThemeType}) => theme.MainOrangeActiveTab} ;
+        }
       }
     }
   }
@@ -642,6 +644,9 @@ export const ProfileSt = styled.div`
       color: ${({theme} : {theme: ThemeType}) => theme.SecondaryTextColor};
       span, a, time {
         ${() => FontsStyles.cardText}
+      }
+      .label {
+        text-transform: capitalize;
       }
       div {
         display: grid;

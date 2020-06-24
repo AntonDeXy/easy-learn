@@ -65,7 +65,7 @@ const Menu:React.FC<MenuType> = ({menuStyle, closeMenu, refreshToken, changeCurr
 
 const mapStateToProps = (state:any) => ({
   currentTheme: state.userReducer.theme,
-  userId: state.userReducer.userId,
+  userId: state.userReducer._id,
   refreshToken: state.userReducer.refreshToken
 })
 

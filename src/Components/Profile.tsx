@@ -37,29 +37,29 @@ const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
             }
             {user.email && (
               <div>
-                <span>email:</span>
+                <span className='label'>email:</span>
                 <span>{user.email}</span>
               </div>
             )}
             {user.username && (
               <div>
-                <span>username:</span>
+                <span className='label' >username:</span>
                 <span>{user.username}</span>
               </div>
             )}
             {user.registerDate && (
               <div>
-                <span>Registration date:</span>
+                <span className='label'>Registration date:</span>
                 <Moment format={'DD.MM.YYYY'} >{user.registerDate}</Moment>
               </div>
             )}
             <div>
-              <span>Completed tests count:</span>
+              <span className='label'>Completed tests count:</span>
               <span>{user.tests.length}</span>
             </div>
             {completedTests.length > 0 && (
               <div className='tests-wrapper'>
-                <span>Completed tests:</span>
+                <span className='label'>Completed tests:</span>
                 <div className="tests">
                   {completedTests.map(test => <TestItem key={test._id} test={test} />)}
                 </div>
