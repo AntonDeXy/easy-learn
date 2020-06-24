@@ -201,7 +201,7 @@ export const registerThunk = (username: string, password: string, success: any) 
   }
 }
 
-export const getNewToken = (refreshToken: string) => async (dispatch: any) => {
+export const getNewToken = (refreshToken: string, success: any) => async (dispatch: any) => {
   let data: any = await userAPI.getNewToken(refreshToken)
   
   if (data.success) {
@@ -211,6 +211,7 @@ export const getNewToken = (refreshToken: string) => async (dispatch: any) => {
     localStorage.removeItem('refresh-token')
     dispatch(logout())
   }
+  success()
 }
 
 export const logoutThunk = (refreshToken: string) => async (dispatch:any) => {

@@ -3,10 +3,10 @@ import { SpinerStyled } from './Styled/Styled'
 
 const Spiner = () => {
   return (
-  <SpinerStyled className='spiner' version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 158 157" >
+  <SpinerStyled color={'#585858'} className='spiner' version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 158 157" >
     <g transform="translate(50 50)">
       <g>
-        <path d="M88,17.5h20v22H88c-1,5.1-2.6,10.1-4.8,14.8l0,0L99.3,66L86.4,83.8L70.2,72.1c-3.8,3.6-8,6.6-12.6,9.1l0,0
+        <path fill='currentColor' d="M88,17.5h20v22H88c-1,5.1-2.6,10.1-4.8,14.8l0,0L99.3,66L86.4,83.8L70.2,72.1c-3.8,3.6-8,6.6-12.6,9.1l0,0
           l6.2,19L42.9,107l-6.2-19c-5.2,0.7-10.4,0.7-15.5,0l0,0L15,107l-20.9-6.8l6.2-19c-4.6-2.5-8.8-5.6-12.6-9.1l0,0l-16.2,11.8
           L-41.4,66l16.2-11.8c-2.2-4.7-3.8-9.7-4.8-14.8l0,0h-20v-22h20c1-5.1,2.6-10.1,4.8-14.8l0,0L-41.4-9l12.9-17.8l16.2,11.8
           c3.8-3.6,8-6.6,12.6-9.1l0,0l-6.2-19L15-50l6.2,19c5.2-0.7,10.4-0.7,15.5,0l0,0l6.2-19l20.9,6.8l-6.2,19c4.6,2.5,8.8,5.6,12.6,9.1

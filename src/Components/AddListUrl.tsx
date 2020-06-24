@@ -144,7 +144,7 @@ const ListItem: React.FC<ListItemType> = ({ item }) => {
 const mapStateToProps = (state: any, ownProps: any) => {
   return ({
     modal: state.modalReducer,
-    userId: state.userReducer.userId,
+    userId: state.userReducer._id,
     listIdFromUrl: ownProps.match.params.listId
   })
 }

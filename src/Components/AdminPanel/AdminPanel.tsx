@@ -87,7 +87,7 @@ const AdminPanel:React.FC<AdminPanelType> = ({
 
 const mapStateToProps = (state: any) => ({
   helpState: state.helpReducer,
-  userId: state.userReducer.userId
+  userId: state.userReducer._id
 })
 
 const mapDispatchToProps = (dispatch: any) => ({

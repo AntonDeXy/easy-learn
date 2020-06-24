@@ -31,11 +31,13 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
   const [menuStyle, setMenuStyle] = useState({animationName: 'menuAnimIn'})
   const [currentThemeName, setCurrentThemeName] = useState('light')
   const [currentTheme, setCurrentTheme] = useState(LightTheme)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const refreshToken = localStorage.getItem('refresh-token')
     if (refreshToken) {
-      getNewToken(refreshToken)
+      setLoading(true)
+      getNewToken(refreshToken, () => setLoading(false))
     }
   }, [getNewToken])
 
@@ -76,18 +78,18 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
   }, [getLists, getNotes, user])
 
 
-  // if (loading) {
-  //   document.title = 'Loading...'
-  //   return (
-  //     <Router>
-  //       <Header />
-  //       <MainSt>
-  //         <Spiner />
-  //       </MainSt>
-  //       <Footer />
-  //     </Router>
-  //   )
-  // }
+  if (loading) {
+    document.title = 'Loading...'
+    return (
+      <Router>
+        <Header />
+        <MainSt>
+          <Spiner />
+        </MainSt>
+        <Footer />
+      </Router>
+    )
+  }
 
   return (
     <ThemeProvider theme={currentTheme} >
@@ -172,7 +174,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getNotes: (userId) => dispatch(getNotesThunk(userId)),
   getLists: (userId) => dispatch(getListsThunk(userId)),
-  getNewToken: (refreshToken) => dispatch(getNewToken(refreshToken)),
+  getNewToken: (refreshToken, success) => dispatch(getNewToken(refreshToken, success)),
   setModal: (data) => dispatch(setModal(data))
 })
 
