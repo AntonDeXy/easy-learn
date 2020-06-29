@@ -1,0 +1,47 @@
+{
+  "headerTitles": {
+    "lists": "Ваши списки",
+    "notes": "Ваши заметки",
+    "help": "Помощь",
+    "pofile": "Профиль",
+    "logOut": "Выйти",
+    "darkTheme": "Темная тема",
+    "lightTheme": "Светлая тема"
+  },
+  "modal": {
+    "createWord": "Создать новое слово",
+    "createList": "Создать новый список",
+    "createNote": "Создать новую заметку",
+    "error": "Ошибка",
+    "test": "Тест",
+    "result": "Результат",
+    "share": "Поделиться",
+    "ChooseTestType": "Выберите тип теста",
+    "yourResult": "Ваш результат",
+    "name": "имя",
+    "enterListId": "Введите ID списка",
+    "add": "Добавить",
+    "create":"Создать",
+    "content": "Содержание",
+    "word": "Слово",
+    "translate": "Перевод",
+    "youCanChooseOneOfThisTranslates": "Вы можете выбрать один из этих переводов",
+    "testTypes": {
+      "wordTranslates": "Слово → переводы",
+      "translateWords": "Перевод → слова",
+      "questionsCount": "Количество вопросов"
+    },
+    "shareThisId": "Поделитесь этим ID",
+    "or": "или",
+    "shareThisUrl": "Поделитесь этой ссылкой",
+    "testModal": {
+      "chooseRightMeaningFor": "Выберите правильное значение для"
+    },
+    "addListByUrl": {
+      "doUWantAddThisList": "Вы хотите добавить этот список к вашим?",
+      "listName": "Название списка",
+      "listContent": "Содержание списка"
+    }
+  },
+  "loginToUseApp": "Для использовния этого приложения войдите в свой аккаунт или создайте новый"
+}

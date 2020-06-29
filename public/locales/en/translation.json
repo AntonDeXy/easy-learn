@@ -1,0 +1,47 @@
+{
+  "headerTitles": {
+    "lists": "Your Lists",
+    "notes": "Your notes",
+    "help": "Help",
+    "profile": "Profile",
+    "logOut": "Log out",
+    "darkTheme": "Dark theme",
+    "lightTheme": "Light theme"
+  },
+  "modal": {
+    "createWord": "Create new word",
+    "createList": "Create new list",
+    "createNote": "Create new note",
+    "error": "Error",
+    "test": "Test",
+    "result": "Result",
+    "share": "Share",
+    "ChooseTestType": "Choose test type",
+    "yourResult": "Your result",
+    "name": "name",
+    "enterListId": "Enter list ID",
+    "add": "Add",
+    "create":"Create",
+    "content": "Content",
+    "word": "Word",
+    "translate": "Translate",
+    "youCanChooseOneOfThisTranslates": "You can choose one of this translates",
+    "testTypes": {
+      "wordTranslates": "Word → tranlates",
+      "translateWords": "Translate → words",
+      "questionsCount": "Questions count"
+    },
+    "shareThisId": "Share this ID",
+    "or": "or",
+    "shareThisUrl": "Share this url",
+    "testModal": {
+      "chooseRightMeaningFor": "Choose right meaning for"
+    },
+    "addListByUrl": {
+      "doUWantAddThisList": "Do you want add this list to yours?",
+      "listName": "List name",
+      "listContent": "List content"
+    }
+  },
+  "loginToUseApp": "Please login or register for using this app"
+}

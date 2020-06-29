@@ -1,5 +1,6 @@
 import React from 'react'
 import { QuestionType } from '../../redux/reducers/modal/modalReducer'
+import { useTranslation } from 'react-i18next'
 
 type TestModalType = {
   currentQuestion: QuestionType
@@ -7,9 +8,11 @@ type TestModalType = {
 }
 
 const TestModal:React.FC<TestModalType> = ({currentQuestion, getNextQuestion}) => {
+  const { t } = useTranslation() 
+  
   return (
     <div className="test">
-      <div><span>Choose right meaning for <b>{currentQuestion && currentQuestion.value1}</b></span></div>
+      <div><span>{t('modal.testModal.chooseRightMeaningFor')} <b>{currentQuestion && currentQuestion.value1}</b></span></div>
       <div className="answers">
         {
           currentQuestion && currentQuestion.variants.map((variant) => {

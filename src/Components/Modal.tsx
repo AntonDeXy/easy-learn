@@ -12,6 +12,7 @@ import ShareModal from './ModalComponents/Share-Modal'
 import AddWord from './ModalComponents/AddWord-Modal'
 import TestModal from './ModalComponents/Test-Modal'
 import { ItemType, ListType } from '../redux/reducers/main/mainReducer'
+import { useTranslation } from 'react-i18next'
 
 type ModalType = {
   test: TestType
@@ -42,7 +43,9 @@ const Modal:React.FC<ModalType> = (
     createNewList, getNextQuestion, createNewTestItem
   }) => {
 
-    const disabledButtonStyle = {
+  const { t } = useTranslation() 
+
+  const disabledButtonStyle = {
     backgroundColor: 'grey'
   }
 
@@ -51,14 +54,14 @@ const Modal:React.FC<ModalType> = (
       <div className="modal">
         <div className="header">
           <div className='modal-title' >
-            {modal.type === 'words' && <span>Create new word</span>}
-            {modal.type === 'lists' && <span>Create new list</span>}
-            {modal.type === 'notes' && <span>Create new note</span>}
-            {modal.type === 'error' && <span>Error</span>}
-            {modal.type === 'test' && <span>Test</span>}
-            {modal.type === 'result' && <span>Result</span>}
-            {modal.type === 'share' && <span>Share</span>}
-            {modal.type === 'chooseTestType' && <span>Choose test type</span>}
+            {modal.type === 'words' && <span>{t('modal.createWord')}</span>}
+            {modal.type === 'lists' && <span>{t('modal.createList')}</span>}
+            {modal.type === 'notes' && <span>{t('modal.createNote')}</span>}
+            {modal.type === 'error' && <span>{t('modal.error')}</span>}
+            {modal.type === 'test' && <span>{t('modal.test')}</span>}
+            {modal.type === 'result' && <span>{t('modal.result')}</span>}
+            {modal.type === 'share' && <span>{t('modal.share')}</span>}
+            {modal.type === 'chooseTestType' && <span>{t('modal.ChooseTestType')}</span>}
           </div>
           <div>
             {
@@ -138,6 +141,8 @@ type ResultModalType = {
 }
 
 const ResultModal:React.FC<ResultModalType> = ({test, listName, userId, createNewTestItem}) => {
+  const { t } = useTranslation() 
+  
   useEffect(() => {
     createNewTestItem(
       {
@@ -153,7 +158,7 @@ const ResultModal:React.FC<ResultModalType> = ({test, listName, userId, createNe
 
   return (
     <div className="main">
-      <span className='resultText'>Your result {test.rightAnswersCount}/{test.questionsCount}</span>
+      <span className='resultText'>{t('modal.yourResult')} {test.rightAnswersCount}/{test.questionsCount}</span>
     </div>
   )
 }

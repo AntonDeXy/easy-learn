@@ -1,20 +1,29 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next';
 
 type ShareModalType = {
   categoryId: string
 }
 
 const ShareModal:React.FC<ShareModalType> = ({categoryId}) => {
+  const { t } = useTranslation() 
+
   return(
     <div className="main">
       <div className="item">
-        <span>Share this ID</span>
-        <input type="text" contentEditable={false} readOnly value={categoryId} />
+        <span>{t('modal.shareThisId')}</span>
+        <input 
+          type="text" 
+          contentEditable={false} 
+          readOnly value={categoryId} />
       </div>
-      <span>or</span>
+      <span>{t('modal.or')}</span>
       <div className="item">
-        <span>Share this url</span>
-        <input type="text" contentEditable={false} value={`https://dexy.site/lists/add/${categoryId}`} />
+        <span>{t('modal.shareThisUrl')}</span>
+        <input 
+          type="text"
+          contentEditable={false}
+          value={`${window.location.origin}/lists/add/${categoryId}`} />
       </div>
     </div>
   )

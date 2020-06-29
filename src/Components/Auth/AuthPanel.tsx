@@ -24,8 +24,6 @@ const AuthPanel:React.FC<AuthPanel> = ({login, register, changeCurrentPageToAuth
     changeCurrentPageToAuth()
   }, [changeCurrentPageToAuth])
 
-  console.log(window.location.pathname)
-
   if(username) {
     return <Redirect to='/lists' />
   }

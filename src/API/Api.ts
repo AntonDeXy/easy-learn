@@ -151,6 +151,10 @@ export const userAPI = {
   changeTheme(userId: string, theme: string) {
     return instance.put('users/change-theme', {userId, theme})
       .then(res => res.data)
+  },
+  changeLanguage(userId: string, language: string) {
+    return instance.put('users/change-language', {userId, language})
+      .then(res => res.data)
   }
 }
 
