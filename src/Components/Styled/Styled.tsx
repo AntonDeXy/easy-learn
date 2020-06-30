@@ -324,6 +324,7 @@ export const ModalSt = styled.div `
       }
     }
     .test {
+      ${() => FontsStyles.modalInputLabel}
       display: grid;
       grid-auto-flow: row;
       gap: 10px;
