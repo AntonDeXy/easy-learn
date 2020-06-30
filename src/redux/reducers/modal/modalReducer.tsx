@@ -102,7 +102,7 @@ const modalReducer = (state = modalState, action:any) => {
         
         if (!temporaryVariants.includes(temporaryItem.rightAnswer)) {
           let randomNum = Math.floor(Math.random() * 10)
-          randomNum %= action.data.variantsCount - 1
+          randomNum %= action.data.variantsCount
           temporaryItem.variants[randomNum] = {value: temporaryItem.rightAnswer, key: Math.random() * 10}
         }
 
@@ -151,7 +151,7 @@ const modalReducer = (state = modalState, action:any) => {
         
         if (!temporaryVariants.includes(temporaryItem.rightAnswer)) {
           let randomNum = Math.floor(Math.random() * 10)
-          randomNum %= action.data.variantsCount - 1
+          randomNum %= action.data.variantsCount
           temporaryItem.variants[randomNum] = {value: temporaryItem.rightAnswer, key: Math.random() * 10}
         }
 
