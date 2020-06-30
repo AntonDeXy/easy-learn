@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { ListType } from '../../redux/reducers/main/mainReducer'
+import { useTranslation } from 'react-i18next';
 
 type AddListType = {
   disabledButtonStyle: any
@@ -14,6 +15,8 @@ const AddList:React.FC<AddListType> = ({closeModal, addListToProfileThunk, disab
   const categoryNameRef = useRef<HTMLInputElement>(null)
   const categoryIdRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState('')
+
+  const { t } = useTranslation() 
 
   const addListToProfile = () => {
     if (categoryIdRef?.current) {
@@ -41,15 +44,28 @@ const AddList:React.FC<AddListType> = ({closeModal, addListToProfileThunk, disab
         <span>{error}</span>
       </div>
       <div className="item">
-        <span>Name</span>
+        <span>{t('modal.name')}</span>
         <input ref={categoryNameRef} type="text" />
       </div>
-      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={ () => createNewList({authorId: userId, name: categoryNameRef?.current ? categoryNameRef.current.value : '', items: []}, () => closeModal())} >Create</button>
+      <button 
+        disabled={isLoading} 
+        style={isLoading ? disabledButtonStyle : {} } 
+        onClick={ () => createNewList({
+          authorId: userId, 
+          name: categoryNameRef?.current ? categoryNameRef.current.value : '', 
+          items: []
+          }, () => closeModal())} 
+      >{t('modal.create')}</button>
       <div className="item">
-        <span>Enter list ID</span>
+        <span>{t('modal.enterListId')}</span>
         <input ref={categoryIdRef} type="text" />
       </div>
-      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={ () => addListToProfile() } >Add</button>
+      <button 
+        disabled={isLoading}
+        style={isLoading ? disabledButtonStyle : {} }
+        onClick={ () => addListToProfile() }>
+          {t('modal.add')}
+        </button>
     </div>
   )
 }

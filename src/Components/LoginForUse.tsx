@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom'
 import { UserStateType } from '../redux/reducers/users/usersReducer'
 import { connect } from 'react-redux'
 import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
+import { useTranslation } from 'react-i18next';
 
 type LoginForUse = {
   user: UserStateType
@@ -12,6 +13,8 @@ type LoginForUse = {
 
 const LoginForUse: React.FC<LoginForUse> = ({ user, changeCurrentPage }) => {
   const [isUserAuthenticated, setUserAuthenticated] = useState<boolean>(false)
+  
+  const { t } = useTranslation()
   
   useEffect(() => {
     if (user._id) {
@@ -27,7 +30,7 @@ const LoginForUse: React.FC<LoginForUse> = ({ user, changeCurrentPage }) => {
   return (
     <MainSt>
       <div className='pleaseLogin'>
-        Please login or register for using this app
+        {t('modal.loginToUseApp')}
       </div>
     </MainSt>
   )

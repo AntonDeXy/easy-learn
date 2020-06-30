@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
+import { useTranslation } from 'react-i18next';
 
 type AddNoteTypes = {
   createNote: (data: {content: string, authorId: string}, success:any) => void
@@ -11,6 +12,8 @@ type AddNoteTypes = {
 const AddNote:React.FC<AddNoteTypes> = ({createNote, userId, disabledButtonStyle, closeModal}) => {
   const [isLoading, setIsLoading] = useState(false)
   const contentRef = useRef<HTMLTextAreaElement>(null)
+
+  const { t } = useTranslation() 
 
   const createNewNote = () => {
     setIsLoading(true)
@@ -29,10 +32,15 @@ const AddNote:React.FC<AddNoteTypes> = ({createNote, userId, disabledButtonStyle
   return (
     <div className="main">
       <div className="item">
-        <span>Content</span>
+        <span>{t('modal.Content')}</span>
         <TextareaAutosize autoFocus inputRef={contentRef} />
       </div>
-      <button disabled={isLoading} style={isLoading ? disabledButtonStyle : {} } onClick={() => createNewNote()} >Add</button>
+      <button 
+        disabled={isLoading}
+        style={isLoading ? disabledButtonStyle : {} }
+        onClick={() => createNewNote()}>
+      {t('modal.add')}
+      </button>
     </div>
   )
 }

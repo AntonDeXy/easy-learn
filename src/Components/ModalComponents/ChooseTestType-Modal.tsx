@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { InputNumber } from 'antd'
+import { useTranslation } from 'react-i18next';
 
 type ChooseTestTypeModalType = {
   itemsCount: number
@@ -10,20 +11,25 @@ const ChooseTestTypeModal:React.FC<ChooseTestTypeModalType> = ({setTestType, ite
   const [questionsCount, setQuestionsCount] = useState(itemsCount)
   const minQuestionCount = 5
 
+  const { t } = useTranslation() 
+
   return (
     <div className="choose-test-type">
-      {/* <div className='title' ><span>Choose test type</span></div> */}
       <button onClick={() => setTestType('wordTranslates', +questionsCount)} >
-        <span>Word → tranlates</span>
+        <span>{t('modal.testTypes.wordTranslates')}</span>
       </button>
       <button onClick={() => setTestType('translateWords', +questionsCount)} >
-        <span>Translate → words</span>
+        <span>{t('modal.testTypes.translateWords')}</span>
       </button>
       <div className="questionsCount">
         <span>
-          Questions count:
+          {t('modal.testTypes.questionsCount')}:
         </span>
-        <InputNumber min={minQuestionCount} max={itemsCount} defaultValue={itemsCount} onChange={value => setQuestionsCount(value ? value : 5)} />
+        <InputNumber
+         min={minQuestionCount} 
+         max={itemsCount} 
+         defaultValue={itemsCount} 
+         onChange={value => setQuestionsCount(value ? value : 5)} />
       </div>
     </div>
   )

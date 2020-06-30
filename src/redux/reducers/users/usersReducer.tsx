@@ -1,5 +1,5 @@
 import { userAPI, listsAPI } from '../../../API/Api'
-import { ADD_LIST_TO_PROFILE, RESET_PASSWORD, CLEAR_ERROR, SET_ERROR, REMOVE_ADDED_LIST, SET_USER, ADD_COMPLETED_TEST_TO_PROFILE, CHANGE_THEME, ACCESS_TOKEN, REFRESH_TOKEN, LOGOUT } from './usersReducerTypes'
+import { ADD_LIST_TO_PROFILE, RESET_PASSWORD, CLEAR_ERROR, SET_ERROR, REMOVE_ADDED_LIST, SET_USER, ADD_COMPLETED_TEST_TO_PROFILE, CHANGE_THEME, ACCESS_TOKEN, REFRESH_TOKEN, LOGOUT, CHANGE_LANGUAGE } from './usersReducerTypes'
 import { ListType } from '../main/mainReducer'
 
 export type UserQuestionType = {
@@ -39,6 +39,7 @@ export type UserStateType = {
   registerDate: string
   addedLists: Array<ListType>
   tests: Array<UserQuestionType>
+  language: string
 
   accessToken: string
   refreshToken: string
@@ -58,6 +59,7 @@ const userState:UserStateType = {
   theme: '',
   isEmailConfirmed: false,
   registerDate: '',
+  language: '',
   accessToken: '',
   refreshToken: ''
 }
@@ -90,6 +92,9 @@ const userReducer = (state = userState, action:any) => {
     }
     case CHANGE_THEME: {
       return {...state, theme: action.theme}
+    }
+    case CHANGE_LANGUAGE: {
+      return {...state, language: action.language}
     }
     case RESET_PASSWORD: {
       return {...state, password: action.newPass}
@@ -148,6 +153,13 @@ type ChangeThemeActionType = {
 }
 
 const changeTheme = (theme: string):ChangeThemeActionType => ({type: CHANGE_THEME, theme})
+
+type changeLanguageActionType = {
+  type: typeof CHANGE_LANGUAGE
+  language: string
+}
+
+const changeLanguage = (language: string):changeLanguageActionType => ({type: CHANGE_LANGUAGE, language})
 
 type resetPassword = {
   type: typeof RESET_PASSWORD
@@ -333,5 +345,19 @@ export const changeThemeThunk = (userId: string, theme: string) => async (dispat
     dispatch(setError('Something went wrong'))
   }
 }
+
+export const changeLanguageThunk = (userId: string, language: string, success: any) => async (dispatch: any) => {
+  dispatch(clearErorr())
+
+  let data = await userAPI.changeLanguage(userId, language)
+
+  if (data.success) {
+    dispatch(changeLanguage(language))
+    success()
+  } else {
+    dispatch(setError('Something went wrong'))
+  }
+}
+
 
 export default userReducer

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { useState, useEffect } from 'react'
 import { pageType } from '../redux/reducers/main/mainReducer'
 import { UserStateType } from '../redux/reducers/users/usersReducer'
+import { useTranslation } from 'react-i18next';
 
 type HeaderType = {
   currentPage: pageType
@@ -15,23 +16,25 @@ type HeaderType = {
 
 const Header:React.FC<HeaderType> = ({isMenuOpened, togglerMenu, user, currentListName, currentPage}) => {
   const [currentPageLabel, setCurrentPageLabel] = useState<string>('')
+  
+  const { t } = useTranslation() 
 
   useEffect(() => {
     switch(currentPage) {
       case 'lists': {
-        return setCurrentPageLabel('Your lists')
+        return setCurrentPageLabel(t("headerTitles.lists"))
       }
       case 'words': {
         return setCurrentPageLabel(currentListName)
       }
       case 'notes': {
-        return setCurrentPageLabel('Your notes')
+        return setCurrentPageLabel(t("headerTitles.notes"))
       }
       case 'help': {
-        return setCurrentPageLabel('Help')
+        return setCurrentPageLabel(t("headerTitles.help"))
       }
       case 'profile': {
-        return setCurrentPageLabel('Profile')
+        return setCurrentPageLabel(t("headerTitles.profile"))
       }
       case 'auth': {
         return setCurrentPageLabel('')
@@ -40,7 +43,7 @@ const Header:React.FC<HeaderType> = ({isMenuOpened, togglerMenu, user, currentLi
         return setCurrentPageLabel('')
       }
     }
-  }, [currentListName, currentPage])
+  }, [currentListName, currentPage, t])
 
   return (
     <HeaderSt>

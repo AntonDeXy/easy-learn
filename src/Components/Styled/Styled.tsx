@@ -324,6 +324,7 @@ export const ModalSt = styled.div `
       }
     }
     .test {
+      ${() => FontsStyles.modalInputLabel}
       display: grid;
       grid-auto-flow: row;
       gap: 10px;
@@ -338,7 +339,7 @@ export const ModalSt = styled.div `
           border-radius: 10em;
           color: #4285f4;
           border: 2px solid #4285f4;
-          background-color: #ffffff;
+          background-color: ${({theme} : {theme: ThemeType}) => theme.MainBg};
           box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
           transition: all.5s;
           :active {
@@ -865,4 +866,32 @@ export const AdditionalPanelLinksSt = styled.div`
   display: grid;
   grid-auto-flow: column;
   justify-content: space-between;
+`
+
+export const LanguageSwitcherSt = styled.div `
+  display: grid;
+  grid-auto-flow: column;
+  justify-self: left;
+  width: auto;
+  color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+  background-color: unset;
+  div {
+    border: 2px solid ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+    padding: 1px 7px 2px 7px;
+    display: inline-block;
+    color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+    transition: all .2s ease-in;
+    :hover {
+      cursor: pointer;
+    }
+  }
+  .current {
+    border-color: ${({theme} : {theme: ThemeType}) => theme.GreenButton};
+  }
+  & :nth-last-child(1) {
+    border-radius: 0 5px 5px 0;
+  }
+  & :first-child {
+    border-radius: 5px 0 0 5px;
+  }
 `

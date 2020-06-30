@@ -5,6 +5,7 @@ import { AddListUrlStyled } from './Styled/Styled'
 import { connect } from 'react-redux'
 import { listCheckerThunk, addListWithoutCheckThunk } from '../redux/reducers/users/usersReducer'
 import { ListType, ItemType } from '../redux/reducers/main/mainReducer'
+import { useTranslation } from 'react-i18next'
 
 type AddListUrlProps = {
   listCheckerThunk: (listId: string, userId: string, success: any) => void
@@ -20,8 +21,10 @@ const AddListUrl: React.FC<AddListUrlProps> = ({ listCheckerThunk, addListWithou
   const [error, setError] = useState<string | undefined>(undefined)
   const [listForAdd, setListForAdd] = useState<ListType | undefined>(undefined)
 
+  const { t } = useTranslation()
+
   useEffect(() => {
-    document.title=listForAdd?.name ? listForAdd.name : 'Add list'
+    document.title = listForAdd?.name ? listForAdd.name : 'Add list'
   }, [listForAdd])
 
   useEffect(() => {
@@ -62,8 +65,8 @@ const AddListUrl: React.FC<AddListUrlProps> = ({ listCheckerThunk, addListWithou
         }
         <div className="header">
           <span>
-            Do you want add this list to yours?
-        </span>
+            {t('modal.addListByUrl.doUWantAddThisList')}
+          </span>
           <Link to='/' >
             <svg
               width="17"
@@ -89,13 +92,13 @@ const AddListUrl: React.FC<AddListUrlProps> = ({ listCheckerThunk, addListWithou
                 <>
                   <div>
                     <h2>
-                      List name
-                </h2>
+                      {t('modal.addListByUrl.listName')}
+                    </h2>
                   </div>
                   <div className='list-content'>
                     <span>
-                      List content:
-                </span>
+                      {t('modal.addListByUrl.listContent')}
+                    </span>
                     <svg onClick={() => { if (listForAdd) { setIsListVisible(!isListVisible) } }} className={`isListVisible ${isListVisible && 'active'}`} version="1.1" id="Layer_1" focusable="false" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 286.1 168.2">
                       <path d="M262.1,168.2h-238c-21.4,0-32.1-25.9-17-41l119-119c9.4-9.4,24.6-9.4,33.9,0l119,119C294.2,142.3,283.5,168.2,262.1,168.2z" />
                     </svg>
@@ -108,8 +111,8 @@ const AddListUrl: React.FC<AddListUrlProps> = ({ listCheckerThunk, addListWithou
                     }
                   </div>
                   <button onClick={() => addList()} >
-                    Add
-              </button>
+                    {t('modal.add')}
+                  </button>
                 </>
               )
           }
