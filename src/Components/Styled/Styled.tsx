@@ -82,6 +82,9 @@ export const PlusSt = styled.div `
     display: grid;
     align-items: center;
   }
+  .back-arrow {
+    justify-self: left;
+  }
   svg {
     height: 50px;
     :hover {
