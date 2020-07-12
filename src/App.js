@@ -151,7 +151,7 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
                 {/* } */}
               </PrivateRoute>
 
-              <Route exact path={'/login' || '/register'}>
+              <Route exact path={['/login', '/register', '/reset-password']}>
                 <AuthPanel />
               </Route>
             </Switch>

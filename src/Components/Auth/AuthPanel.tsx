@@ -30,6 +30,13 @@ const AuthPanel:React.FC<AuthPanel> = ({login, register, changeCurrentPageToAuth
 
   return (
     <Switch>
+      
+      <Route exact path='/register'>
+        <RegisterPanel
+          msg={msg}
+          clearMsg={() => setMsg('')}
+          register={(username, password) => register(username, password, (msg: string) => setMsg(msg))} />
+      </Route>
       <Route exact path='/login'>
         <LoginPanel
           msg={msg}
@@ -38,12 +45,6 @@ const AuthPanel:React.FC<AuthPanel> = ({login, register, changeCurrentPageToAuth
             setMsg('')
             login(username, password, (msg: string) => setMsg(msg))
           }} />
-      </Route>
-      <Route exact path='/register'>
-        <RegisterPanel
-          msg={msg}
-          clearMsg={() => setMsg('')}
-          register={(username, password) => register(username, password, (msg: string) => setMsg(msg))} />
       </Route>
       <Route exact path='/reset-password'>
         <ResetPassPanel

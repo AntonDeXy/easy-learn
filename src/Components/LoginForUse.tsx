@@ -30,7 +30,7 @@ const LoginForUse: React.FC<LoginForUse> = ({ user, changeCurrentPage }) => {
   return (
     <MainSt>
       <div className='pleaseLogin'>
-        {t('modal.loginToUseApp')}
+        {t('loginToUseApp')}
       </div>
     </MainSt>
   )
