@@ -85,11 +85,16 @@ export const itemsAPI = {
       .then(res => res.data)
   },
   getAutoTranslate(phrase:string) {
+    // Accept-Language for get russian translates, without this param translates gets on default system\browser language 
+    const headers = { 'Accept-Language': 'ru' }
     if (phrase.length > 0) {
       const url = `https://cors-anywhere.herokuapp.com/api.lingualeo.com/gettranslates?word=${phrase}`
       return axios
-              .get(url)
-              .then(res => res.data)
+              .get(url, {headers})
+              .then(res => {
+                console.log(res)
+                return res.data
+              })
     } else {
       return ([])
     }
