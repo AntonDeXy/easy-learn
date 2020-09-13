@@ -5,11 +5,12 @@ import { InputWithLabel, AdditionalPanelLinks } from './AuthPanel'
 
 type LoginPanelType = {
   msg: string
+  loading: boolean
   clearMsg: () => void
   login: (username: string, password: string) => void
 }
 
-const LoginPanel:React.FC<LoginPanelType> = ({login, msg, clearMsg}) => {
+const LoginPanel:React.FC<LoginPanelType> = ({login, msg, loading, clearMsg}) => {
   const usernameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 
@@ -22,7 +23,7 @@ const LoginPanel:React.FC<LoginPanelType> = ({login, msg, clearMsg}) => {
         {msg && <span className='msg'>{msg}</span>}
         <InputWithLabel label={'username'} ref={usernameRef} />
         <InputWithLabel label={'password'} ref={passwordRef} fieldType='password'/>
-        <Button onClick={() => {
+        <Button loading={loading} onClick={() => {
           console.log(usernameRef)
           login(
             usernameRef.current?.value ? usernameRef.current.value : '', 

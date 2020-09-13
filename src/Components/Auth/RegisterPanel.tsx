@@ -5,11 +5,12 @@ import { InputWithLabel, AdditionalPanelLinks } from './AuthPanel'
 
 type RegisterPanelType = {
   msg: string
+  loading: boolean
   clearMsg: () => void
   register: (username: string, password: string) => void
 }
 
-const RegisterPanel:React.FC<RegisterPanelType> = ({register, msg, clearMsg}) => {
+const RegisterPanel:React.FC<RegisterPanelType> = ({register, msg, loading, clearMsg}) => {
   const usernameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 
@@ -22,7 +23,7 @@ const RegisterPanel:React.FC<RegisterPanelType> = ({register, msg, clearMsg}) =>
         {msg && <span className='msg'>{msg}</span>}
         <InputWithLabel label={'username'} ref={usernameRef} />
         <InputWithLabel label={'password'} ref={passwordRef} fieldType='password' />
-        <Button onClick={() => register(usernameRef.current?.value || '', passwordRef.current?.value || '')} >
+        <Button loading={loading} onClick={() => register(usernameRef.current?.value || '', passwordRef.current?.value || '')} >
           Register
         </Button>
         <AdditionalPanelLinks onClick={clearMsg} links={

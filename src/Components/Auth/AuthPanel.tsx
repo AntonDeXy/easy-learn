@@ -19,7 +19,8 @@ type AuthPanel = {
 
 const AuthPanel:React.FC<AuthPanel> = ({login, register, changeCurrentPageToAuth, reqPassReset, username}) => {
   const [msg, setMsg] = useState<string>('')
-  
+  const [reqLoading, setReqLoading] = useState<boolean>(false)
+
   useEffect(() => {
     changeCurrentPageToAuth()
   }, [changeCurrentPageToAuth])
@@ -33,17 +34,30 @@ const AuthPanel:React.FC<AuthPanel> = ({login, register, changeCurrentPageToAuth
       
       <Route exact path='/register'>
         <RegisterPanel
+          loading={reqLoading}
           msg={msg}
           clearMsg={() => setMsg('')}
-          register={(username, password) => register(username, password, (msg: string) => setMsg(msg))} />
+          register={(username, password) => {
+            setReqLoading(true)
+            setMsg('') 
+            register(username, password, (msg: string) => {
+              setReqLoading(false)
+              setMsg(msg)
+            })
+          }} />
       </Route>
       <Route exact path='/login'>
         <LoginPanel
+          loading={reqLoading}
           msg={msg}
           clearMsg={() => setMsg('')}
           login={(username, password) => {
-            setMsg('')
-            login(username, password, (msg: string) => setMsg(msg))
+            setReqLoading(true)
+            setMsg('') 
+            login(username, password, (msg: string) => {
+              setMsg(msg)
+              setReqLoading(false)
+            })
           }} />
       </Route>
       <Route exact path='/reset-password'>
