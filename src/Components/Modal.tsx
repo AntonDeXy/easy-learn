@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { ModalSt } from './Styled/Styled'
 import { connect } from 'react-redux'
 import { setModal, setTestModal, getNextQuestion, ModalStateType, SetModalType, TestType, createNewTestThunk } from '../redux/reducers/modal/modalReducer'
-import { createListThunk, createItemThunk, getAutoTranslatesThunk, TranslateType } from '../redux/reducers/lists/listsReducer'
+import { createListThunk, createItemThunk, getAutoTranslatesThunk, TranslateType, clearAutoTranslates } from '../redux/reducers/lists/listsReducer'
 import { addListToProfileThunk, UserStateType, UserQuestionType } from '../redux/reducers/users/usersReducer'
 import { createNoteThunk, NoteType } from '../redux/reducers/notes/notesReducer'
 import AddList from './ModalComponents/AddList-Modal'
@@ -20,6 +20,7 @@ type ModalType = {
   autoTranslates: Array<TranslateType>
   modal: ModalStateType
   user: UserStateType
+  clearAutoTranslates: () => void
   setTestModal: (
     data:{isActive: boolean, test: {type: string, initialItems: Array<ItemType>},
     type: string}, variantsCount:number, questionsCount:number
@@ -27,7 +28,7 @@ type ModalType = {
   createItemThunk: (item:ItemType, listId:string, success:any) => void
   createNote: (data:NoteType, success:any) => void
   setModal: (data:SetModalType) => void
-  getAutoTranslatesThunk: (phrase:string, success:any) => void
+  getAutoTranslatesThunk: (phrase:string, translatesLanguage:string, success:any) => void
   addListToProfileThunk: (listId:string, userId:string, success:any) => void
   createNewList: (data:ListType, success:any) => void
   getNextQuestion: (answer:string) => void
@@ -39,7 +40,7 @@ const Modal:React.FC<ModalType> = (
     test, setTestModal, createItemThunk,
     createNote, setModal, currentList,
     autoTranslates, getAutoTranslatesThunk,
-    modal, user, addListToProfileThunk,
+    modal, user, addListToProfileThunk, clearAutoTranslates,
     createNewList, getNextQuestion, createNewTestItem
   }) => {
 
@@ -69,7 +70,10 @@ const Modal:React.FC<ModalType> = (
             }
           </div>
           <svg
-            onClick={() => setModal({ isActive: false, type: '' })}
+            onClick={() => {
+              setModal({ isActive: false, type: '' })
+              clearAutoTranslates()
+            }}
             width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"
           >
             <path
@@ -83,7 +87,7 @@ const Modal:React.FC<ModalType> = (
           autoTranslates={autoTranslates} 
           closeModal={() => setModal({isActive: false, type: ''})} 
           currentListId={currentList._id ? currentList._id : ''} 
-          getAutoTranslatesThunk={getAutoTranslatesThunk} 
+          getAutoTranslatesThunk={(phrase, success) => getAutoTranslatesThunk(phrase, user.defaultTranslatesLanguage, success)} 
           disabledButtonStyle={disabledButtonStyle} 
           />
         }
@@ -187,10 +191,11 @@ const mapStateToProps = (state:any, ownProps:any) => ({
 })
 
 const mapDispatchToProps = (dispatch:any) => ({
+  clearAutoTranslates: () => dispatch(clearAutoTranslates()),
   addListToProfileThunk: (listId:string, userId:string, success:any) => dispatch(addListToProfileThunk(listId, userId, success)),
   setModal: (data:SetModalType) => dispatch(setModal(data)),
   createNewList: (data:ListType, success:any) => dispatch(createListThunk(data, success)),
-  getAutoTranslatesThunk: (phrase:string, success:any) => dispatch(getAutoTranslatesThunk(phrase, success)),
+  getAutoTranslatesThunk: (phrase:string, translatesLanguage:string, success:any) => dispatch(getAutoTranslatesThunk(phrase, translatesLanguage, success)),
   createItemThunk: (item:ItemType, listId:string, success:any) => dispatch(createItemThunk(item, listId, success)),
   createNote: (data:NoteType, success:any) => dispatch(createNoteThunk(data, success)),
   setTestModal: (data:ModalStateType, variantsCount:number, questionsCount:number) => dispatch(setTestModal(data, variantsCount, questionsCount)),

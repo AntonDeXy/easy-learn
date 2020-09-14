@@ -659,7 +659,10 @@ export const ProfileSt = styled.div`
         text-align: left;
         grid-template-columns: auto 1fr;
         grid-auto-flow: column;
-        align-content: baseline;
+        align-content: center;
+        span {
+          align-self: center;
+        }
       }
       .tests-wrapper {
         @media screen and (max-width: 768px) {
@@ -878,8 +881,11 @@ export const LanguageSwitcherSt = styled.div `
   width: auto;
   color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
   background-color: unset;
+  gap: 0 !important;
+  font-size: 19px;
   div {
     border: 2px solid ${({theme} : {theme: ThemeType}) => theme.MainTextColor};
+    gap: 0 !important;
     padding: 1px 7px 2px 7px;
     display: inline-block;
     color: ${({theme} : {theme: ThemeType}) => theme.MainTextColor};

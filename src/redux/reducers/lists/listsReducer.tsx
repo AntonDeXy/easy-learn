@@ -178,7 +178,8 @@ const setAutoTranslates = (translates:Array<string>):setAutoTranslatesActionType
 type clearAutoTranslatesActionType = {
   type: typeof CLEAR_TRANSLATES
 }
-const clearAutoTranslates = ():clearAutoTranslatesActionType => ({type: CLEAR_TRANSLATES})
+
+export const clearAutoTranslates = ():clearAutoTranslatesActionType => ({type: CLEAR_TRANSLATES})
 
 type removeItemActionType = {
   type: typeof REMOVE_ITEM
@@ -263,14 +264,14 @@ export const createItemThunk = (item:ItemType, listId:string, success:any) => as
   }
 }
 
-export const getAutoTranslatesThunk = (phrase:string, success:any) => async (dispatch:any) => {
-  let data = await itemsAPI.getAutoTranslate(phrase)
+export const getAutoTranslatesThunk = (phrase:string, translatesLanguage:string, success:any) => async (dispatch:any) => {
+  let data = await itemsAPI.getAutoTranslate(phrase, translatesLanguage)
   dispatch(setAutoTranslates(data.translate))
   success(data.sound_url)
 }
 
-export const getAudioUrl = (phrase:string) => async () => {
-  let data = await itemsAPI.getAutoTranslate(phrase)
+export const getAudioUrl = (phrase:string, translatesLanguage:string) => async () => {
+  let data = await itemsAPI.getAutoTranslate(phrase, translatesLanguage)
   return data.sound_url
 }
 

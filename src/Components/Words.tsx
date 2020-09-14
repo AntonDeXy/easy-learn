@@ -19,7 +19,7 @@ type WordsType = {
   removeItemThunk: (listId: string, itemId: string, success: any) => any
   changeCurrentPageToLists: () => void
   changeCurrentPageToWords: () => void
-  getWordAudioUrl: (phrase: string) => string
+  getWordAudioUrl: (phrase: string, translatesLanguage: string) => string
 }
 
 const Words: React.FC<WordsType> = ({ user, getWordAudioUrl, changeCurrentPageToWords, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal }) => {
@@ -42,7 +42,7 @@ const Words: React.FC<WordsType> = ({ user, getWordAudioUrl, changeCurrentPageTo
           {currentList.items.length > 0 &&
             currentList.items.map(word => {
               return <Word
-                getWordAudioUrl={getWordAudioUrl}
+                getWordAudioUrl={(phrase: string) => getWordAudioUrl(phrase, user.defaultTranslatesLanguage)}
                 isTestStarted={modalType === 'test' ? true : false}
                 removeItemThunk={removeItemThunk}
                 currentListId={currentList ? currentList._id : ''}
@@ -212,7 +212,7 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getWordAudioUrl: (phrase: string) => dispatch(getAudioUrl(phrase)),
+  getWordAudioUrl: (phrase: string, translatesLanguage: string) => dispatch(getAudioUrl(phrase, translatesLanguage)),
   changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
   changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
   updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => dispatch(updateItemThunk(listId, itemId, newItem, success)),

@@ -13,8 +13,6 @@ const LanguageSwitcher:React.FC<LanguageSwitcher> = ({changeLanguage, userId}) =
   const { i18n } = useTranslation() 
   const currentLanguage = i18n.languages[0]
 
-  console.log(currentLanguage)
-  
   const handleChangeLanguage = (language: string) => {
     changeLanguage(
       userId,

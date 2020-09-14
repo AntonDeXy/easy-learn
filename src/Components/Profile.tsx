@@ -6,6 +6,7 @@ import { UserStateType, UserQuestionType } from "../redux/reducers/users/usersRe
 import TimeAgo from 'react-timeago'
 import { Link } from 'react-router-dom'
 import Moment from 'react-moment'
+import DefaultTranslatesLanguageSwitcher from './default-translates-language-switcher';
 
 type ProfileType = {
   user: UserStateType
@@ -53,6 +54,10 @@ const Profile: React.FC<ProfileType> = ({ setCurrentPageToProfile, user }) => {
                 <Moment format={'DD.MM.YYYY'} >{user.registerDate}</Moment>
               </div>
             )}
+            <div>
+              <span className='label'>Default translates language:</span>
+              <DefaultTranslatesLanguageSwitcher />
+            </div>
             <div>
               <span className='label'>Completed tests count:</span>
               <span>{user.tests.length}</span>
