@@ -23,6 +23,12 @@ export const FontsStyles = {
     font-size: 19px;
     line-height: 22px;
   `,
+  cardTranscriptionText: `
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 22px;
+  `,
   menuItem: `
     font-style: normal;
     font-weight: 500;

@@ -267,12 +267,13 @@ export const createItemThunk = (item:ItemType, listId:string, success:any) => as
 export const getAutoTranslatesThunk = (phrase:string, translatesLanguage:string, success:any) => async (dispatch:any) => {
   let data = await itemsAPI.getAutoTranslate(phrase, translatesLanguage)
   dispatch(setAutoTranslates(data.translate))
-  success(data.sound_url)
+  const transcription = data.transcription
+  success(data.sound_url, transcription)
 }
 
-export const getAudioUrl = (phrase:string, translatesLanguage:string) => async () => {
+export const getAudioAndTranscription = (phrase:string, translatesLanguage:string) => async () => {
   let data = await itemsAPI.getAutoTranslate(phrase, translatesLanguage)
-  return data.sound_url
+  return {audio: data.sound_url, transcription: data.transcription}
 }
 
 export const duplicateList = (data:{userId: string, listForDuplicate: string}, success: any) => async (dispatch: any) => {

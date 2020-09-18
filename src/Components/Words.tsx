@@ -6,7 +6,7 @@ import AutosizeInput from 'react-input-autosize'
 import Spiner from './Spiner'
 import { changeCurrentPageType, ItemType, ListType } from '../redux/reducers/main/mainReducer'
 import { connect } from 'react-redux'
-import { updateItemThunk, removeItemThunk, getAudioUrl } from '../redux/reducers/lists/listsReducer'
+import { updateItemThunk, removeItemThunk, getAudioAndTranscription } from '../redux/reducers/lists/listsReducer'
 import { UserStateType } from '../redux/reducers/users/usersReducer'
 import { SetModalType } from '../redux/reducers/modal/modalReducer'
 
@@ -19,10 +19,10 @@ type WordsType = {
   removeItemThunk: (listId: string, itemId: string, success: any) => any
   changeCurrentPageToLists: () => void
   changeCurrentPageToWords: () => void
-  getWordAudioUrl: (phrase: string, translatesLanguage: string) => string
+  getAudioAndTranscription: (phrase: string, translatesLanguage: string) => {audio: string, transcription: string}
 }
 
-const Words: React.FC<WordsType> = ({ user, getWordAudioUrl, changeCurrentPageToWords, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal }) => {
+const Words: React.FC<WordsType> = ({ user, getAudioAndTranscription, changeCurrentPageToWords, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal }) => {
   const isOwner = user._id === currentList.authorId ? true : false
   
   useEffect(() => {
@@ -42,7 +42,7 @@ const Words: React.FC<WordsType> = ({ user, getWordAudioUrl, changeCurrentPageTo
           {currentList.items.length > 0 &&
             currentList.items.map(word => {
               return <Word
-                getWordAudioUrl={(phrase: string) => getWordAudioUrl(phrase, user.defaultTranslatesLanguage)}
+                getAudioAndTranscription={(phrase: string) => getAudioAndTranscription(phrase, user.defaultTranslatesLanguage)}
                 isTestStarted={modalType === 'test' ? true : false}
                 removeItemThunk={removeItemThunk}
                 currentListId={currentList ? currentList._id : ''}
@@ -64,26 +64,48 @@ type WordType = {
   currentListId: string | undefined
   updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => any
   removeItemThunk: (listId: string, itemId: string, success: any) => any
-  getWordAudioUrl: (phrase: string) => string
+  getAudioAndTranscription: (phrase: string) => {audio: string, transcription: string}
 }
 
-const Word: React.FC<WordType> = ({ getWordAudioUrl, isTestStarted, item, updateItemThunk, isOwner, currentListId, removeItemThunk }) => {
+const Word: React.FC<WordType> = ({ getAudioAndTranscription, isTestStarted, item, updateItemThunk, isOwner, currentListId, removeItemThunk }) => {
   const [editMode, setEditMode] = useState(false)
   const [newWord, setNewWord] = useState(item.word)
   const [newTranslate, setNewTranslate] = useState(item.translate)
   const [isLoading, setIsLoading] = useState(false)
   const [audio, setAudio] = useState(new Audio(item.audioUrl))
+  // const [transcription, setTranscription] = useState<string>('')
 
   const toggleEditMode = async () => {
     const isDataEqualWithOld = newWord === item.word && newTranslate === item.translate
     if (editMode && currentListId && item?._id && !isDataEqualWithOld) {
       setIsLoading(true)
-      const newAudioUrl = await getWordAudioUrl(newWord)
-      setAudio(new Audio(newAudioUrl))
+      const {audio, transcription} = await getAudioAndTranscription(newWord)
+      setAudio(new Audio(audio))
+
       let newData = { ...item }
       newData.word = newWord
       newData.translate = newTranslate
-      newData.audioUrl = newAudioUrl
+      newData.audioUrl = audio
+      newData.transcription = transcription
+
+      updateItemThunk(
+        currentListId,
+        item._id,
+        newData,
+        () => {
+          setIsLoading(false)
+          setEditMode(!editMode)
+        }
+      )
+    } else if (editMode && currentListId && item?._id && (!item.transcription || !item.audioUrl)) {
+      setIsLoading(true)
+      const {audio, transcription} = await getAudioAndTranscription(newWord)
+      setAudio(new Audio(audio))
+
+      let newData = { ...item }
+      newData.audioUrl = audio
+      newData.transcription = transcription
+
       updateItemThunk(
         currentListId,
         item._id,
@@ -115,7 +137,12 @@ const Word: React.FC<WordType> = ({ getWordAudioUrl, isTestStarted, item, update
                     }}
                   />
                 ) : (
-                    <span style={isTestStarted ? { opacity: '0' } : {}} >{item.word}</span>
+                    <>
+                      <span style={isTestStarted ? { opacity: '0' } : {}} >{item.word}</span>
+                      {
+                        item.transcription && <span style={isTestStarted ? { opacity: '0' } : {}} className='transcription'>[{item.transcription}]</span>
+                      }
+                    </>
                   )}
               </div>
               <div className="translate">
@@ -212,7 +239,7 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getWordAudioUrl: (phrase: string, translatesLanguage: string) => dispatch(getAudioUrl(phrase, translatesLanguage)),
+  getAudioAndTranscription: (phrase: string, translatesLanguage: string) => dispatch(getAudioAndTranscription(phrase, translatesLanguage)),
   changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
   changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
   updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => dispatch(updateItemThunk(listId, itemId, newItem, success)),

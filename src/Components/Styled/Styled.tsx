@@ -169,6 +169,11 @@ export const WordItemSt = styled.div `
     ${() => FontsStyles.cardText}
     padding: 10px;
     border-bottom: 1px solid ${({theme} : {theme: ThemeType}) => theme.CardBorderColor};
+    .transcription {
+      ${() => FontsStyles.cardTranscriptionText}
+      color: grey;
+      margin-left: 10px;
+    }
   }
   .translate {
     ${() => FontsStyles.cardText}

@@ -4,6 +4,7 @@ export type ItemType = {
   _id?: string
   word: string
   translate: string
+  transcription?: string
   audioUrl?: string
 }
 

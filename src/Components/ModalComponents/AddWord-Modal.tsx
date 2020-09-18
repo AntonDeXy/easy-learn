@@ -8,7 +8,7 @@ type AddWordType = {
   currentListId: string
   closeModal: () => void
   getAutoTranslatesThunk: (phrase: string, success: any) => void
-  createItemThunk: (item: {word: string, translate: string, audioUrl: string}, currentListId:string, success:any) => void
+  createItemThunk: (item: {word: string, translate: string, transcription: string, audioUrl: string}, currentListId:string, success:any) => void
 }
 
 const AddWord:React.FC<AddWordType> = ({autoTranslates, closeModal, currentListId, getAutoTranslatesThunk, createItemThunk, disabledButtonStyle}) => {
@@ -17,17 +17,20 @@ const AddWord:React.FC<AddWordType> = ({autoTranslates, closeModal, currentListI
   const [wordInputValue, setWordInputValue] = useState('')
   const [translateInputValue, setTranslateInputValue] = useState('')
   const [audio, setAudio] = useState<HTMLAudioElement | undefined>(undefined)
+  const [transcription, setTranscription] = useState<string>('')
 
   const { t } = useTranslation() 
 
   const getAutoTranslates = (phrase:any) => {
     if (phrase.length > 0) {
+      setTranscription('')
       setAudio(undefined)
       setTranslatesLoading(true)
       getAutoTranslatesThunk(
         phrase,
-        (audioUrl:string) => {
+        (audioUrl:string, wordTranscription: string) => {
           setAudio(new Audio(audioUrl))
+          setTranscription(wordTranscription)
           setTranslatesLoading(false)
         }
       )
@@ -48,6 +51,7 @@ const AddWord:React.FC<AddWordType> = ({autoTranslates, closeModal, currentListI
       {
         word: wordInputValue,
         translate: translateInputValue,
+        transcription: transcription,
         audioUrl: audio?.src ? audio.src : ''
       },
       currentListId,
