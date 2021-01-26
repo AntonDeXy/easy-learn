@@ -4,11 +4,7 @@ import { NoteType } from '../redux/reducers/notes/notesReducer'
 import { UserQuestionType } from '../redux/reducers/users/usersReducer'
 import { HelpItemType } from '../redux/reducers/help/helpPageReducer'
 
-export const baseURL = 'http://localhost:5001/api/v1/'
-// export const baseURL = 'https://cors-anywhere.herokuapp.com/https://dexy.site/api/v1/'
-// export const baseURL = '/api/v1/'
-// export const baseURL = 'https://easy-lern-backend.herokuapp.com/api/v1/'
-
+const baseURL = process.env.REACT_APP_BASE_API_URL || 'http://localhost:5001/api/v1/'
 
 const instance = axios.create({
   baseURL
