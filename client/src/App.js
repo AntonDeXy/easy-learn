@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import Header from './Components/Header'
 import { MainSt } from './Components/Styled/Styled'
 import Footer from './Components/Footer'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
-import ListsContainer from './Components/Lists'
-import Words from './Components/Words'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import ListsContainer from './Components/lists/lists-container'
+import Words from './Components/words/words'
 import Modal from './Components/Modal'
 import Menu from './Components/Menu'
 import "antd/dist/antd.css"
 import Notes from './Components/Notes'
-import Profile from "./Components/Profile"
+import Profile from "./Components/profile/profile"
 import PrivateRoute from './Components/PrivateRoute'
 import { useEffect } from 'react'
 import AddListUrl from './Components/AddListUrl'
@@ -54,19 +54,19 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
   }
 
   useEffect(() => {
-    let tempCurrentTheme = {}
     switch (currentThemeName) {
       case 'light': {
-        tempCurrentTheme = LightTheme
-        break
+      setCurrentTheme(LightTheme)
+      break
       }
       case 'dark': {
-        tempCurrentTheme = DarkTheme 
+      setCurrentTheme(DarkTheme)
         break
       }
-      default: tempCurrentTheme = LightTheme
+      default: {
+        setCurrentTheme(DarkTheme)
+      }
     }
-    setCurrentTheme(tempCurrentTheme)
   }, [currentThemeName])
 
   useEffect(() => {
@@ -79,15 +79,14 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
 
 
   if (loading) {
-    document.title = 'Loading...'
     return (
-      <Router>
-        <Header />
+      <>
+        {/* <Header /> */}
         <MainSt>
           <Spiner />
         </MainSt>
-        <Footer />
-      </Router>
+        {/* <Footer /> */}
+      </>
     )
   }
 
@@ -118,21 +117,13 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
 
               <PrivateRoute path="/profile" component={Profile} />
 
-              <PrivateRoute path="/lists">
-                <ListsContainer />
-              </PrivateRoute>
+              <PrivateRoute path="/lists" component={ListsContainer} />
 
-              <PrivateRoute path="/words">
-                {currentList
-                ? (
-                    <Words
-                      // isLoading={loading}
-                      user={user}
-                      setModal={data => setModal(data)}
-                    />
-                  )
-                  : <Redirect to='lists' /> 
-                }
+              <PrivateRoute path="/list/:listId">
+                <Words
+                  user={user}
+                  setModal={data => setModal(data)}
+                />
               </PrivateRoute>
               
               <Route exact path='/help'>
@@ -144,11 +135,7 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
               </PrivateRoute>
 
               <PrivateRoute exact path='/admin-panel'>
-                {/* {
-                  user?._id && user?.role === 'admin' */}
                   <AdminPanel user={user} />
-                  {/* : <Redirect to='/' /> */}
-                {/* } */}
               </PrivateRoute>
 
               <Route exact path={['/login', '/register', '/reset-password']}>

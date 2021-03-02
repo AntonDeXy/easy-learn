@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react'
-import { ListsWrapper, ListItemSt } from './Styled/Styled'
 import Plus from './Plus'
 import { Popconfirm } from 'antd'
 import { updateNoteThunk, removeNoteThunk, NoteType } from '../redux/reducers/notes/notesReducer'
@@ -9,6 +8,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import Spiner from './Spiner'
 import { changeCurrentPageType } from '../redux/reducers/main/mainReducer'
 import { useEffect } from 'react'
+import { ListItemSt, ListsWrapper } from './lists/styles/styled-lists'
 
 type NotesType = {
   setModal: (data: SetModalType) => void
@@ -23,11 +23,6 @@ const Notes: React.FC<NotesType> = ({ setModal, updateNoteThunk, changeCurrentPa
   useEffect(() => {
     changeCurrentPageToNotes()
   }, [changeCurrentPageToNotes])
-
-
-  useEffect(() => {
-    document.title='Notes'
-  }, [])
 
   return (
     <>

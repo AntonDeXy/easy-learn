@@ -17,11 +17,6 @@ type HelpPageType = {
 }
 
 const HelpPage: React.FC<HelpPageType> = ({ changeCurrentPageToHelp, getHelpPageItems, helpState }) => {
-
-  useEffect(() => {
-    document.title='Help'
-  }, [])
-
   useEffect(() => {
     changeCurrentPageToHelp()
     getHelpPageItems()

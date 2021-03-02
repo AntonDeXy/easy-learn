@@ -24,10 +24,6 @@ const AddListUrl: React.FC<AddListUrlProps> = ({ listCheckerThunk, addListWithou
   const { t } = useTranslation()
 
   useEffect(() => {
-    document.title = listForAdd?.name ? listForAdd.name : 'Add list'
-  }, [listForAdd])
-
-  useEffect(() => {
     setError(undefined)
     listCheckerThunk(
       listId,

@@ -17,7 +17,7 @@ exports.listsByAuthor = (req, res) => {
 
 exports.listById = (req, res) => {
   listSchema
-  .find({_id: req.params.listId})
+  .findOne({_id: req.params.listId})
   .populate('items')
   .exec((err, doc)=> {
     if (err || !doc || doc.length < 1) {

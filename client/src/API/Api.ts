@@ -15,6 +15,9 @@ export const listsAPI = {
     return instance.get(`lists/by-author-id/${userId}`)
       .then(res => res.data)
   },
+  getList(listId: string) {
+    return instance.get(`lists/by-list-id/${listId}`).then(res => res.data)
+  },
   updateList(listId:string, newData:ListType) {
     return instance.put(`lists/edit/${listId}`, newData)
       .then(res => res.data)

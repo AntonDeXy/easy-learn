@@ -1,4 +1,4 @@
-import { SET_LIST_ITEMS, SET_NEW_LIST_NAME, REMOVE_LIST, CREATE_LIST, ADD_NEW_ITEM, CHANGE_ITEM_DATA, REMOVE_ITEM, SET_ERROR, CLEAR_ERROR, SET_LOADING, SET_TRANSLATES, CLEAR_TRANSLATES, ADD_USERS_LISTS } from './listsReducerTypes'
+import { SET_LIST_ITEMS, SET_NEW_LIST_NAME, REMOVE_LIST, CREATE_LIST, ADD_NEW_ITEM, CHANGE_ITEM_DATA, REMOVE_ITEM, SET_ERROR, CLEAR_ERROR, SET_LOADING, SET_TRANSLATES, CLEAR_TRANSLATES, ADD_USERS_LISTS, SET_CURRENT_LIST, REMOVE_CURRENT_LIST } from './listsReducerTypes'
 import { listsAPI, itemsAPI } from '../../../API/Api'
 import { ListType, ItemType } from '../main/mainReducer'
 
@@ -18,13 +18,15 @@ type ListsStateType = {
   isLoading: boolean
   errorMessage: string
   autoTranslates: Array<TranslateType>
+  currentList: ListType | null
 }
 
 const listsState:ListsStateType = {
   lists: [],
   isLoading: false,
   errorMessage: '',
-  autoTranslates: []
+  autoTranslates: [],
+  currentList: null
 }
 
 const listsReducer = (state = listsState, action: any) => {
@@ -85,13 +87,18 @@ const listsReducer = (state = listsState, action: any) => {
       }
       return {...newState}
     }
+    case SET_CURRENT_LIST: {
+      return {...state, currentList: action.list}
+    }
     case SET_ERROR: {
       return ({...state, errorMessage: action.errorMessage})
     }
     case CLEAR_ERROR: {
       return ({...state, errorMessage: ''})
     }
-    
+    case REMOVE_CURRENT_LIST: {
+      return ({...state, currentList: null})
+    }
     case SET_LOADING: {
       return {...state, loading: action.isLoading}
     }
@@ -188,6 +195,10 @@ type removeItemActionType = {
 }
 const removeItem = (listId:string, itemId:string):removeItemActionType => ({type: REMOVE_ITEM, listId, itemId})
 
+const setCurrentList = (list: ListType) => ({type: SET_CURRENT_LIST, list})
+
+const removeCurrentList = () => ({type: REMOVE_CURRENT_LIST})
+
 // thunks
 export const getListsThunk = (userId:string) => async (dispatch:any) => {
   dispatch(toggleLoading(true))
@@ -282,6 +293,15 @@ export const duplicateList = (data:{userId: string, listForDuplicate: string}, s
     dispatch(createList(res.doc))
   }
   success()
+}
+
+export const getList = (listId: string) => async (dispatch: any) => {
+  dispatch(removeCurrentList())
+  const res = await listsAPI.getList(listId)
+  if (!res.isExist) {
+    dispatch(setError('list doesn`t exist or you don`t have permissions to view it'))
+  }
+  dispatch(setCurrentList(res.list))
 }
 
 export default listsReducer

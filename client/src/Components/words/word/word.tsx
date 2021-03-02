@@ -1,79 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import { WordsWrapper, WordItemSt } from './Styled/Styled'
-import Plus from './Plus'
 import { Popconfirm } from 'antd'
+import React, { useState } from 'react'
 import AutosizeInput from 'react-input-autosize'
-import Spiner from './Spiner'
-import { changeCurrentPageType, ItemType, ListType } from '../redux/reducers/main/mainReducer'
-import { connect } from 'react-redux'
-import { updateItemThunk, removeItemThunk, getAudioAndTranscription } from '../redux/reducers/lists/listsReducer'
-import { UserStateType } from '../redux/reducers/users/usersReducer'
-import { SetModalType } from '../redux/reducers/modal/modalReducer'
-
-type WordsType = {
-  user: UserStateType
-  modalType: string
-  currentList: ListType
-  setModal: (data: SetModalType) => void
-  updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => any
-  removeItemThunk: (listId: string, itemId: string, success: any) => any
-  changeCurrentPageToLists: () => void
-  changeCurrentPageToWords: () => void
-  getAudioAndTranscription: (phrase: string, translatesLanguage: string) => {audio: string, transcription: string}
-}
-
-const Words: React.FC<WordsType> = ({ user, getAudioAndTranscription, changeCurrentPageToWords, modalType, updateItemThunk, removeItemThunk, currentList, changeCurrentPageToLists, setModal }) => {
-  const isOwner = user._id === currentList.authorId ? true : false
-  
-  useEffect(() => {
-    changeCurrentPageToWords()
-  }, [changeCurrentPageToWords])
-
-  
-  useEffect(() => {
-    document.title=currentList.name
-  }, [currentList])
-
-  return (
-    <>
-      <WordsWrapper>
-        <Plus toGeneralPage={() => changeCurrentPageToLists()} openModal={() => setModal({ isActive: true, type: 'words' })} isOwner={isOwner} type="words" />
-        <div className="lists">
-          {currentList.items.length > 0 &&
-            currentList.items.map(word => {
-              return <Word
-                getAudioAndTranscription={(phrase: string) => getAudioAndTranscription(phrase, user.defaultTranslatesLanguage)}
-                isTestStarted={modalType === 'test' ? true : false}
-                removeItemThunk={removeItemThunk}
-                currentListId={currentList ? currentList._id : ''}
-                updateItemThunk={updateItemThunk}
-                isOwner={isOwner}
-                key={word._id} item={word} />
-            })
-          }
-        </div>
-      </WordsWrapper>
-    </>
-  )
-}
+import { ItemType } from '../../../redux/reducers/main/mainReducer'
+import Spiner from '../../Spiner'
+import { WordItemSt } from '../styles/styled-words'
 
 type WordType = {
   isTestStarted: boolean
   item: ItemType
   isOwner: boolean
-  currentListId: string | undefined
+  currentListId: string
   updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => any
   removeItemThunk: (listId: string, itemId: string, success: any) => any
   getAudioAndTranscription: (phrase: string) => {audio: string, transcription: string}
 }
 
-const Word: React.FC<WordType> = ({ getAudioAndTranscription, isTestStarted, item, updateItemThunk, isOwner, currentListId, removeItemThunk }) => {
+const Word: React.FC<WordType> = ({ getAudioAndTranscription, currentListId, isTestStarted, item, updateItemThunk, isOwner, removeItemThunk }) => {
   const [editMode, setEditMode] = useState(false)
   const [newWord, setNewWord] = useState(item.word)
   const [newTranslate, setNewTranslate] = useState(item.translate)
   const [isLoading, setIsLoading] = useState(false)
   const [audio, setAudio] = useState(new Audio(item.audioUrl))
-  // const [transcription, setTranscription] = useState<string>('')
 
   const toggleEditMode = async () => {
     const isDataEqualWithOld = newWord === item.word && newTranslate === item.translate
@@ -119,6 +66,7 @@ const Word: React.FC<WordType> = ({ getAudioAndTranscription, isTestStarted, ite
       setEditMode(!editMode)
     }
   }
+
 
   return (
     <WordItemSt>
@@ -230,19 +178,4 @@ const Word: React.FC<WordType> = ({ getAudioAndTranscription, isTestStarted, ite
   )
 }
 
-const mapStateToProps = (state: any, ownProps: any) => ({
-  lists: state.listsReducer.lists,
-  currentList: state.mainReducer.currentList,
-  errorMessage: state.listsReducer.errorMessage,
-  modalType: state.modalReducer.type,
-  ...ownProps
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  getAudioAndTranscription: (phrase: string, translatesLanguage: string) => dispatch(getAudioAndTranscription(phrase, translatesLanguage)),
-  changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
-  changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
-  updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => dispatch(updateItemThunk(listId, itemId, newItem, success)),
-  removeItemThunk: (listId: string, itemId: string, success: any) => dispatch(removeItemThunk(listId, itemId, success))
-})
-export default connect(mapStateToProps, mapDispatchToProps)(Words)
+export default Word
