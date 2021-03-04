@@ -43,7 +43,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.0.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "use-state-if-mounted": "^1.0.4"
   },
   "scripts": {
     "start": "react-scripts start",

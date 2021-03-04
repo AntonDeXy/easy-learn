@@ -5,13 +5,14 @@ import { ThemeType } from '../../Styled/Themes'
 export const WordsWrapper = styled.div `
   display: grid;
   width: 90%;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr;
   gap: 10px;
   justify-self: center;
   .spiner {
     height: 100px;
+    grid-row: 1/3;
     justify-self: center;
-    align-self: baseline;
+    align-self: center;
   }
   .lists {
     overflow-y: auto;

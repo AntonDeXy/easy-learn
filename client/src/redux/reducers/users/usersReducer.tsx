@@ -226,16 +226,18 @@ export const registerThunk = (username: string, password: string, success: any) 
 }
 
 export const getNewToken = (refreshToken: string, success: any) => async (dispatch: any) => {
-  let data: any = await userAPI.getNewToken(refreshToken)
+  const data: any = await userAPI.getNewToken(refreshToken)
   
   if (data.success) {
     dispatch(setAccessToken(data.accessToken))
     dispatch(setUser(data.user))
+    success({success: true})
+
   } else {
     localStorage.removeItem('refresh-token')
     dispatch(logout())
+    success({success: false})
   }
-  success()
 }
 
 export const logoutThunk = (refreshToken: string) => async (dispatch:any) => {

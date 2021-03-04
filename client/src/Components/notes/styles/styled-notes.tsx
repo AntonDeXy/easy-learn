@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { FontsStyles } from '../../Styled/Fonts'
 import { ThemeType } from '../../Styled/Themes'
 
-export const ListsWrapper = styled.div`
+export const NotesWrapper = styled.div`
   display: grid;
   width: 90%;
   grid-template-rows: auto 1fr;
@@ -15,7 +15,7 @@ export const ListsWrapper = styled.div`
     justify-self: center;
     align-self: center;
   }
-  .lists {
+  .notes {
     overflow-y: auto;
     display: grid;
     align-content: baseline;
@@ -23,8 +23,7 @@ export const ListsWrapper = styled.div`
     padding-bottom: 15px;
   }
 `
-
-export const ListItemSt = styled.div`
+export const NoteItemSt = styled.div`
   display: grid;
   grid-template-columns: 1fr auto;
   border-radius: 5px;
@@ -44,6 +43,9 @@ export const ListItemSt = styled.div`
     span {
       ${() => FontsStyles.cardText}
       word-break: break-word;
+    }
+    .note-content {
+      color: ${({ theme }: { theme: ThemeType }) => theme.SecondaryTextColor};
     }
     textarea {
       height: auto;

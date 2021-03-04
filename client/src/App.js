@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import Header from './Components/Header'
 import { MainSt } from './Components/Styled/Styled'
 import Footer from './Components/Footer'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import ListsContainer from './Components/lists/lists-container'
 import Words from './Components/words/words'
 import Modal from './Components/Modal'
 import Menu from './Components/Menu'
 import "antd/dist/antd.css"
-import Notes from './Components/Notes'
+import Notes from './Components/notes/notes-container'
 import Profile from "./Components/profile/profile"
 import PrivateRoute from './Components/PrivateRoute'
 import { useEffect } from 'react'
@@ -25,13 +25,14 @@ import { ThemeProvider } from 'styled-components'
 import { LightTheme, DarkTheme } from './Components/Styled/Themes'
 import AuthPanel from './Components/Auth/AuthPanel'
 import { getNewToken } from './redux/reducers/users/usersReducer'
+import { ListsWrapper } from './Components/lists/styles/styled-lists'
 
-const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, user, setUserThunk, getLists, ...props}) => {
+const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, user, setUserThunk, getLists}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
   const [menuStyle, setMenuStyle] = useState({animationName: 'menuAnimIn'})
   const [currentThemeName, setCurrentThemeName] = useState('light')
   const [currentTheme, setCurrentTheme] = useState(LightTheme)
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setLoading] = useState(false)
 
   useEffect(() => {
     const refreshToken = localStorage.getItem('refresh-token')
@@ -78,15 +79,13 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
   }, [getLists, getNotes, user])
 
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <>
-        {/* <Header /> */}
-        <MainSt>
-          <Spiner />
-        </MainSt>
-        {/* <Footer /> */}
-      </>
+      <MainSt>
+      <ListsWrapper>
+        <Spiner />
+      </ListsWrapper>
+      </MainSt>
     )
   }
 
@@ -112,7 +111,7 @@ const App = ({modal, getNotes, currentList, setModal, getNewToken, currentPage, 
 
               <PrivateRoute
                 path='/lists/add/:listId'
-                render={(props) =>  <AddListUrl {...props} user={user} />}
+                render={<AddListUrl />}
               />
 
               <PrivateRoute path="/profile" component={Profile} />

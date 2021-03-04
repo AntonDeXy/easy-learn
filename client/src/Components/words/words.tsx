@@ -8,6 +8,7 @@ import { SetModalType } from '../../redux/reducers/modal/modalReducer'
 import { useParams } from 'react-router-dom';
 import Word from './word/word'
 import { WordsWrapper } from './styles/styled-words'
+import Spiner from '../Spiner';
 
 type WordsType = {
   user: UserStateType
@@ -26,8 +27,10 @@ const Words: React.FC<WordsType> = ({ user, getAudioAndTranscription, currentLis
   const [list, setList] = useState<ListType | null>(null)
   const {listId} = useParams<{listId: string}>()
   const [isOwner, setIsOwner] = useState<boolean>(false)
+  const [isLoading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
+    setLoading(true)
     if (listId) {
       getList(listId)
     }
@@ -43,23 +46,31 @@ const Words: React.FC<WordsType> = ({ user, getAudioAndTranscription, currentLis
     if (list) {
       setIsOwner(user._id === list.authorId ? true : false)
     }
-  }, [list?.authorId, list, user._id])
+    if (listId === list?._id) {
+      setLoading(false)
+    }
+  }, [list, user._id, listId])
 
   return (
     <>
       <WordsWrapper>
         <Plus toGeneralPage={() => changeCurrentPageToLists()} openModal={() => setModal({ isActive: true, type: 'words' })} isOwner={isOwner} type="words" />
         <div className="lists">
-          {list?.items.map(word => {
-              return <Word
-                getAudioAndTranscription={(phrase: string) => getAudioAndTranscription(phrase, user.defaultTranslatesLanguage)}
-                isTestStarted={modalType === 'test' ? true : false}
-                removeItemThunk={removeItemThunk}
-                currentListId={list._id ? list._id : ''}
-                updateItemThunk={updateItemThunk}
-                isOwner={isOwner}
-                key={word._id} item={word} />
-            })
+          {
+            isLoading ? (
+              <Spiner />
+            ) : (
+              list?.items.map(word => {
+                return <Word
+                  getAudioAndTranscription={(phrase: string) => getAudioAndTranscription(phrase, user.defaultTranslatesLanguage)}
+                  isTestStarted={modalType === 'test' ? true : false}
+                  removeItemThunk={removeItemThunk}
+                  currentListId={list._id ? list._id : ''}
+                  updateItemThunk={updateItemThunk}
+                  isOwner={isOwner}
+                  key={word._id} item={word} />
+              })
+            )
           }
         </div>
       </WordsWrapper>
