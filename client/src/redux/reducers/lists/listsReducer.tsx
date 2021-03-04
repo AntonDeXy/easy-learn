@@ -2,22 +2,11 @@ import { SET_LIST_ITEMS, SET_NEW_LIST_NAME, REMOVE_LIST, CREATE_LIST, ADD_NEW_IT
 import { listsAPI, itemsAPI } from '../../../API/Api'
 import { ListType, ItemType } from '../main/mainReducer'
 
-export type TranslateType = {
-  id: number
-  is_user?: null
-  pic_url: string
-  translate_value: string
-  ut?: null
-  value: string
-  votes: number
-  vt: number
-}
-
 type ListsStateType = {
   lists: Array<ListType>
   isLoading: boolean
   errorMessage: string
-  autoTranslates: Array<TranslateType>
+  autoTranslates: Array<string>
   currentList: ListType | null
 }
 
@@ -54,38 +43,28 @@ const listsReducer = (state = listsState, action: any) => {
     }
     // items
     case ADD_NEW_ITEM: {
-      let newState = {...state}
-      for(let i = 0; i < newState.lists.length; i++) {
-        if (newState.lists[i]._id === action.listId) {
-          newState.lists[i].items.push(action.newItem)
-        }
-      }
-      return {...newState}
+      const newCurrentListItems = [...state?.currentList?.items || [], action.newItem] 
+
+      return {...state, currentList: {...state.currentList, items: newCurrentListItems}}
     }
     case CHANGE_ITEM_DATA: {
-      let newState = {...state}
-      for(let i = 0; i < newState.lists.length; i++) {
-        if (newState.lists[i]._id === action.listId) {
-          for(let w = 0; w < newState.lists[i].items.length; w++) {
-            if (newState.lists[i].items[w]._id === action.itemId) {
-              newState.lists[i].items[w] = action.newItem
-              break
-            }
-          }
-          break
+      const newState = {...state}
+      const newItemsArr = newState.currentList?.items.map(item => {
+        if (item._id === action.itemId) {
+          return action.newItem
         }
-      }
-      return {...newState}
+        return item
+      })
+
+      return {...newState, currentList: {...newState.currentList, items: newItemsArr}}
     }
     case REMOVE_ITEM: {
-      let newState = {...state}
-      for(let i = 0; i < newState.lists.length; i++) {
-        if (newState.lists[i]._id === action.listId) {
-          const newItems = newState.lists[i].items.filter(item => item._id !== action.itemId)
-          newState.lists[i].items = newItems
-        }
+      if (state.currentList && state.currentList.items.length > 0) {
+        const newCurrentListItems = state.currentList.items.filter(item => item._id !== action.itemId)
+        return {...state, currentList: {...state.currentList, items: newCurrentListItems}}
       }
-      return {...newState}
+
+      return state
     }
     case SET_CURRENT_LIST: {
       return {...state, currentList: action.list}
@@ -103,7 +82,7 @@ const listsReducer = (state = listsState, action: any) => {
       return {...state, loading: action.isLoading}
     }
     case SET_TRANSLATES: {
-      return {...state, autoTranslates: action.translates}
+      return {...state, autoTranslates: [...action.translates]}
     }
     case CLEAR_TRANSLATES: {
       return {...state, autoTranslates: []}
@@ -218,7 +197,8 @@ export const createListThunk = (listData:ListType, success:any) => async (dispat
 }
 
 export const updateListThunk = (listId:string, newData:ListType, success:any) => async (dispatch:any) => {
-  let res = await listsAPI.updateList(listId, newData)
+  const res = await listsAPI.updateList(listId, newData)
+  
   if (res.success) {
     success()
     dispatch(setNewListName(listId, newData.name))
@@ -253,7 +233,7 @@ export const removeItemThunk = (listId:string, itemId:string, success:any) => as
 }
 
 export const updateItemThunk = (listId:string, itemId:string, newItem:ItemType, success:any) => async (dispatch:any) => {
-  let res = await itemsAPI.updateItem({itemId, newItem})
+  const res = await itemsAPI.updateItem({itemId, newItem})
 
   if (res.success) {
     success()
@@ -275,16 +255,11 @@ export const createItemThunk = (item:ItemType, listId:string, success:any) => as
   }
 }
 
-export const getAutoTranslatesThunk = (phrase:string, translatesLanguage:string, success:any) => async (dispatch:any) => {
-  let data = await itemsAPI.getAutoTranslate(phrase, translatesLanguage)
-  dispatch(setAutoTranslates(data.translate))
-  const transcription = data.transcription
-  success(data.sound_url, transcription)
-}
-
-export const getAudioAndTranscription = (phrase:string, translatesLanguage:string) => async () => {
-  let data = await itemsAPI.getAutoTranslate(phrase, translatesLanguage)
-  return {audio: data.sound_url, transcription: data.transcription}
+export const getAutoTranslatesThunk = (phrase:string, translatesLanguage:string, success?:any) => async (dispatch:any) => {
+  const data = await itemsAPI.getAutoTranslate(phrase, translatesLanguage)
+  if (data.success) {
+    dispatch(setAutoTranslates([data.translate]))    
+  }
 }
 
 export const duplicateList = (data:{userId: string, listForDuplicate: string}, success: any) => async (dispatch: any) => {

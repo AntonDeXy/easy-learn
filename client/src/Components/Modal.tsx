@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { ModalSt } from './Styled/Styled'
 import { connect } from 'react-redux'
 import { setModal, setTestModal, getNextQuestion, ModalStateType, SetModalType, TestType, createNewTestThunk } from '../redux/reducers/modal/modalReducer'
-import { createListThunk, createItemThunk, getAutoTranslatesThunk, TranslateType, clearAutoTranslates } from '../redux/reducers/lists/listsReducer'
+import { createListThunk, createItemThunk, getAutoTranslatesThunk, clearAutoTranslates } from '../redux/reducers/lists/listsReducer'
 import { addListToProfileThunk, UserStateType, UserQuestionType } from '../redux/reducers/users/usersReducer'
 import { createNoteThunk, NoteType } from '../redux/reducers/notes/notesReducer'
 import AddList from './ModalComponents/AddList-Modal'
@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next'
 type ModalType = {
   test: TestType
   currentList: ListType
-  autoTranslates: Array<TranslateType>
+  autoTranslates: Array<string>
   modal: ModalStateType
   user: UserStateType
   clearAutoTranslates: () => void
@@ -83,6 +83,7 @@ const Modal:React.FC<ModalType> = (
           </svg>
         </div>
         {modal.type === 'words' && <AddWord
+          translatesLanguage={user.defaultTranslatesLanguage}
           createItemThunk={createItemThunk} 
           autoTranslates={autoTranslates} 
           closeModal={() => setModal({isActive: false, type: ''})} 
@@ -185,7 +186,7 @@ const mapStateToProps = (state:any, ownProps:any) => ({
   modal: state.modalReducer,
   user: state.userReducer,
   autoTranslates: state.listsReducer.autoTranslates,
-  currentList: state.mainReducer.currentList,
+  currentList: state.listsReducer.currentList,
   test: state.modalReducer.test,
   ...ownProps
 })

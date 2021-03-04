@@ -1,3 +1,5 @@
+const translatte = require('translatte')
+const transcription = require('transcription-words')
 const listSchema = require('../models/listSchema')
 const itemsSchema = require('../models/itemsSchema')
 const mongoose = require('mongoose') 
@@ -28,6 +30,23 @@ exports.create = (req, res) => {
         res.json({doc: item, success: true})
       })
     })
+}
+
+exports.getTranslate = async (req, res) => {
+  try {
+    const phraseTranslate = await translatte(req.body.phrase, {to: req.body.translateTo || 'ru'})
+    
+    res.status(200).json({
+      success: true,
+      translate: phraseTranslate.text
+    })
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      msg: err
+    })
+  }
 }
 
 exports.edit = (req, res) => {

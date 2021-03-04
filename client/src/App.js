@@ -4,7 +4,7 @@ import { MainSt } from './Components/Styled/Styled'
 import Footer from './Components/Footer'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import ListsContainer from './Components/lists/lists-container'
-import Words from './Components/words/words'
+import Words from './Components/words/words-container'
 import Modal from './Components/Modal'
 import Menu from './Components/Menu'
 import "antd/dist/antd.css"

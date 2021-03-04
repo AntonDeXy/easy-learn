@@ -11,5 +11,7 @@ router.post('/remove-many/', itemsControllers.removeMany)
 
 router.get('/remove-unused-items/', itemsControllers.removeUnusedItems)
 
+router.post('/get-translate/', itemsControllers.getTranslate)
+
 module.exports = router
 

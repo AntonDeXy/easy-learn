@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import Plus from '../Plus'
 import { changeCurrentPageType, ItemType, ListType } from '../../redux/reducers/main/mainReducer'
 import { connect } from 'react-redux'
-import { updateItemThunk, removeItemThunk, getAudioAndTranscription, getList } from '../../redux/reducers/lists/listsReducer'
+import { updateItemThunk, removeItemThunk, getList } from '../../redux/reducers/lists/listsReducer'
 import { UserStateType } from '../../redux/reducers/users/usersReducer'
 import { SetModalType } from '../../redux/reducers/modal/modalReducer'
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom'
 import Word from './word/word'
 import { WordsWrapper } from './styles/styled-words'
-import Spiner from '../Spiner';
+import Spiner from '../Spiner'
 
 type WordsType = {
   user: UserStateType
@@ -20,12 +20,11 @@ type WordsType = {
   removeItemThunk: (listId: string, itemId: string, success: any) => any
   changeCurrentPageToLists: () => void
   changeCurrentPageToWords: () => void
-  getAudioAndTranscription: (phrase: string, translatesLanguage: string) => {audio: string, transcription: string}
 }
 
-const Words: React.FC<WordsType> = ({ user, getAudioAndTranscription, currentList, getList, changeCurrentPageToWords, modalType, updateItemThunk, removeItemThunk, changeCurrentPageToLists, setModal }) => {
+const Words: React.FC<WordsType> = ({ user, currentList, getList, changeCurrentPageToWords, modalType, updateItemThunk, removeItemThunk, changeCurrentPageToLists, setModal }) => {
   const [list, setList] = useState<ListType | null>(null)
-  const {listId} = useParams<{listId: string}>()
+  const { listId } = useParams<{ listId: string }>()
   const [isOwner, setIsOwner] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
 
@@ -37,7 +36,7 @@ const Words: React.FC<WordsType> = ({ user, getAudioAndTranscription, currentLis
   }, [getList, listId])
 
   useEffect(() => {
-    if(currentList) {
+    if (currentList) {
       setList(currentList)
     }
   }, [currentList])
@@ -60,17 +59,16 @@ const Words: React.FC<WordsType> = ({ user, getAudioAndTranscription, currentLis
             isLoading ? (
               <Spiner />
             ) : (
-              list?.items.map(word => {
-                return <Word
-                  getAudioAndTranscription={(phrase: string) => getAudioAndTranscription(phrase, user.defaultTranslatesLanguage)}
-                  isTestStarted={modalType === 'test' ? true : false}
-                  removeItemThunk={removeItemThunk}
-                  currentListId={list._id ? list._id : ''}
-                  updateItemThunk={updateItemThunk}
-                  isOwner={isOwner}
-                  key={word._id} item={word} />
-              })
-            )
+                list?.items.map(word => {
+                  return <Word
+                    isTestStarted={modalType === 'test' ? true : false}
+                    removeItemThunk={removeItemThunk}
+                    updateItemThunk={updateItemThunk}
+                    isOwner={isOwner}
+                    currentListId={list?._id ? list._id : ''}
+                    key={word._id} item={word} />
+                })
+              )
           }
         </div>
       </WordsWrapper>
@@ -87,7 +85,6 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getAudioAndTranscription: (phrase: string, translatesLanguage: string) => dispatch(getAudioAndTranscription(phrase, translatesLanguage)),
   changeCurrentPageToLists: () => dispatch(changeCurrentPageType('lists')),
   changeCurrentPageToWords: () => dispatch(changeCurrentPageType('words')),
   updateItemThunk: (listId: string, itemId: string, newItem: ItemType, success: any) => dispatch(updateItemThunk(listId, itemId, newItem, success)),
